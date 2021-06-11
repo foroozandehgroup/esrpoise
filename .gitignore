@@ -1,0 +1,6 @@
+*.swp
+__pycache__
+**/.DS_Store
+build/
+dist/
+esrpoise.egg-info/
