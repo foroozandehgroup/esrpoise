@@ -36,6 +36,19 @@ import sys
 
 
 def load_xepr():
+    """
+    Initialise the Xepr module and return the Xepr object thus created.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    Xepr : instance of XeprAPI.Xepr
+        The instantiated Xepr object, used for communication with
+        Xepr-the-programme.
+    """
     # xepr import -> use XeprAPI compatible with Python 3.7
     try:
         # The correct location of the XeprAPI module should be inserted into
@@ -56,12 +69,18 @@ def load_xepr():
 
 def load_exp(Xepr, exp_file):
     """
-    Load and compile Xepr experiment file.
+    Load and compile an Xepr experiment file.
 
     Parameters
     ----------
-        exp_file (str) : The Xepr experiment file (full path with .exp
-                         extension).
+    Xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+    exp_file : str
+        The Xepr experiment file (the full path with .exp extension).
+
+    Returns
+    -------
+    None
     """
     try:
         Xepr.XeprCmds.aqPgLoad(exp_file)
@@ -79,8 +98,14 @@ def load_def(Xepr, def_file):
 
     Parameters
     ----------
-        def_file (str) : Name of the Xepr definition file (full path with .def
-                         extension)
+    Xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+    def_file : str
+        Name of the Xepr definition file (full path with .def extension).
+
+    Returns
+    -------
+    None
     """
     try:
         Xepr.XeprCmds.aqPgDefLoad(def_file)
@@ -93,12 +118,20 @@ def load_def(Xepr, def_file):
 
 def modif_def(Xepr, var_name, var_value):
     """
-    Directly modify definitions defined in the current experiment.
+    Directly modify definitions in the current experiment.
 
     Parameters
     ----------
-        var_name (list of str)  : variable names as named in the .def file
-        var_value (list of str) : list of variable values to be input
+    Xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+    var_name : list of str)
+        Variable names as named in the .def file.
+    var_value : list of str
+        List of variable values to be input.
+
+    Returns
+    -------
+    None
     """
     try:
         currentExp = Xepr.XeprExperiment()
@@ -136,7 +169,14 @@ def load_shp(Xepr, shp_file):
 
     Parameters
     ----------
-        shp_file (str) : shape file name (full path, including .shp extension)
+    Xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+    shp_file : str
+        Shape file name (full path, including .shp extension).
+
+    Returns
+    -------
+    None
     """
     try:
         Xepr.XeprCmds.aqPgShpLoad(shp_file)
@@ -153,18 +193,21 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
 
     Parameters
     ----------
-        SignalType (str) : "TM", "Signal", or "RM"
-        exp_name (str)   : the name of the experiment to run, usually
-                           "AWGTransient" for the Signal or "AWG_1pulseSHP" for
-                           the TM.
+    Xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+    SignalType : str from {"TM", "Signal", "RM"}
+    exp_name : str
+        The name of the experiment to run, usually "AWGTransient" for the
+        Signal or "AWG_1pulseSHP" for the TM.
 
     Returns
     -------
-        data: the data retrieved from Xepr. Attributes of interest are:
-                - data.X
-                - data.O      : the signal
-                - data.O.real : real part of the signal
-                - data.O.imag : imaginary part of the signal
+    data
+        The data retrieved from Xepr. Attributes of interest are:
+            - data.X
+            - data.O      : the signal
+            - data.O.real : real part of the signal
+            - data.O.imag : imaginary part of the signal
     """
     try:
         currentExp = Xepr.XeprExperiment()
@@ -217,6 +260,15 @@ def reset_exp(Xepr):
     Copy the current experiment and use it to replace the current experiment.
 
     Needed to reset the AWG after 114 sequential shape load and run.
+
+    Parameters
+    ----------
+    Xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+
+    Returns
+    -------
+    None
     """
     # get current experiment name
     curr_exp = Xepr.XeprExperiment()

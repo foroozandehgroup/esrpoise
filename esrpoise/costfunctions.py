@@ -20,11 +20,9 @@ import numpy as np
 def minabsint(data):
     """
     Cost function which minimises the absolute (magnitude-mode) intensity of
-    the spectrum. This is probably the easiest cost function. :-)
+    the spectrum.
     """
     mag = np.abs(np.fft(data.r + 1j * data.i))
-    # The intensity of the magnitude-mode spectrum is just the sum of all
-    # points.
     return np.sum(mag)
 
 
@@ -33,11 +31,6 @@ def maxabsint(data):
     Cost function which maximises the absolute (magnitude-mode) intensity of
     the spectrum.
     """
-
-    # This is the same as minabsint except that we have a negative sign.
-    # Because the optimisation always seeks to *minimise* the cost function,
-    # this essentially tries to *maximise* np.sum(...), i.e. maximise the
-    # spectral intensity.
     return -np.sum(np.abs(np.fft(data.r + 1j * data.i)))
 
 

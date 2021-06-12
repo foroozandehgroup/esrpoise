@@ -32,16 +32,40 @@ def optimize(pars,
     """
     Run an optimisation.
 
-    TODO: Document inputs.
+    TODO: Document inputs properly.
+
+    Parameters
+    ----------
+    pars : list of str
+        Parameter names.
+    lb : list of float
+        Lower bounds for each parameter.
+    ub : list of float
+        Upper bounds for each parameter.
+    tol : list of float
+        Optimisation tolerances for each parameter.
+    cost_function : function
+        A function which takes the data object and returns a float.
+    exp_file : str
+        ...
+    def_file : str
+        ...
+    optimiser : str from {"nm", "mds", "bobyqa"}, default "nm"
+        Optimisation algorithm to use. The options correspond to Nelder-Mead,
+        multidimensional search, and BOBYQA respectively.
+    maxfev : int, default 0
+        Maximum number of spectra to acquire during the optimisation. The
+        default of '0' sets this to 500 times the number of parameters.
 
     Returns
     -------
-        xbest (numpy.ndarray) : Numpy array of best values found. First element
-                                corresponds to the first parameter optimised,
-                                etc.
-        fbest (float)         : Value of the cost function at x = xbest.
-        message (str)         : A message indicating why the optimisation
-                                terminated.
+    xbest : numpy.ndarray
+        Numpy array of best values found. First element corresponds to the
+        first parameter optimised, etc.
+    fbest : float
+        Value of the cost function at x = xbest.
+    message : str
+        A message indicating why the optimisation terminated.
     """
     # Get start time
     tic = datetime.now()
