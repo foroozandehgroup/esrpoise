@@ -45,7 +45,7 @@ def optimize(pars,
     """
     # Get start time
     tic = datetime.now()
-        
+
     # Choose the optimisation function. optpoise implements a PyBOBYQA
     # interface so that the returned result has the same attributes as our
     # other optimisers.
@@ -80,7 +80,7 @@ def optimize(pars,
     fmt = "{:^10s}  " * (npars + 1)
     print(fmt.format(*pars, "cf"))
     print("-" * 12 * (npars + 1))
-        
+
     # Initialise Xepr module
     Xepr = Xepr_link.load_xepr()
     # Set up optimisation arguments. Basically, this needs to be everything
@@ -92,7 +92,7 @@ def optimize(pars,
                          scaled_lb, scaled_ub,
                          args=optimargs, maxfev=maxfev)
     best_values = unscale(opt_result.xbest, lb, ub, tol, scaleby="tols")
-    
+
     print(f"optima: {' '.join([str(i) for i in best_values])}")
 
     # More logging
@@ -104,7 +104,7 @@ def optimize(pars,
     print(fmt.format("Cost function at minimum", opt_result.fbest))
     print(fmt.format("Number of experiments ran", acquire_esr.calls))
     print(fmt.format("Total time taken", time_taken))
-    
+
     return best_values, opt_result.fbest, opt_result.message
 
 
@@ -164,7 +164,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     # Otherwise, here we should trigger acquisition.
     # Print unscaled values
     print("values: " + " ".join([str(i) for i in unscaled_val]))
-    
+
     # Modify parameters and acquire data
     Xepr_link.load_exp(Xepr, exp_file)
     Xepr_link.load_def(Xepr, def_file)
@@ -173,10 +173,10 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
 
     # Evaluate the cost function
     cf_val = cost_function(data)
-    
+
     # log
     fstr = "{:^10.4f}  " * (len(x) + 1)
     print(fstr.format(*unscaled_val, cf_val))
     print(f"cf: {cf_val}")
-    
+
     return cf_val
