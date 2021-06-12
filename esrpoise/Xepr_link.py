@@ -202,10 +202,10 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
 
     Returns
     -------
-    data
+    data : XeprAPI.Dataset
         The data retrieved from Xepr. Attributes of interest are:
-            - data.X
-            - data.O      : the signal
+            - data.X      : the X-abscissa values of the dataset
+            - data.O      : complex-valued numpy.ndarray of the signal
             - data.O.real : real part of the signal
             - data.O.imag : imaginary part of the signal
     """
