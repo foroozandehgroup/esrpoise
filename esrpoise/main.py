@@ -26,8 +26,8 @@ def optimize(pars,
              cost_function,
              exp_file,
              def_file,
-             optimiser="nelder-mead",
-             maxfev=None
+             optimiser="nm",
+             maxfev=0
              ) -> None:
     """
     Run an optimisation.
