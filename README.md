@@ -1,2 +1,3 @@
 # esrpoise
-Parameter Optimisation by Iterative Spectral Evaluation: a Xepr-compatible NMR package
+
+Parameter Optimisation by Iterative Spectral Evaluation: a Xepr-compatible ESR package
