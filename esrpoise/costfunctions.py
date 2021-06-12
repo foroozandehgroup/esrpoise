@@ -2,14 +2,14 @@
 costfunctions.py
 ----------------
 
-Contains default cost functions. Custom cost functions should be added in
-costfunctions_user.py (using the same format).
+Contains some typical cost functions. You can choose to take your cost
+functions from here, or create your own.
 
-You can add custom cost functions in here (they will work), but they will be
-shadowed by any similarly named cost functions in costfunctions_user.py. Also,
-this file will be overwritten if POISE is reinstalled.
-
-SPDX-License-Identifier: GPL-3.0-or-later
+Cost functions must be defined as follows. They must take one parameter (named
+anything you like), which is an instance of the XeprDataset class and
+represents a set of ESR data. Then they must return a float, which corresponds
+to how 'bad' the spectrum is. The worse the spectrum, the larger the return
+value should be.
 """
 
 import numpy as np

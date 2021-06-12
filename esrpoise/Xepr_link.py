@@ -42,7 +42,6 @@ try:
 	sys.path.append('/opt/Bruker/xepr/sharedProDeL/Examples/XeprAPI-examples');
 	sys.path.append('/opt/Bruker/xepr/sharedProDeL/Standard/XeprAPI');
     
-
 	import XeprAPI      # load the Xepr API module
 	Xepr=XeprAPI.Xepr() # start Xepr API module
 except:
