@@ -81,10 +81,12 @@ def optimize(pars,
     print(fmt.format(*pars, "cf"))
     print("-" * 12 * (npars + 1))
         
+    # Initialise Xepr module
+    Xepr = Xepr_link.load_xepr()
     # Set up optimisation arguments. Basically, this needs to be everything
     # that acquire_esr() uses apart from x itself.
     optimargs = (cost_function, pars, lb, ub, tol,
-                 optimiser, exp_file, def_file)
+                 optimiser, Xepr, exp_file, def_file)
     # Carry out the optimisation
     opt_result = optimfn(acquire_esr, scaled_x0, scaled_xtol,
                          scaled_lb, scaled_ub,
@@ -108,7 +110,7 @@ def optimize(pars,
 
 @deco_count
 def acquire_esr(x, cost_function, pars, lb, ub, tol,
-                optimiser, exp_file, def_file):
+                optimiser, Xepr, exp_file, def_file):
     """
     This is the function which is actually passed to the optimisation function
     as the "cost function", and is responsible for triggering acquisition in
@@ -164,10 +166,10 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     print("values: " + " ".join([str(i) for i in unscaled_val]))
     
     # Modify parameters and acquire data
-    Xepr_link.load_exp(exp_file)
-    Xepr_link.load_def(def_file)
-    Xepr_link.modif_def(pars, x)
-    data = Xepr_link.run2getdata_exp("Signal", exp_file)
+    Xepr_link.load_exp(Xepr, exp_file)
+    Xepr_link.load_def(Xepr, def_file)
+    Xepr_link.modif_def(Xepr, pars, x)
+    data = Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
 
     # Evaluate the cost function
     cf_val = cost_function(data)

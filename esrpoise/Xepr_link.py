@@ -33,20 +33,23 @@ SPDX-License-Identifier: GPL-3.0-or-later
 import os
 import sys
 
-# xepr import -> use XeprAPI compatible with Python 3.7
-try:
-    # The correct location of the XeprAPI module should be inserted into the 
-    # code below
-    # -> could be avoided if installed with pip3?
-	sys.path.insert(0, os.popen("Xepr --apipath").read());  # this locates the XeprAPI module
-	sys.path.append('/opt/Bruker/xepr/sharedProDeL/Examples/XeprAPI-examples');
-	sys.path.append('/opt/Bruker/xepr/sharedProDeL/Standard/XeprAPI');
-    
-	import XeprAPI      # load the Xepr API module
-	Xepr=XeprAPI.Xepr() # start Xepr API module
-except:
-	print("xepr_import_error")
-	sys.exit(1)
+
+def load_xepr():
+    # xepr import -> use XeprAPI compatible with Python 3.7
+    try:
+        # The correct location of the XeprAPI module should be inserted into the 
+        # code below
+        # -> could be avoided if installed with pip3?
+        sys.path.insert(0, os.popen("Xepr --apipath").read());  # this locates the XeprAPI module
+        sys.path.append('/opt/Bruker/xepr/sharedProDeL/Examples/XeprAPI-examples');
+        sys.path.append('/opt/Bruker/xepr/sharedProDeL/Standard/XeprAPI');
+        
+        import XeprAPI      # load the Xepr API module
+        Xepr = XeprAPI.Xepr() # start Xepr API module
+    except:
+        print("xepr_import_error")
+        sys.exit(1)
+    return Xepr
 
 
 # =============================================================================
@@ -55,7 +58,7 @@ except:
     
 # some problem may arise as it was written in Python 2
 
-def load_exp(exp_file): 
+def load_exp(Xepr, exp_file): 
     """ Load and compile Xepr experiment file
         Input:
             - exp_file, the Xepr experiment file (full path with .exp extension)
@@ -70,7 +73,7 @@ def load_exp(exp_file):
     	sys.exit(3)
 
 
-def load_def(def_file):
+def load_def(Xepr, def_file):
     """ Load and compile an Xepr definition file
         
         Input:
@@ -85,7 +88,7 @@ def load_def(def_file):
     	sys.exit(3)
 
 
-def modif_def(var_name, var_value):
+def modif_def(Xepr, var_name, var_value):
     """ Directly modify definitions defined in the current experiment. 
         Input:
             - var_name, string list of variable names as named in the .def file
@@ -117,7 +120,7 @@ def modif_def(var_name, var_value):
     	sys.exit(4)
 
 
-def load_shp(shp_file):
+def load_shp(Xepr, shp_file):
     """ load and compile an Xepr a shape file
     
         Input:
@@ -132,7 +135,7 @@ def load_shp(shp_file):
     	sys.exit(3)
 
 
-def run2getdata_exp(SignalType, exp_name):
+def run2getdata_exp(Xepr, SignalType, exp_name):
     """To run the experiement and get the data from it
     
     Input:
@@ -189,7 +192,7 @@ def run2getdata_exp(SignalType, exp_name):
     return data
 
 
-def reset_exp():
+def reset_exp(Xepr):
     """ Copy the current experiment and use it to replace the current experiment
     
         Needed to reset the AWG after 114 sequential shape load and run
