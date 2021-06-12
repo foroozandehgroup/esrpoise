@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jun  9 15:43:08 2021
+example.py
+----------
 
-@author: jbv
-
+A minimal example of how to use the esrpoise interface.
 
 ###  Principle  ###
 
@@ -17,8 +17,7 @@ Run parameter optimization of any ESR experiment:
   6. loop to 2 (optimization)
   7. exit -> parameter value
 
-Presented here: example of optimization
-
+SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import numpy as np

@@ -10,6 +10,8 @@ anything you like), which is an instance of the XeprDataset class and
 represents a set of ESR data. Then they must return a float, which corresponds
 to how 'bad' the spectrum is. The worse the spectrum, the larger the return
 value should be.
+
+SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import numpy as np

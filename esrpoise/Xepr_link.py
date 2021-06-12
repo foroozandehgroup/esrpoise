@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jun  9 15:43:08 2021
-
-@author: jbv
+Xepr_link.py
+------------
 
 Xepr interface functions (largely taken from David's code)  
 
@@ -28,6 +26,8 @@ Other functions from David:
         - contains different cases (def file, no def file ...)
     - [not needed] py_run_ox.m -> allows to run a Python file
     - [not needed] optimization functions 
+
+SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import os

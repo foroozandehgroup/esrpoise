@@ -3,6 +3,8 @@ main.py
 -------
 
 Contains the main code required for executing an optimisation.
+
+SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import os
