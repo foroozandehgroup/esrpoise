@@ -27,6 +27,20 @@ def optimize(pars,
              optimiser="nelder-mead",
              maxfev=None
              ) -> None:
+    """
+    Run an optimisation.
+
+    TODO: Document inputs.
+
+    Returns
+    -------
+        xbest (numpy.ndarray) : Numpy array of best values found. First element
+                                corresponds to the first parameter optimised,
+                                etc.
+        fbest (float)         : Value of the cost function at x = xbest.
+        message (str)         : A message indicating why the optimisation
+                                terminated.
+    """
     # Get start time
     tic = datetime.now()
         
@@ -86,6 +100,8 @@ def optimize(pars,
     print(fmt.format("Cost function at minimum", opt_result.fbest))
     print(fmt.format("Number of experiments ran", acquire_esr.calls))
     print(fmt.format("Total time taken", time_taken))
+    
+    return best_values, opt_result.fbest, opt_result.message
 
 
 @deco_count
