@@ -54,11 +54,11 @@ def load_xepr():
         # The correct location of the XeprAPI module should be inserted into
         # the code below -> could be avoided if installed with pip3?
         # This locates the XeprAPI module
-        sys.path.insert(0, os.popen("Xepr --apipath").read())
+        """sys.path.insert(0, os.popen("Xepr --apipath").read())
         sys.path.extend([
             '/opt/Bruker/xepr/sharedProDeL/Examples/XeprAPI-examples',
             '/opt/Bruker/xepr/sharedProDeL/Standard/XeprAPI',
-        ])
+        ])"""
         import XeprAPI         # load the Xepr API module
         Xepr = XeprAPI.Xepr()  # start Xepr API module
     except Exception:
@@ -146,21 +146,22 @@ def modif_def(Xepr, var_name, var_value):
     fullDefs = currentExp.getParam("PlsSPELGlbTxt").value
     # need to check if fullDefs is empty and exit cause pulsespel not being
     # loaded
+
     fullDefs = fullDefs.split("\n")
 
-    no_defs = (len(sys.argv) - 1) / 2
+    no_defs = len(var_name)
 
-    try:
-        for value in fullDefs:
-            for index in range(1, no_defs + 1):
-                if str(var_name[(2 * index) - 1]) in value:
-                    cmdStr = (var_name[(2 * index) - 1]
-                              + " = "
-                              + var_value[2 * index])
-                    currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
-    except Exception:
-        print("error changing pulseSPEL defs")
-        sys.exit(4)
+    #try:
+    for value in fullDefs:
+        for index in range(1, no_defs):
+            if str(var_name[index]) in value:
+                cmdStr = (var_name[index]
+                          + " = "
+                          + var_value[index])
+                currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
+    #except Exception:
+    #    print("error changing pulseSPEL defs")
+    #    sys.exit(4)
 
 
 def load_shp(Xepr, shp_file):
