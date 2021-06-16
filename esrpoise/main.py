@@ -9,6 +9,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
 from datetime import datetime
+import time
 
 import numpy as np
 
@@ -107,6 +108,7 @@ def optimize(pars,
 
     # Initialise Xepr module
     Xepr = Xepr_link.load_xepr()
+    
     # Set up optimisation arguments. Basically, this needs to be everything
     # that acquire_esr() uses apart from x itself.
     optimargs = (cost_function, pars, lb, ub, tol,
@@ -164,11 +166,8 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
         Value of the cost function.
     """
     # Unscale values for acquisition.
-    unscaled_val = unscale(x, lb, ub, tol, scaleby="tols")
-
-    # Format string for logging.
-    fstr = "{:^10.4f}  " * (len(x) + 1)
-
+    unscaled_val = unscale(x, lb, ub, tol, scaleby="tols") 
+    
     # Enforce constraints on optimisation. This doesn't need to be done for
     # BOBYQA, because we pass the `bounds` parameter, which automatically stops
     # it from sampling outside the bounds. If we *do* enforce the constraints
@@ -181,26 +180,48 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
         # Set the value of the cost function to infinity.
         cf_val = np.inf
         # Log that.
-        print(fstr.format(*unscaled_val, cf_val))
+        # print(fstr.format(*unscaled_val, cf_val))
         # Return immediately.
         return cf_val
-
     # Otherwise, here we should trigger acquisition.
+    
     # Print unscaled values
-    print("values: " + " ".join([str(i) for i in unscaled_val]))
+    #print("values: " + " ".join([str(i) for i in unscaled_val]))
 
     # Modify parameters and acquire data
+
+    # make different cases depending on the parameter type?
+    #    - rounding of specific parameters
+    #         ex: param_val = np.round(unscaled_val/2)*2 # round to 2ns for pulse lengths  
+    #    - modify exp file?
+    #    
+    # create some space that the user can use to implement his own parameter modif
+    #    - pulse shapes -> require to modify acquire_esr
+    #    - exp/def file -> not useful?
+    
+
+    # round parameters and transform them into integers
+    param_val = np.round(unscaled_val)
+    param_val = param_val.astype(int)
+
+    # def file modification and load
+    Xepr_link.modif_def2(Xepr, def_file, pars, param_val.astype(str))
+
+    # exp file load
     Xepr_link.load_exp(Xepr, exp_file)
-    Xepr_link.load_def(Xepr, def_file)
-    Xepr_link.modif_def(Xepr, pars, x)
+
+    # time to let Xepr finish compiling
+    time.sleep(1)
+
+    # record data
     data = Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
 
-    # Evaluate the cost function
+    # evaluate the cost function
     cf_val = cost_function(data)
 
     # log
-    fstr = "{:^10.4f}  " * (len(x) + 1)
+    fstr = "{:^10.4f}  " * (len(x) + 1) # Format string for logging.
     print(fstr.format(*unscaled_val, cf_val))
-    print(f"cf: {cf_val}")
+    print(fstr.format(*param_val, cf_val))
 
     return cf_val

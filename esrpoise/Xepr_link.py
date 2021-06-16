@@ -50,20 +50,18 @@ def load_xepr():
         Xepr-the-programme.
     """
     # xepr import -> use XeprAPI compatible with Python 3.7
-    try:
-        # The correct location of the XeprAPI module should be inserted into
-        # the code below -> could be avoided if installed with pip3?
-        # This locates the XeprAPI module
-        """sys.path.insert(0, os.popen("Xepr --apipath").read())
+    #try:
+    # The correct location of the XeprAPI module should be inserted into
+    # the code below -> could be avoided if installed with pip3?
+    # This locates the XeprAPI module
+    """sys.path.insert(0, os.popen("Xepr --apipath").read())
         sys.path.extend([
             '/opt/Bruker/xepr/sharedProDeL/Examples/XeprAPI-examples',
             '/opt/Bruker/xepr/sharedProDeL/Standard/XeprAPI',
-        ])"""
-        import XeprAPI         # load the Xepr API module
-        Xepr = XeprAPI.Xepr()  # start Xepr API module
-    except Exception:
-        print("xepr_import_error")
-        sys.exit(1)
+    ])"""
+    import XeprAPI         # load the Xepr API module
+    Xepr = XeprAPI.Xepr()  # start Xepr API module
+
     return Xepr
 
 
@@ -116,7 +114,7 @@ def load_def(Xepr, def_file):
         sys.exit(3)
 
 
-def modif_def(Xepr, var_name, var_value):
+def modif_def(Xepr, def_file, var_name, var_value):
     """
     Directly modify definitions in the current experiment.
 
@@ -149,19 +147,66 @@ def modif_def(Xepr, var_name, var_value):
 
     fullDefs = fullDefs.split("\n")
 
-    no_defs = len(var_name)
-
-    #try:
-    for value in fullDefs:
-        for index in range(1, no_defs):
-            if str(var_name[index]) in value:
-                cmdStr = (var_name[index]
-                          + " = "
-                          + var_value[index])
+    for i, var_name_i in enumerate(var_name):
+        cmdStr = (var_name_i
+                  + " = "
+                  + var_value[i])
+        #print(cmdStr)
+        for line in fullDefs:
+    
+            l = line.replace(" ", "") # getting rid of spaces
+    
+            l = l[0:len(var_name_i)+1] # selecting the first characters
+    
+            if var_name_i+"=" == l:
                 currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
-    #except Exception:
-    #    print("error changing pulseSPEL defs")
-    #    sys.exit(4)
+   
+    # only works with short files and simple expressions
+    #     ex: aa0 = 5+c can reset to aa0 = 5)
+
+def modif_def2(Xepr, def_file, var_name, var_value):
+    """
+    Modify definitions by modifying the .def file and reloading it
+
+    Parameters
+    ----------
+    Xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+    var_name : list of str)
+        Variable names as named in the .def file.
+    var_value : list of str
+        List of variable values to be input.
+
+    Returns
+    -------
+    None
+    """
+
+    with open(def_file, 'r') as def_f:
+        fullDefs = def_f.read()
+
+    fullDefs = fullDefs.split("\n")
+
+    for i, var_name_i in enumerate(var_name):
+        cmdStr = (var_name_i
+                  + " = "
+                  + var_value[i])
+        #print(cmdStr)
+        for j, line in enumerate(fullDefs):
+    
+            l = line.replace(" ", "") # getting rid of spaces
+    
+            l = l[0:len(var_name_i)+1] # selecting the first characters
+    
+            if var_name_i+"=" == l:
+                fullDefs[j] = var_name_i+" = "+str(var_value[i]) + " "
+    
+    def_file_modif = def_file[0:-4] + "_modif.def" # new definition file with modifications
+    
+    with open(def_file_modif, 'w') as def_f:
+        def_f.write('\n'.join(fullDefs))
+    
+    load_def(Xepr, def_file_modif)
 
 
 def load_shp(Xepr, shp_file):
@@ -238,8 +283,6 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
     # retrieve data
     data = Xepr.XeprDataset()
 
-    # TBD: type of the data +convert data to numpy arrays?
-
     # no data? -- try to run current experiment (if possible)
     if not data.datasetAvailable():
         try:
@@ -251,7 +294,7 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
             sys.exit(5)
     if not data.datasetAvailable():
         print("(Still) no dataset available...giving up...")
-        sys.exit(6)
+        sys.exit(6)  
 
     return data
 

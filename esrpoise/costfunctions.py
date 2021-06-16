@@ -22,7 +22,7 @@ def minabsint(data):
     Cost function which minimises the absolute (magnitude-mode) intensity of
     the spectrum.
     """
-    mag = np.abs(np.fft(data.r + 1j * data.i))
+    mag = np.abs(np.fft.fft(data.O.real + 1j * data.O.imag))
     return np.sum(mag)
 
 
@@ -31,7 +31,7 @@ def maxabsint(data):
     Cost function which maximises the absolute (magnitude-mode) intensity of
     the spectrum.
     """
-    return -np.sum(np.abs(np.fft(data.r + 1j * data.i)))
+    return -np.max(np.abs(np.fft.fft(data.O.real + 1j * data.O.imag)))
 
 
 def minrealint(data):
@@ -46,7 +46,7 @@ def maxrealint(data):
     """
     Maximises the intensity of the real part of the spectrum.
     """
-    return -np.sum(np.fft(data.r))
+    return -np.sum(np.real(np.fft.fft(data.O.real,2*len(data.O.real))))
 
 
 def zerorealint(data):

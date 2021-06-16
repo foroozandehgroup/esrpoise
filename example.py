@@ -22,20 +22,35 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 import numpy as np
 from esrpoise import optimize
-from esrpoise.costfunctions import maxabsint
+from esrpoise.costfunctions import maxabsint, maxrealint
 
-# TBP: parameter "parstype" to be able to input any parameter
+# TBD: parameter "parstype" to be able to input any parameter
 
 # Note that esrpoise.optimize() doesn't actually return anything yet
-xbest, fbest, message = optimize(pars=["p1", "p2"],
-                                 init=[6, 12],
-                                 lb=[0, 0],
-                                 ub=[100, 100],
-                                 tol=[1, 1],
+
+"""
+# Hahn echo lengths optimization
+xbest, fbest, message = optimize(pars=["p0", "p1"],
+                                 init=[4, 6],
+                                 lb=[2, 4],
+                                 ub=[16, 32],
+                                 tol=[2, 2],
                                  cost_function=maxabsint,   # imported, see above
-                                 exp_file="spin_echo.exp",
-                                 def_file="spin_echo.def",
-                                 maxfev=10)
+                                 exp_file="echo_decay.exp",
+                                 def_file="descrESEEM_jb.def",
+                                 maxfev=50)
+"""
+
+# Hahn echo quadrature error optimization
+xbest, fbest, message = optimize(pars=['aa0', 'aa1', 'b', 'c'],
+                                 init=[95, 95, 1, 1],
+                                 lb=[80, 80, 0, 0],
+                                 ub=[100, 100, 180, 180],
+                                 tol=[1, 1, 1, 1],
+                                 cost_function=maxrealint,   # imported, see above
+                                 exp_file='/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/Prodel/awg2p_jb.exp',
+                                 def_file='/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/Prodel/awg2p_jb.def',
+                                 maxfev=120)
 
 print()
 print('-' * 60)
@@ -44,3 +59,13 @@ print('Best values found: ', xbest)
 print('Minimal cost function: ', fbest)
 print('Optimisation message: ', message)
 print('-' * 60)
+
+
+
+
+
+
+
+
+
+
