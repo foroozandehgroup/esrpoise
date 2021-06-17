@@ -12,6 +12,9 @@ from esrpoise.optpoise import (nelder_mead,
                                MESSAGE_OPT_MAXITER_REACHED)
 
 
+RNG_SEED = 5
+
+
 def test_scale_unscale():
     # Scale by bounds.
     rng = np.random.default_rng()
@@ -97,11 +100,6 @@ lb = np.array([-5, -5, -5, -5, -5])
 ub = np.array([5, 5, 5, 5, 5])
 x0 = np.array([1.3, 0.7, 0.8, 1.9, 1.2])
 xtol = np.array([1e-2] * len(x0))
-nm_simplex_methods_nexpts = {
-    "spendley": 1,
-    "axis": 1,
-    "random": 20,
-}
 
 
 def test_errors():
@@ -120,88 +118,46 @@ def test_errors():
 
 
 def test_NM_accuracy():
-    for method, _ in nm_simplex_methods_nexpts.items():
+    for method in ["spendley", "axis", "random"]:
         quadratic.calls = 0  # reset fevals
         optResult = nelder_mead(cf=quadratic, x0=x0, xtol=xtol,
                                 scaled_lb=lb, scaled_ub=ub,
-                                simplex_method=method)
-        if not np.allclose(optResult.xbest, np.zeros(len(x0)), atol=2e-2):
-            quadratic.calls = 0  # reset fevals
-            optResult = nelder_mead(cf=quadratic, x0=x0, xtol=xtol,
-                                    scaled_lb=lb, scaled_ub=ub,
-                                    simplex_method=method)
+                                simplex_method=method, seed=RNG_SEED)
         assert np.allclose(optResult.xbest, np.zeros(len(x0)), atol=2e-2)
 
 
-def test_NM_iters():
-    for method, nexpt in nm_simplex_methods_nexpts.items():
-        count = 0
-        for i in range(nexpt):
-            quadratic.calls = 0  # reset fevals
-            optResult = nelder_mead(cf=quadratic, x0=x0, xtol=xtol,
-                                    scaled_lb=lb, scaled_ub=ub,
-                                    simplex_method=method)
-            # Check optResult.__repr__() while we're at it.
-            assert all(s in repr(optResult) for s in ["xbest", "fbest",
-                                                      "niter", "nfev",
-                                                      "fvals", "simplex"])
-            count += optResult.niter
-        count /= nexpt
-        assert count < 500
-
-
-def test_NM_fevals():
-    for method, nexpt in nm_simplex_methods_nexpts.items():
-        count = 0
-        for i in range(nexpt):
-            quadratic.calls = 0  # reset fevals
-            optResult = nelder_mead(cf=quadratic, x0=x0, xtol=xtol,
-                                    scaled_lb=lb, scaled_ub=ub,
-                                    simplex_method=method)
-            count += optResult.nfev
-        count /= nexpt
-        assert count < 850
-
-
-mds_simplex_methods_nexpts = {
-    "spendley": 1,
-    "axis": 1,
-}
+def test_NM_niters_fevals():
+    for method in ["spendley", "axis", "random"]:
+        quadratic.calls = 0  # reset fevals
+        optResult = nelder_mead(cf=quadratic, x0=x0, xtol=xtol,
+                                scaled_lb=lb, scaled_ub=ub,
+                                simplex_method=method, seed=RNG_SEED)
+        # Check optResult.__repr__() while we're at it.
+        assert all(s in repr(optResult) for s in ["xbest", "fbest",
+                                                  "niter", "nfev",
+                                                  "fvals", "simplex"])
+        assert optResult.niter < 500
+        assert optResult.nfev < 850
 
 
 def test_MDS_accuracy():
-    for method, _ in mds_simplex_methods_nexpts.items():
+    for method in ["spendley", "axis"]:
         quadratic.calls = 0  # reset fevals
         optResult = multid_search(cf=quadratic, x0=x0, xtol=xtol,
                                   scaled_lb=lb, scaled_ub=ub,
-                                  simplex_method=method)
+                                  simplex_method=method,
+                                  seed=RNG_SEED)
         assert np.allclose(optResult.xbest, np.zeros(len(x0)), atol=2e-2)
 
 
-def test_MDS_iters():
-    for method, nexpt in mds_simplex_methods_nexpts.items():
-        count = 0
-        for i in range(nexpt):
-            quadratic.calls = 0  # reset fevals
-            optResult = multid_search(cf=quadratic, x0=x0, xtol=xtol,
-                                      scaled_lb=lb, scaled_ub=ub,
-                                      simplex_method=method)
-            count += optResult.niter
-        count /= nexpt
-        assert count < 500
-
-
-def test_MDS_fevals():
-    for method, nexpt in mds_simplex_methods_nexpts.items():
-        count = 0
-        for i in range(nexpt):
-            quadratic.calls = 0  # reset fevals
-            optResult = multid_search(cf=quadratic, x0=x0, xtol=xtol,
-                                      scaled_lb=lb, scaled_ub=ub,
-                                      simplex_method=method)
-            count += optResult.nfev
-        count /= nexpt
-        assert count < 1000
+def test_MDS_iters_fevals():
+    for method in ["spendley", "axis"]:
+        quadratic.calls = 0  # reset fevals
+        optResult = multid_search(cf=quadratic, x0=x0, xtol=xtol,
+                                  scaled_lb=lb, scaled_ub=ub,
+                                  simplex_method=method, seed=RNG_SEED)
+        assert optResult.niter < 500
+        assert optResult.nfev < 1000
 
 
 def test_bobyqa_accuracy():

@@ -34,6 +34,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 import os
 import sys
 
+import XeprAPI         # load the Xepr API module
+
 
 def load_xepr():
     """
@@ -49,17 +51,6 @@ def load_xepr():
         The instantiated Xepr object, used for communication with
         Xepr-the-programme.
     """
-    # xepr import -> use XeprAPI compatible with Python 3.7
-    #try:
-    # The correct location of the XeprAPI module should be inserted into
-    # the code below -> could be avoided if installed with pip3?
-    # This locates the XeprAPI module
-    """sys.path.insert(0, os.popen("Xepr --apipath").read())
-        sys.path.extend([
-            '/opt/Bruker/xepr/sharedProDeL/Examples/XeprAPI-examples',
-            '/opt/Bruker/xepr/sharedProDeL/Standard/XeprAPI',
-    ])"""
-    import XeprAPI         # load the Xepr API module
     Xepr = XeprAPI.Xepr()  # start Xepr API module
 
     return Xepr
@@ -151,18 +142,16 @@ def modif_def(Xepr, def_file, var_name, var_value):
         cmdStr = (var_name_i
                   + " = "
                   + var_value[i])
-        #print(cmdStr)
+        # print(cmdStr)
         for line in fullDefs:
-    
-            l = line.replace(" ", "") # getting rid of spaces
-    
-            l = l[0:len(var_name_i)+1] # selecting the first characters
-    
-            if var_name_i+"=" == l:
+            line = line.replace(" ", "")  # getting rid of spaces
+            line = line[0:len(var_name_i) + 1]  # selecting first characters
+            if var_name_i + "=" == line:
                 currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
-   
+
     # only works with short files and simple expressions
-    #     ex: aa0 = 5+c can reset to aa0 = 5)
+    # ex: aa0 = 5+c can reset to aa0 = 5)
+
 
 def modif_def2(Xepr, def_file, var_name, var_value):
     """
@@ -181,31 +170,25 @@ def modif_def2(Xepr, def_file, var_name, var_value):
     -------
     None
     """
-
     with open(def_file, 'r') as def_f:
         fullDefs = def_f.read()
-
     fullDefs = fullDefs.split("\n")
 
     for i, var_name_i in enumerate(var_name):
         cmdStr = (var_name_i
                   + " = "
                   + var_value[i])
-        #print(cmdStr)
+        # print(cmdStr)
         for j, line in enumerate(fullDefs):
-    
-            l = line.replace(" ", "") # getting rid of spaces
-    
-            l = l[0:len(var_name_i)+1] # selecting the first characters
-    
-            if var_name_i+"=" == l:
-                fullDefs[j] = var_name_i+" = "+str(var_value[i]) + " "
-    
-    def_file_modif = def_file[0:-4] + "_modif.def" # new definition file with modifications
-    
+            line = line.replace(" ", "")  # getting rid of spaces
+            line = line[0:len(var_name_i)+1]  # selecting the first characters
+            if var_name_i + "=" == line:
+                fullDefs[j] = var_name_i + " = " + str(var_value[i]) + " "
+
+    # new definition file with modifications
+    def_file_modif = def_file[0:-4] + "_modif.def"
     with open(def_file_modif, 'w') as def_f:
         def_f.write('\n'.join(fullDefs))
-    
     load_def(Xepr, def_file_modif)
 
 
@@ -294,7 +277,7 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
             sys.exit(5)
     if not data.datasetAvailable():
         print("(Still) no dataset available...giving up...")
-        sys.exit(6)  
+        sys.exit(6)
 
     return data
 
