@@ -156,10 +156,10 @@ def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
                 currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
 
     # only works with short files and simple expressions
-    # ex: aa0 = 5+c can reset to aa0 = 5)
+    # ex: aa0 = 5+c can reset to aa0 = 5
 
 
-def modif_def2(Xepr, def_file, var_name, var_value):
+def modif_def(Xepr, def_file, var_name, var_value):
     """
     Modify definitions by modifying the .def file and reloading it
 
@@ -184,10 +184,10 @@ def modif_def2(Xepr, def_file, var_name, var_value):
         cmdStr = (var_name_i
                   + " = "
                   + var_value[i])
-        # print(cmdStr)
+
         for j, line in enumerate(fullDefs):
-            line = line.replace(" ", "")  # getting rid of spaces
-            line = line[0:len(var_name_i)+1]  # selecting the first characters
+            line = line.replace(" ", "")      # get rid of spaces
+            line = line[0:len(var_name_i)+1]  # select first characters
             if var_name_i + "=" == line:
                 fullDefs[j] = var_name_i + " = " + str(var_value[i]) + " "
 

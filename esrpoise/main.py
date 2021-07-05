@@ -201,13 +201,14 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     param_val = np.round(unscaled_val)
     param_val = param_val.astype(int)
 
-    # TBD: implement evaluation counter for Xepr reset case
+    # TBD: implement evaluation counter
+    # Xepr reset needed for 114 sequential shape load and run
     # if eval_counter==115: # if counter is 115, reset the awg experiment
     #    reset_exp(Xepr) 
     # eval_counter=0;
 
     # def file modification and load
-    Xepr_link.modif_def2(Xepr, def_file, pars, param_val.astype(str))
+    Xepr_link.modif_def(Xepr, def_file, pars, param_val.astype(str))
 
     # exp file load
     Xepr_link.load_exp(Xepr, exp_file)

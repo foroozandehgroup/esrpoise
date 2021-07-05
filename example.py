@@ -60,7 +60,10 @@ print('Minimal cost function: ', fbest)
 print('Optimisation message: ', message)
 print('-' * 60)
 
-
+# TO DO
+# add external function for special paramters modification
+# round parameter to tolerance
+# pars_usr, pars_def?
 
 
 
