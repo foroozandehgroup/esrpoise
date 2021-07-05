@@ -33,6 +33,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
 import sys
+import time
 
 import XeprAPI         # load the Xepr API module
 
@@ -76,6 +77,10 @@ def load_exp(Xepr, exp_file):
         Xepr.XeprCmds.aqPgShowPrg()
         Xepr.XeprCmds.aqPgCompValid()
         Xepr.XeprCmds.aqPgCompile()
+
+        # wait for Xepr to finish compiling
+        time.sleep(1)
+
     except Exception:
         print("program_load_compile_error")
         sys.exit(3)
@@ -105,9 +110,10 @@ def load_def(Xepr, def_file):
         sys.exit(3)
 
 
-def modif_def(Xepr, def_file, var_name, var_value):
+def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
     """
     Directly modify definitions in the current experiment.
+    Limited by the number of lines contained in PlsSPELGlbTxt
 
     Parameters
     ----------
@@ -297,6 +303,10 @@ def reset_exp(Xepr):
     -------
     None
     """
+
+    # wait for Xepr to be ready to reset the experiment
+    time.sleep(2)
+
     # get current experiment name
     curr_exp = Xepr.XeprExperiment()
     expt_name = curr_exp.aqGetExpName()
@@ -319,3 +329,6 @@ def reset_exp(Xepr):
 
     # open parameter panel
     Xepr.XeprCmds.aqParOpen()
+
+    # wait for Xepr to reset the experiment
+    time.sleep(2)
