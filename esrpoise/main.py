@@ -196,10 +196,34 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     # modif
     #    - pulse shapes -> require to modify acquire_esr
     #    - exp/def file -> not useful?
+  
+    # convert parameters to string with the same number of decimals as tolerances
+    param_str = list()
+    for i, val in enumerate(unscaled_val):
 
-    # round parameters and transform them into integers
-    param_val = np.round(unscaled_val)
-    param_val = param_val.astype(int)
+        tol_str = str(tol[i])
+
+        if '.' not in tol_str: # integer case
+
+            # round to tolerance multiple
+            val = tol[i] * ((val//tol[i]) + np.round(val%tol[i]/tol[i]))
+
+            param_str.append(str(int(val)))
+
+        else:
+            decimal_nb = len(tol_str[tol_str.index('.'):-1])
+        
+            # upscale to integer
+            val = val * 10**(decimal_nb)
+            tol_val = tol[i] * 10**(decimal_nb)
+
+            # round to tolerance multiple
+            val = tol_val * ((val//tol_val) + np.round(val%tol_val/tol_val))
+
+            # downscale and round to tolerance decimal number
+            param_str.append(str(np.round(val*10**(-decimal_nb), decimal_nb)))
+
+    param_str = np.array(param_str)
 
     # TBD: implement evaluation counter
     # Xepr reset needed for 114 sequential shape load and run
@@ -208,7 +232,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     # eval_counter=0;
 
     # def file modification and load
-    Xepr_link.modif_def(Xepr, def_file, pars, param_val.astype(str))
+    Xepr_link.modif_def(Xepr, def_file, pars, param_str)
 
     # exp file load
     Xepr_link.load_exp(Xepr, exp_file)
@@ -221,7 +245,8 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
 
     # log
     fstr = "{:^10.4f}  " * (len(x) + 1)  # Format string for logging
+  
     print(fstr.format(*unscaled_val, cf_val))
-    print(fstr.format(*param_val, cf_val))
+    print(fstr.format(*param_str.astype(np.float), cf_val))
 
     return cf_val

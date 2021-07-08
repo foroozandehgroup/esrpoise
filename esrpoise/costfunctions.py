@@ -49,6 +49,13 @@ def maxrealint(data):
     return -np.sum(np.real(np.fft.fft(data.O.real, 2 * len(data.O.real))))
 
 
+def maxrealint_echo(data):
+    """
+    Maximises the maximum intensity of the real part of the echo.
+    """
+    return -np.max(data.O.real)
+
+
 def zerorealint(data):
     """
     Tries to get the intensity of the real spectrum to be as close to zero as
