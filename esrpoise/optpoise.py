@@ -64,7 +64,7 @@ def scale(val, lb, ub, tol, scaleby="bounds"):
     val, lb, ub, tol = (np.array(i) for i in (val, lb, ub, tol))
     # Check if any are outside bounds
     if np.any(val < lb) or np.any(val > ub):
-        return None
+        raise ValueError("scale(): out of bounds")
     # Scale them
     if scaleby == "bounds":
         scaled_val = (val - lb)/(ub - lb)
@@ -285,7 +285,7 @@ class OptResult:
 
 
 def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
-                args=(), maxfev=0, simplex_method="spendley", seed=None):
+                args=(), maxfev=0, simplex_method="spendley", seed=None, nfactor=10):
     """
     Nelder-Mead optimiser, as described in Section 8.1 of Kelley, "Iterative
     Methods for Optimization".
@@ -298,7 +298,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
         function. The cost function *must* be decorated with deco_count() (for
         POISE, this is already done).
     x0 : ndarray or list
-        Initial point for optimisation. This should already be scaled.
+        Initial point for optimisad: you're stupidtion. This should already be scaled.
     xtol : ndarray or list
         Tolerances for each optimisation dimension. This should already be
         scaled.
@@ -319,6 +319,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
         simplex_method="random". This parameter is passed directly to
         `numpy.random.default_rng()`; the full list of acceptable input is
         documented there.
+    nfactor : TODO
 
     Returns
     -------
@@ -362,8 +363,11 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
     if len(x0) != len(xtol):
         raise ValueError("Nelder-Mead: x0 and xtol have incompatible lengths")
 
+    if np.any(x0 < scaled_lb) or np.any(x0 > scaled_ub):
+        raise ValueError("Nelder-Mead: TODO: write polite message")
+
     # Create and initialise simplex object.
-    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * 10)
+    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor)
     # Number of iterations. Function evaluations are stored as cf.calls.
     niter = 0
 
@@ -502,7 +506,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
 
 
 def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
-                  args=(), maxfev=0, simplex_method="spendley", seed=None):
+                  args=(), maxfev=0, simplex_method="spendley", seed=None, nfactor=10):
     """
     Multidimensional search optimiser, as described in Secion 8.2 of Kelley,
     "Iterative Methods for Optimization".
@@ -536,6 +540,7 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
         simplex_method="random". This parameter is passed directly to
         `numpy.random.default_rng()`; the full list of acceptable input is
         documented there.
+    nfactor : TODO
 
     Returns
     -------
@@ -573,7 +578,7 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
                          "incompatible lengths")
 
     # Create and initialise simplex object.
-    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * 10)
+    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor)
     # Number of iterations. Function evaluations are stored as cf.calls.
     niter = 0
 
@@ -680,7 +685,7 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
 
 
 def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
-                       args=(), maxfev=0):
+                       args=(), maxfev=0, nfactor=10):
     """
     Interface to pybobyqa.solve() which takes similar arguments to the other
     two optimisation functions and returns an OptResult object.
@@ -706,6 +711,7 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
     scaled_ub : ndarray, optional
         Scaled upper bounds for the optimisation. This is used to place an
         upper bound on the simplex size.
+    nfactor : TODO
 
     Returns
     -------
@@ -732,7 +738,7 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
     bounds = (scaled_lb, scaled_ub)
     min_ub = np.min(scaled_ub)
     pb_sol = pb.solve(cf, x0, args=args,
-                      rhobeg=min(MAGIC_TOL * 10, min_ub * 0.499),
+                      rhobeg=min(MAGIC_TOL * nfactor, min_ub * 0.499),
                       rhoend=MAGIC_TOL,
                       maxfun=maxfev,
                       bounds=bounds, objfun_has_noise=True,

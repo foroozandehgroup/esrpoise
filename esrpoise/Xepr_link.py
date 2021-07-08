@@ -79,7 +79,7 @@ def load_exp(Xepr, exp_file):
         Xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
-        time.sleep(1)
+        time.sleep(0.25)
 
     except Exception:
         print("program_load_compile_error")
@@ -113,7 +113,8 @@ def load_def(Xepr, def_file):
 def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
     """
     Directly modify definitions in the current experiment.
-    Limited by the number of lines contained in PlsSPELGlbTxt
+    !Limited by the number of lines contained in PlsSPELGlbTxt
+    !only works for the first parameters of the .def file
 
     Parameters
     ----------
@@ -154,9 +155,6 @@ def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
             line = line[0:len(var_name_i) + 1]  # selecting first characters
             if var_name_i + "=" == line:
                 currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
-
-    # only works with short files and simple expressions
-    # ex: aa0 = 5+c can reset to aa0 = 5
 
 
 def modif_def(Xepr, def_file, var_name, var_value):
@@ -294,6 +292,8 @@ def reset_exp(Xepr):
 
     Needed to reset the AWG after 114 sequential shape load and run.
 
+    TODO !Currently not working - something isn't loading properly -> no signal after reset
+
     Parameters
     ----------
     Xepr : XeprAPI.Xepr object
@@ -330,5 +330,17 @@ def reset_exp(Xepr):
     # open parameter panel
     Xepr.XeprCmds.aqParOpen()
 
+    # ask user to allow .exp file to be loaded
+    print('Experiment reset')
+    print('clik twice the PulseSPEL button to load the .exp file')
+    print('(located at the bottom of FT EPR parameters window)')
+    input('when done, press enter in python console to continue:')    
+
     # wait for Xepr to reset the experiment
     time.sleep(2)
+
+
+
+
+
+
