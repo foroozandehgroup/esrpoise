@@ -32,7 +32,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import os
-import sys
 import time
 
 import XeprAPI         # load the Xepr API module
@@ -80,10 +79,8 @@ def load_exp(Xepr, exp_file):
 
         # wait for Xepr to finish compiling
         time.sleep(0.25)
-
     except Exception:
-        print("program_load_compile_error")
-        sys.exit(3)
+        raise RuntimeError("Error loading and compiling experiment file")
 
 
 def load_def(Xepr, def_file):
@@ -106,8 +103,7 @@ def load_def(Xepr, def_file):
         Xepr.XeprCmds.aqPgShowDef()
         Xepr.XeprCmds.aqPgCompile()
     except Exception:
-        print("definitions_load_compile_error")
-        sys.exit(3)
+        raise RuntimeError("Error loading and compiling definition file")
 
 
 def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
@@ -132,9 +128,8 @@ def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
     try:
         currentExp = Xepr.XeprExperiment()
     except Exception:
-        print("No Experiment has been selected in the"
-              " Primary Viewport of Xepr.")
-        sys.exit(2)
+        raise RuntimeError("No experiment has been selected in the"
+                           " primary viewport of Xepr.")
 
     # get the start value for the variable
     # search for our desired variable
@@ -216,8 +211,7 @@ def load_shp(Xepr, shp_file):
         Xepr.XeprCmds.aqPgShowShp()
         Xepr.XeprCmds.aqPgCompile()
     except Exception:
-        print("shape_load_compile_error")
-        sys.exit(3)
+        raise RuntimeError("Error loading and compiling Xepr shape file")
 
 
 def run2getdata_exp(Xepr, SignalType, exp_name):
@@ -246,26 +240,24 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
         currentExp = Xepr.XeprExperiment()
         hiddenExp = Xepr.XeprExperiment("AcqHidden")
     except Exception:
-        print("No Experiment has been selected in the"
-              " Primary Viewport of Xepr.")
-        sys.exit(2)
+        raise RuntimeError("No experiment has been selected in the"
+                           " primary viewport of Xepr.")
 
-    # change detection mode and experiement select
+    # change detection mode and experiment select
     try:
         if hiddenExp["ftBridge.Detection"].value != SignalType:
             hiddenExp["ftBridge.Detection"].value = SignalType
         if currentExp["ftEpr.PlsSPELEXPSlct"].value != exp_name:
             currentExp["ftEpr.PlsSPELEXPSlct"].value = exp_name
     except Exception:
-        print("error changing detection mode to TM, or experiment selection")
-        sys.exit(3)
+        raise RuntimeError("Error changing detection mode to TM,"
+                           " or in experiment selection")
 
     # run new experiment
     try:
         currentExp.aqExpRunAndWait()
     except Exception:
-        print("error running current experiment")
-        sys.exit(4)
+        raise RuntimeError("Error running current experiment")
 
     # retrieve data
     data = Xepr.XeprDataset()
@@ -276,12 +268,10 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
             print("Trying to run current experiment to create some data...")
             Xepr.XeprExperiment().aqExpRunAndWait()
         except XeprAPI.ExperimentError:
-            print("No dataset available and no (working) experiment"
-                  " to run... giving up...")
-            sys.exit(5)
+            raise RuntimeError("No dataset available and no (working)"
+                               " experiment to run; aborting")
     if not data.datasetAvailable():
-        print("(Still) no dataset available...giving up...")
-        sys.exit(6)
+        raise RuntimeError("No dataset available; aborting")
 
     return data
 
