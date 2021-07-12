@@ -371,7 +371,8 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
         raise ValueError("Nelder-Mead: TODO: write polite message")
 
     # Create and initialise simplex object.
-    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor)
+    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor,
+                  seed=seed)
     # Number of iterations. Function evaluations are stored as cf.calls.
     niter = 0
 
@@ -586,7 +587,8 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
                          "incompatible lengths")
 
     # Create and initialise simplex object.
-    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor)
+    sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor,
+                  seed=seed)
     # Number of iterations. Function evaluations are stored as cf.calls.
     niter = 0
 
