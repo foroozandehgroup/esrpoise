@@ -285,7 +285,8 @@ class OptResult:
 
 
 def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
-                args=(), maxfev=0, simplex_method="spendley", seed=None, nfactor=10):
+                args=(), maxfev=0, simplex_method="spendley",
+                seed=None, nfactor=10):
     """
     Nelder-Mead optimiser, as described in Section 8.1 of Kelley, "Iterative
     Methods for Optimization".
@@ -298,7 +299,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
         function. The cost function *must* be decorated with deco_count() (for
         POISE, this is already done).
     x0 : ndarray or list
-        Initial point for optimisad: you're stupidtion. This should already be scaled.
+        Initial point for optimisation. This should already be scaled.
     xtol : ndarray or list
         Tolerances for each optimisation dimension. This should already be
         scaled.
@@ -312,14 +313,17 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
     maxfev : int, optional
         Maximum function evaluations to use. Defaults to 500 times the number
         of parameters.
-    simplex_method : str, optional
+    simplex_method : str, default 'spendley'
         Method for generation of initial simplex.
     seed : int or other types, optional
         Initial seed for random number generation. Only applicable for
         simplex_method="random". This parameter is passed directly to
         `numpy.random.default_rng()`; the full list of acceptable input is
         documented there.
-    nfactor : TODO
+    nfactor : float, default 10
+        Ratio of initial simplex length to the tolerance (i.e. this guides how
+        large the initial search region is). Note that this is applied to all
+        parameters at once.
 
     Returns
     -------
@@ -506,7 +510,8 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
 
 
 def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
-                  args=(), maxfev=0, simplex_method="spendley", seed=None, nfactor=10):
+                  args=(), maxfev=0, simplex_method="spendley",
+                  seed=None, nfactor=10):
     """
     Multidimensional search optimiser, as described in Secion 8.2 of Kelley,
     "Iterative Methods for Optimization".
@@ -533,14 +538,17 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
     maxfev : int, optional
         Maximum function evaluations to use. Defaults to 500 times the number
         of parameters.
-    simplex_method : str, optional
+    simplex_method : str, default 'spendley'
         Method for generation of initial simplex.
     seed : int or other types, optional
         Initial seed for random number generation. Only applicable for
         simplex_method="random". This parameter is passed directly to
         `numpy.random.default_rng()`; the full list of acceptable input is
         documented there.
-    nfactor : TODO
+    nfactor : float, default 10
+        Ratio of initial simplex length to the tolerance (i.e. this guides how
+        large the initial search region is). Note that this is applied to all
+        parameters at once.
 
     Returns
     -------

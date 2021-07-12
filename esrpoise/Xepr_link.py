@@ -292,7 +292,8 @@ def reset_exp(Xepr):
 
     Needed to reset the AWG after 114 sequential shape load and run.
 
-    TODO !Currently not working - something isn't loading properly -> no signal after reset
+    TODO !Currently not working - something isn't loading properly -> no signal
+    after reset
 
     Parameters
     ----------
@@ -303,7 +304,6 @@ def reset_exp(Xepr):
     -------
     None
     """
-
     # wait for Xepr to be ready to reset the experiment
     time.sleep(2)
 
@@ -334,13 +334,7 @@ def reset_exp(Xepr):
     print('Experiment reset')
     print('clik twice the PulseSPEL button to load the .exp file')
     print('(located at the bottom of FT EPR parameters window)')
-    input('when done, press enter in python console to continue:')    
+    input('when done, press enter in python console to continue:')
 
     # wait for Xepr to reset the experiment
     time.sleep(2)
-
-
-
-
-
-

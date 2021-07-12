@@ -110,8 +110,6 @@ def optimize(Xepr,
     print(fmt.format(*pars, "cf"))
     print("-" * 12 * (npars + 1))
 
-
-
     # Set up optimisation arguments. Basically, this needs to be everything
     # that acquire_esr() uses apart from x itself.
     optimargs = (cost_function, pars, lb, ub, tol,
@@ -126,19 +124,19 @@ def optimize(Xepr,
     # final logging
     toc = datetime.now()
     time_taken = str(toc - tic).split(".")[0]  # remove microseconds
-    
+
     fmt = "{:27s} - {}"
 
     print('-' * 40)
     print()
-    print(fmt.format("Best values found", round2tol(best_values,tol)))
+    print(fmt.format("Best values found", round2tol(best_values, tol)))
     print(fmt.format("Cost function at minimum", opt_result.fbest))
     print(fmt.format("Number of experiments ran", acquire_esr.calls))
     print(fmt.format("Total time taken", time_taken))
     print(fmt.format("Optimisation message", opt_result.message))
-    
+
     # run experiment with optimal parameters
-    Xepr_param_set(Xepr, pars, round2tol(best_values,tol), exp_file, def_file)
+    Xepr_param_set(Xepr, pars, round2tol(best_values, tol), exp_file, def_file)
     Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
 
     print("=" * 60)
@@ -178,7 +176,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     cf_val : float
         Value of the cost function.
     """
-    
+
     # Unscale values for acquisition.
     unscaled_val = unscale(x, lb, ub, tol, scaleby="tols")
 
@@ -199,17 +197,18 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
         return cf_val
 
     # Otherwise, here we should trigger acquisition.
-    # TODO
-    # create some space that the user can use to implement personalized parameters
-    # modification and handle parameters which are not part of the def file
-    #    - pulse shapes -> require to modify acquire_esr
-    #    - exp/def file -> not useful?
-  
-    # convert parameters values to string with the same number of decimals as tolerances
+    # TODO create some space that the user can use to implement personalized
+    # parameters modification and handle parameters which are not part of the
+    # def file
+    #  - pulse shapes -> require to modify acquire_esr
+    #  - exp/def file -> not useful?
+
+    # convert parameters values to string with the same number of decimals as
+    # tolerances
     val_str = round2tol(unscaled_val, tol)
 
     # Xepr reset needed for 114 sequential shape load and run
-    if acquire_esr.calls%114 == 0 and acquire_esr.calls!=0:
+    if acquire_esr.calls % 114 == 0 and acquire_esr.calls != 0:
         print('reset required')
         # Xepr_link.reset_exp(Xepr) # reset currently not working
 
@@ -223,55 +222,48 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
 
     # log
     fstr = "{:^10.4f}  " * (len(x) + 1)  # Format string for logging
-  
-    # print(fstr.format(*unscaled_val, cf_val)) # optimizer values
-    print(fstr.format(*np.array(val_str).astype(np.float), cf_val)) # values sent to Xepr
 
+    # print(fstr.format(*unscaled_val, cf_val)) # optimizer values
+
+    # print values sent to Xepr
+    print(fstr.format(*np.array(val_str).astype(np.float), cf_val))
     return cf_val
 
 
 def round2tol(values, tol):
     """
     Round values to closest multiple of tolerance
-    
+
     Parameters
     ----------
     values :
         numpy 1D-array of the values to round
     tol :
         numpy 1D-array of the parameters tolerances
-    
+
     Returns
     -------
     values_str :
         rounded values as a list of strings
     """
-
     values_str = list()
     for i, val in enumerate(values):
-
         tol_str = str(tol[i])
-
-        if '.' not in tol_str: # integer case
-
+        if '.' not in tol_str:  # integer case
             # round to tolerance multiple
-            val = tol[i] * ((val//tol[i]) + np.round(val%tol[i]/tol[i]))
-
+            val = tol[i] * ((val // tol[i]) + np.round(val % tol[i] / tol[i]))
             values_str.append(str(int(val)))
-
         else:
             decimal_nb = len(tol_str[tol_str.index('.'):-1])
-        
             # upscale to integer
             val = val * 10**(decimal_nb)
             tol_val = tol[i] * 10**(decimal_nb)
-
             # round to tolerance multiple
-            val = tol_val * ((val//tol_val) + np.round(val%tol_val/tol_val))
-
+            val = tol_val * ((val // tol_val)
+                             + np.round(val % tol_val / tol_val))
             # downscale and round to tolerance decimal number
-            values_str.append(str(np.round(val*10**(-decimal_nb), decimal_nb)))
-
+            values_str.append(str(np.round(val * 10 ** (-decimal_nb),
+                                           decimal_nb)))
     return values_str
 
 
@@ -283,92 +275,115 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
     ----------
     Xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
-    pars : 
+    pars :
         parameters to be set in Xepr
 
     Returns
     -------
     None
     """
-    
+
     def_modif = False
-    pars_def= list()
+    pars_def = list()
     val_str_def = list()
 
     for i, par in enumerate(pars):
 
         # Remarks:
-        #    - Xepr.XeprCmds.aqParSet does not accept val_str if numpy array of strings
-        #    - Parameters set up with sliders need compensation 
-        #      for an automatic step made by Xepr (Fine -1)
-        
+        #  - Xepr.XeprCmds.aqParSet does not accept val_str if numpy array of
+        #    strings
+        #  - Parameters set up with sliders need compensation for an
+        #    automatic step made by Xepr (Fine -1)
+
         # Bridge - Receiver Unit
         if par == "VideoGain":
             # Video gain (dB), 0 to 48 (1MHz bandwidth),min tolerance of 6
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.VideoGain", val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.VideoGain",
+                                   val_str[i])
         elif par == "Attenuation":
             # High power attenuation (dB), ,min tolerance of 0.01
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.Attenuation", val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.Attenuation",
+                                   val_str[i])
         elif par == "SignalPhase":
             # Signal phse (~0.129deg), min tolerance of 1
-            Xepr.XeprCmds.aqParSet("AcqHidden", "cwBridge.SignalPhase", val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "cwBridge.SignalPhase",
+                                   val_str[i])
         elif par == "TMLevel":
             # Transmitter level (%), min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.TMLevel", "Fine 1")
-        
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.TMLevel",
+                                    "Fine 1")
+
         # Bridge - MPFU control
         elif par == "BrXPhase":
             # +<x> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXPhase", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXPhase",
+                                    "Fine 1")
         elif par == "BrXAmp":
             # +<x> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXAmp", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXAmp", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXAmp",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXAmp",
+                                    "Fine 1")
         elif par == "BrYPhase":
             # +<y> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYPhase", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYPhase", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYPhase",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYPhase",
+                                    "Fine 1")
         elif par == "BrYAmp":
             # +<y> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYAmp", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYAmp", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYAmp",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYAmp",
+                                    "Fine 1")
         elif par == "BrMinXPhase":
             # -<x> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXPhase", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXPhase", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXPhase",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXPhase",
+                                    "Fine 1")
         elif par == "BrMinXAmp":
             # -<x> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXAmp", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXAmp", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXAmp",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXAmp",
+                                    "Fine 1")
         elif par == "BrMinYPhase":
             # -<y> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYPhase", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYPhase", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYPhase",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYPhase",
+                                    "Fine 1")
         elif par == "BrMinYAmp":
             # -<y> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYAmp", val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYAmp", "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYAmp",
+                                   val_str[i])
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYAmp",
+                                    "Fine 1")
 
         # FT EPR Parameters
         elif par == "CenterField":
-            # Field Position (G), variation around expected value, min tolerance of 0.05
-            Xepr.XeprCmds.aqParSet("Experiment", "fieldCtrl.CenterField", val_str[i])
+            # Field Position (G), variation around expected value, min
+            # tolerance of 0.05
+            Xepr.XeprCmds.aqParSet("Experiment", "fieldCtrl.CenterField",
+                                   val_str[i])
 
         # save .def file parameters in list
         else:
             def_modif = True
             pars_def.append(pars[i])
             val_str_def.append(val_str[i])
-        
-        # TODO user's parameters case
-        
-    # TODO user's parameters 
-    # user function and its parameters: call_back(callback_args)
-    
-    if def_modif == True:
 
+        # TODO user's parameters case
+
+    # TODO user's parameters
+    # user function and its parameters: call_back(callback_args)
+
+    if def_modif:
         val_def = np.array(val_str_def)
 
         # set parameters in .def file
@@ -376,6 +391,3 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
 
         # .exp file load (necessary to update .def)
         Xepr_link.load_exp(Xepr, exp_file)
-
-
-

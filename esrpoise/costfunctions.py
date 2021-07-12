@@ -32,6 +32,7 @@ def maxabsint(data):
     """
     return -np.max(np.abs(np.fft.fft(data.O.real + 1j * data.O.imag)))
 
+
 def maxabsint_echo(data):
     """
     Cost function which maximises the absolute (magnitude-mode) intensity of
