@@ -64,9 +64,11 @@ def test_scale_unscale():
     mat = rng.uniform(low=-500, high=500, size=(3, 20))
     mat.sort(axis=0)
     lb, val, ub = mat[1], mat[0], mat[2]  # note how this is out of order
-    assert scale(val, lb, ub, tol, scaleby="bounds") is None
+    with pytest.raises(ValueError, match="out of bounds"):
+        scale(val, lb, ub, tol, scaleby="bounds")
     lb, val, ub = mat[0], mat[2], mat[1]  # note how this is out of order
-    assert scale(val, lb, ub, tol, scaleby="bounds") is None
+    with pytest.raises(ValueError, match="out of bounds"):
+        scale(val, lb, ub, tol, scaleby="bounds")
 
 
 def test_deco_count():
