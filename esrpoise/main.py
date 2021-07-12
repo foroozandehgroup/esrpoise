@@ -230,7 +230,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     return cf_val
 
 
-def round2tol(values, tol):
+def round2tol(values, tols):
     """
     Round values to closest multiple of tolerance
 
@@ -246,25 +246,8 @@ def round2tol(values, tol):
     values_str :
         rounded values as a list of strings
     """
-    values_str = list()
-    for i, val in enumerate(values):
-        tol_str = str(tol[i])
-        if '.' not in tol_str:  # integer case
-            # round to tolerance multiple
-            val = tol[i] * ((val // tol[i]) + np.round(val % tol[i] / tol[i]))
-            values_str.append(str(int(val)))
-        else:
-            decimal_nb = len(tol_str[tol_str.index('.'):-1])
-            # upscale to integer
-            val = val * 10**(decimal_nb)
-            tol_val = tol[i] * 10**(decimal_nb)
-            # round to tolerance multiple
-            val = tol_val * ((val // tol_val)
-                             + np.round(val % tol_val / tol_val))
-            # downscale and round to tolerance decimal number
-            values_str.append(str(np.round(val * 10 ** (-decimal_nb),
-                                           decimal_nb)))
-    return values_str
+    rounded_values = tols * np.round(values / tols)
+    return [str(v) for v in rounded_values]
 
 
 def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
