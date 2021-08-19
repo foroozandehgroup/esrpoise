@@ -246,7 +246,7 @@ def round2tol(values, tols):
     values_str :
         rounded values as a list of strings
     """
-    
+
     values_str = list()
     for val, tol in zip(values, tols):
 
