@@ -230,7 +230,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     return cf_val
 
 
-def round2tol(values, tol):
+def round2tol(values, tols):
     """
     Round values to closest multiple of tolerance
 
@@ -246,24 +246,21 @@ def round2tol(values, tol):
     values_str :
         rounded values as a list of strings
     """
+
     values_str = list()
-    for i, val in enumerate(values):
-        tol_str = str(tol[i])
+    for val, tol in zip(values, tols):
+
+        # round to tolerance multiple
+        val = tol * np.round(val / tol)
+        tol_str = str(tol)
+
         if '.' not in tol_str:  # integer case
-            # round to tolerance multiple
-            val = tol[i] * ((val // tol[i]) + np.round(val % tol[i] / tol[i]))
             values_str.append(str(int(val)))
         else:
             decimal_nb = len(tol_str[tol_str.index('.'):-1])
-            # upscale to integer
-            val = val * 10**(decimal_nb)
-            tol_val = tol[i] * 10**(decimal_nb)
-            # round to tolerance multiple
-            val = tol_val * ((val // tol_val)
-                             + np.round(val % tol_val / tol_val))
-            # downscale and round to tolerance decimal number
-            values_str.append(str(np.round(val * 10 ** (-decimal_nb),
-                                           decimal_nb)))
+            # round to same number of decimal numbers
+            values_str.append(str(np.round(val, decimal_nb)))
+
     return values_str
 
 
@@ -282,13 +279,11 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
     -------
     None
     """
-
     def_modif = False
     pars_def = list()
     val_str_def = list()
 
-    for i, par in enumerate(pars):
-
+    for par, val in zip(pars, val_str):
         # Remarks:
         #  - Xepr.XeprCmds.aqParSet does not accept val_str if numpy array of
         #    strings
@@ -298,70 +293,53 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
         # Bridge - Receiver Unit
         if par == "VideoGain":
             # Video gain (dB), 0 to 48 (1MHz bandwidth),min tolerance of 6
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.VideoGain",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.VideoGain", val)
         elif par == "Attenuation":
             # High power attenuation (dB), ,min tolerance of 0.01
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.Attenuation",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.Attenuation", val)
         elif par == "SignalPhase":
             # Signal phse (~0.129deg), min tolerance of 1
-            Xepr.XeprCmds.aqParSet("AcqHidden", "cwBridge.SignalPhase",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "cwBridge.SignalPhase", val)
         elif par == "TMLevel":
             # Transmitter level (%), min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel",
-                                   val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.TMLevel",
-                                    "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel", val)
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.TMLevel", "Fine 1")
 
         # Bridge - MPFU control
         elif par == "BrXPhase":
             # +<x> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase",
-                                   val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXPhase",
-                                    "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase", val)
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXPhase", "Fine 1")
         elif par == "BrXAmp":
             # +<x> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXAmp",
-                                   val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXAmp",
-                                    "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXAmp", val)
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXAmp", "Fine 1")
         elif par == "BrYPhase":
             # +<y> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYPhase",
-                                   val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYPhase",
-                                    "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYPhase", val)
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYPhase", "Fine 1")
         elif par == "BrYAmp":
             # +<y> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYAmp",
-                                   val_str[i])
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYAmp",
-                                    "Fine 1")
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYAmp", val)
+            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYAmp", "Fine 1")
         elif par == "BrMinXPhase":
             # -<x> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXPhase",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXPhase", val)
             Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXPhase",
                                     "Fine 1")
         elif par == "BrMinXAmp":
             # -<x> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXAmp",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXAmp", val)
             Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXAmp",
                                     "Fine 1")
         elif par == "BrMinYPhase":
             # -<y> Phase (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYPhase",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYPhase", val)
             Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYPhase",
                                     "Fine 1")
         elif par == "BrMinYAmp":
             # -<y> Amplitude (%), 0 to 100, min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYAmp",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYAmp", val)
             Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYAmp",
                                     "Fine 1")
 
@@ -369,14 +347,13 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
         elif par == "CenterField":
             # Field Position (G), variation around expected value, min
             # tolerance of 0.05
-            Xepr.XeprCmds.aqParSet("Experiment", "fieldCtrl.CenterField",
-                                   val_str[i])
+            Xepr.XeprCmds.aqParSet("Experiment", "fieldCtrl.CenterField", val)
 
         # save .def file parameters in list
         else:
             def_modif = True
-            pars_def.append(pars[i])
-            val_str_def.append(val_str[i])
+            pars_def.append(par)
+            val_str_def.append(val)
 
         # TODO user's parameters case
 
