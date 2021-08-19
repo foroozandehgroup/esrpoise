@@ -246,8 +246,22 @@ def round2tol(values, tols):
     values_str :
         rounded values as a list of strings
     """
-    rounded_values = tols * np.round(values / tols)
-    return [str(v) for v in rounded_values]
+    
+    values_str = list()
+    for val, tol in zip(values, tols):
+
+        # round to tolerance multiple
+        val = tol * np.round(val / tol)
+        tol_str = str(tol)
+
+        if '.' not in tol_str:  # integer case
+            values_str.append(str(int(val)))
+        else:
+            decimal_nb = len(tol_str[tol_str.index('.'):-1])
+            # round to same number of decimal numbers
+            values_str.append(str(np.round(val, decimal_nb)))
+
+    return values_str
 
 
 def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
