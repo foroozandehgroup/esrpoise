@@ -7,15 +7,11 @@ Contains the main code required for executing an optimisation.
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
-import os
 from datetime import datetime
-import time
-
 import numpy as np
 
 from .optpoise import (scale, unscale, deco_count,
                        nelder_mead, multid_search, pybobyqa_interface)
-from . import costfunctions
 from . import Xepr_link
 
 
@@ -30,8 +26,9 @@ def optimize(Xepr,
              def_file,
              optimiser="nm",
              maxfev=0,
-             nfactor=10
-             ) -> None:
+             nfactor=10,
+             callback=None,
+             callback_args=None) -> None:
     """
     Run an optimisation.
 
@@ -61,6 +58,10 @@ def optimize(Xepr,
         default of '0' sets this to 500 times the number of parameters.
     nfactor : int, default 10
         Initial search region relative to tols
+    callback: function, default None
+        User defined function called when setting up parameters.
+    callback_args: tuple, default None
+        Arguments for callback function
 
     Returns
     -------
@@ -72,6 +73,7 @@ def optimize(Xepr,
     message : str
         A message indicating why the optimisation terminated.
     """
+    # TODO distinguish user par
     # Get start time
     tic = datetime.now()
 
@@ -136,7 +138,10 @@ def optimize(Xepr,
     print(fmt.format("Optimisation message", opt_result.message))
 
     # run experiment with optimal parameters
-    Xepr_param_set(Xepr, pars, round2tol(best_values, tol), exp_file, def_file)
+    param_set(Xepr, pars, round2tol(best_values, tol),
+              exp_file, def_file,
+              callback=None, callback_args=None)
+
     Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
 
     print("=" * 60)
@@ -147,7 +152,8 @@ def optimize(Xepr,
 
 @deco_count
 def acquire_esr(x, cost_function, pars, lb, ub, tol,
-                optimiser, Xepr, exp_file, def_file):
+                optimiser, Xepr, exp_file, def_file,
+                callback=None, callback_args=None):
     """
     This is the function which is actually passed to the optimisation function
     as the "cost function", and is responsible for triggering acquisition in
@@ -196,13 +202,6 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
         # Return immediately.
         return cf_val
 
-    # Otherwise, here we should trigger acquisition.
-    # TODO create some space that the user can use to implement personalized
-    # parameters modification and handle parameters which are not part of the
-    # def file
-    #  - pulse shapes -> require to modify acquire_esr
-    #  - exp/def file -> not useful?
-
     # convert parameters values to string with the same number of decimals as
     # tolerances
     val_str = round2tol(unscaled_val, tol)
@@ -212,7 +211,8 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
         print('reset required')
         # Xepr_link.reset_exp(Xepr) # reset currently not working
 
-    Xepr_param_set(Xepr, pars, val_str, exp_file, def_file)
+    # set parameters values
+    param_set(Xepr, pars, val_str, exp_file, def_file, callback, callback_args)
 
     # record data
     data = Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
@@ -227,6 +227,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
 
     # print values sent to Xepr
     print(fstr.format(*np.array(val_str).astype(np.float), cf_val))
+
     return cf_val
 
 
@@ -264,7 +265,9 @@ def round2tol(values, tols):
     return values_str
 
 
-def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
+def param_set(Xepr, pars, val_str,
+              exp_file, def_file,
+              callback=None, callback_args=None):
     """
     Set a variety of parameters in Xepr
 
@@ -279,6 +282,8 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
     -------
     None
     """
+    callback_pars_dict = dict()
+
     def_modif = False
     pars_def = list()
     val_str_def = list()
@@ -290,8 +295,12 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
         #  - Parameters set up with sliders need compensation for an
         #    automatic step made by Xepr (Fine -1)
 
+        # User - callback parameters
+        if '&' in par:
+            callback_pars_dict[par] = val
+
         # Bridge - Receiver Unit
-        if par == "VideoGain":
+        elif par == "VideoGain":
             # Video gain (dB), 0 to 48 (1MHz bandwidth),min tolerance of 6
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.VideoGain", val)
         elif par == "Attenuation":
@@ -355,16 +364,14 @@ def Xepr_param_set(Xepr, pars, val_str, exp_file, def_file):
             pars_def.append(par)
             val_str_def.append(val)
 
-        # TODO user's parameters case
+    # set user parameters
+    if callback is not None:
+        callback(callback_pars_dict, *callback_args)
 
-    # TODO user's parameters
-    # user function and its parameters: call_back(callback_args)
-
+    # set parameters in definition file
     if def_modif:
-        val_def = np.array(val_str_def)
 
-        # set parameters in .def file
-        Xepr_link.modif_def(Xepr, def_file, pars_def, val_def)
+        Xepr_link.modif_def(Xepr, def_file, pars_def, np.array(val_str_def))
 
         # .exp file load (necessary to update .def)
         Xepr_link.load_exp(Xepr, exp_file)

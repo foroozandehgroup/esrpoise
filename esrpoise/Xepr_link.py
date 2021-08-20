@@ -31,9 +31,7 @@ Other functions from David:
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
-import os
 import time
-
 import XeprAPI         # load the Xepr API module
 
 
@@ -174,9 +172,10 @@ def modif_def(Xepr, def_file, var_name, var_value):
     fullDefs = fullDefs.split("\n")
 
     for i, var_name_i in enumerate(var_name):
-        cmdStr = (var_name_i
-                  + " = "
-                  + var_value[i])
+        # TODO delete if no bug next experimental session
+        # cmdStr = (var_name_i
+        #           + " = "
+        #           + var_value[i])
 
         for j, line in enumerate(fullDefs):
             line = line.replace(" ", "")      # get rid of spaces
