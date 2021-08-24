@@ -239,7 +239,7 @@ def deco_count(fn):
     """
     Decorator which counts the number of times a function has been called, as
     long as the function does not return np.inf. This makes sure that
-    acquire_nmr.calls is not incremented when an out-of-bounds value is
+    acquire_esr.calls is not incremented when an out-of-bounds value is
     "sampled".
     """
     @wraps(fn)
@@ -305,7 +305,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
     Parameters
     ----------
     cf : function
-        The cost function. For POISE, this means acquire_nmr(), not the
+        The cost function. For POISE, this means acquire_esr(), not the
         user-defined cost function. However in general, this can be any cost
         function. The cost function *must* be decorated with deco_count() (for
         POISE, this is already done).
@@ -344,7 +344,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
             fbest (float)     : Cost function at the optimum.
             niter (int)       : Number of iterations.
             nfev (int)        : Number of function evaluations. Note that in
-                                the specific context of NMR optimisation, this
+                                the specific context of ESR optimisation, this
                                 is in general not equal to the number of
                                 experiments acquired.
             simplex (ndarray) : (N+1, N)-sized matrix of the final simplex.
@@ -357,7 +357,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
     The scipy implementation has a few tricks which are useful in making the
     actual computation run faster. However, here we have ignored these in
     favour of readability, since the speed of the optimisation is largely
-    limited by the acquisition time of the NMR experiment.
+    limited by the acquisition time of the experiment itself.
     """
 
     # Convert x0 to vector
@@ -379,7 +379,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
         raise ValueError("Nelder-Mead: x0 and xtol have incompatible lengths")
 
     if np.any(x0 < scaled_lb) or np.any(x0 > scaled_ub):
-        raise ValueError("Nelder-Mead: TODO: write polite message")
+        raise ValueError("Nelder-Mead: x0 is outside of specified bounds")
 
     # Create and initialise simplex object.
     sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor,
@@ -531,7 +531,7 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
     Parameters
     ----------
     cf : function
-        The cost function. For POISE, this means acquire_nmr(), not the
+        The cost function. For POISE, this means acquire_esr(), not the
         user-defined cost function. However in general, this can be any cost
         function. The cost function *must* be decorated with deco_count() (for
         POISE, this is already done).
@@ -570,7 +570,7 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
             fbest (float)     : Cost function at the optimum.
             niter (int)       : Number of iterations.
             nfev (int)        : Number of function evaluations. Note that in
-                                the specific context of NMR optimisation, this
+                                the specific context of ESR optimisation, this
                                 is in general not equal to the number of
                                 experiments acquired.
             simplex (ndarray) : (N+1, N)-sized matrix of the final simplex.
@@ -714,7 +714,7 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
     Parameters
     ----------
     cf : function
-        The cost function. For POISE, this means acquire_nmr(), not the
+        The cost function. For POISE, this means acquire_esr(), not the
         user-defined cost function. However in general, this can be any cost
         function.
     x0 : ndarray or list
@@ -723,16 +723,20 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
         Tolerances for each optimisation dimension. This is actually not used
         at all and is only here so that there is a unified interface for all
         three optimisers.
-    args : tuple, optional
-        A tuple of arguments to pass to the cost function.
-    simplex_method : str, optional
-        Method for generation of initial simplex.
-    scaled_lb : ndarray, optional
+    scaled_lb : ndarray
         Scaled lower bounds for the optimisation.
-    scaled_ub : ndarray, optional
+    scaled_ub : ndarray
         Scaled upper bounds for the optimisation. This is used to place an
         upper bound on the simplex size.
-    nfactor : TODO
+    args : tuple, optional
+        A tuple of arguments to pass to the cost function.
+    maxfev : int, optional
+        Maximum function evaluations to use. Defaults to 500 times the number
+        of parameters.
+    nfactor : float, default 10
+        The ratio of the initial trust region radius to the target trust region
+        radius. Essentially, the larger this is, the larger the initial search
+        region will be. Note that this is applied to all parameters at once.
 
     Returns
     -------
@@ -745,7 +749,7 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
                                 value is simply set to zero. (It is indirectly
                                 available if diagnostic info is requested.)
             nfev (int)        : Number of function evaluations. Note that in
-                                the specific context of NMR optimisation, this
+                                the specific context of ESR optimisation, this
                                 is in general not equal to the number of
                                 experiments acquired.
             message (str)     : Message indicating reason for termination.
@@ -825,7 +829,7 @@ def brute_force(cf, x0, xtol, scaled_lb, scaled_ub,
                                 force solver, this is just equal to the number
                                 of function evaluations.
             nfev (int)        : Number of function evaluations. Note that in
-                                the specific context of NMR optimisation, this
+                                the specific context of ESR optimisation, this
                                 is in general not equal to the number of
                                 experiments acquired.
             message (str)     : Message indicating reason for termination.
