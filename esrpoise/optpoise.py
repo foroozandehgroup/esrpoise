@@ -7,7 +7,9 @@ Module containing optimisation functions.
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
+import itertools
 from functools import wraps
+from warnings import warn
 
 import numpy as np
 import pybobyqa as pb
@@ -775,3 +777,81 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
     return OptResult(xbest=pb_sol.x, fbest=pb_sol.f,
                      niter=0, nfev=pb_sol.nf,
                      message=msg)
+
+
+def brute_force(cf, x0, xtol, scaled_lb, scaled_ub,
+                args=(), maxfev=0):
+    """
+    Brute force solver. Evaluates equally spaced points on an n-dimensional
+    grid and returns the best of these.
+
+    Parameters
+    ----------
+    cf : function
+        The cost function. For POISE, this means acquire_esr(), not the
+        user-defined cost function. However in general, this can be any cost
+        function.
+    x0 : ndarray or list
+        Initial point for optimisation. This parameter is ignored by the brute
+        force optimiser.
+    xtol : ndarray or list
+        Tolerances for each optimisation dimension.
+    args : tuple, optional
+        A tuple of arguments to pass to the cost function.
+    scaled_lb : ndarray, optional
+        Scaled lower bounds for the optimisation.
+    scaled_ub : ndarray, optional
+        Scaled upper bounds for the optimisation. This is used to place an
+        upper bound on the simplex size.
+    maxfev : int, optional
+        Maximum number of function evaluations. Defaults to 0, i.e. no limit.
+
+    Returns
+    -------
+    OptResult
+        Object which contains the following attributes:
+            xbest (ndarray)   : Optimal values for the optimisation.
+            fbest (float)     : Cost function at the optimum.
+            niter (int)       : Number of iterations. In the case of the brute
+                                force solver, this is just equal to the number
+                                of function evaluations.
+            nfev (int)        : Number of function evaluations. Note that in
+                                the specific context of NMR optimisation, this
+                                is in general not equal to the number of
+                                experiments acquired.
+            message (str)     : Message indicating reason for termination.
+    """
+    xtol = np.asfarray(xtol).flatten()
+
+    # Generate points to sample. In the i-th dimension we want to choose the
+    # integer nvals[i] such that np.linspace(lb[i], ub[i], nvals[i]) gives
+    # uniformly spaced values which differ by as close to xtol[i] as possible.
+    N = np.around((scaled_ub - scaled_lb) / xtol).astype(int)
+    linspaces = [np.linspace(lb_i, ub_i, N_i)
+                 for (lb_i, ub_i, N_i) in zip(scaled_lb, scaled_ub, N)]
+
+    # Show a warning if spacing has been adjusted by > 1 ppm
+    spacing = (scaled_ub - scaled_lb) / N
+    if not np.allclose(spacing, xtol, rtol=1e-6, atol=1e-6):
+        warn("The spacing between values to be evaluated differs from the"
+             " specified tolerances. To avoid this warning, please ensure"
+             " that each element of xtol cleanly divides the corresponding"
+             " element of (ub - lb).")
+
+    # Evaluate cost function at every element of the Cartesian product of
+    # linspaces
+    fbest, xbest = np.inf, None
+    for x in itertools.product(*linspaces):
+        x = np.array(x)
+        if maxfev > 0 and cf.calls >= maxfev:
+            message = MESSAGE_OPT_MAXFEV_REACHED
+            break
+        f = cf(x, *args)
+        if f < fbest:
+            fbest, xbest = f, x
+    else:  # didn't break, i.e. evaluated all values
+        message = MESSAGE_OPT_SUCCESS
+
+    return OptResult(xbest=xbest, fbest=fbest,
+                     niter=cf.calls, nfev=cf.calls,
+                     message=message)

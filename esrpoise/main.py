@@ -11,7 +11,8 @@ from datetime import datetime
 import numpy as np
 
 from .optpoise import (scale, unscale, deco_count,
-                       nelder_mead, multid_search, pybobyqa_interface)
+                       nelder_mead, multid_search, pybobyqa_interface,
+                       brute_force)
 from . import Xepr_link
 
 
@@ -50,9 +51,9 @@ def optimize(Xepr,
         ...
     def_file : str
         ...
-    optimiser : str from {"nm", "mds", "bobyqa"}, default "nm"
+    optimiser : str from {"nm", "mds", "bobyqa", "brute"}, default "nm"
         Optimisation algorithm to use. The options correspond to Nelder-Mead,
-        multidimensional search, and BOBYQA respectively.
+        multidimensional search, BOBYQA, and brute-force search respectively.
     maxfev : int, default 0
         Maximum number of spectra to acquire during the optimisation. The
         default of '0' sets this to 500 times the number of parameters.
@@ -83,6 +84,7 @@ def optimize(Xepr,
     optimfndict = {"nm": nelder_mead,
                    "mds": multid_search,
                    "bobyqa": pybobyqa_interface,
+                   "brute": brute_force,
                    }
     try:
         optimfn = optimfndict[optimiser.lower()]
