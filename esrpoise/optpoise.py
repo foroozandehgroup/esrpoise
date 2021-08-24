@@ -257,10 +257,15 @@ def deco_maxfev(maxfev):
     Decorator factory which returns a decorator that causes a function to raise
     MaxFevalsReached if its number of calls is greater than maxfev.
 
-    Yes, it's confusing, but that's how decorators with parameters work...
-
     Decorate with @deco_maxfev(MAXFEVS), or in order to set maxfev dynamically
     (as is needed in POISE), do it using cf = deco_maxfev(MAXFEVS)(cf).
+
+    Note that we need to re-apply the counter on the counted_cf() function.
+    If we don't do this, then the *inner* function (i.e. "fn") will have a
+    'calls' attribute, but the *outer* function will not. So if we decorate a
+    cost function with cf = deco_maxfev(MAXFEVS)(cf), cf.calls will stop to
+    work. By re-applying the counter on the outside function, we make sure that
+    the decorated function always has a valid 'calls' attribute.
     """
     def decorator(fn):
         @wraps(fn)
@@ -268,7 +273,11 @@ def deco_maxfev(maxfev):
             if fn.calls >= maxfev:
                 raise MaxFevalsReached
             else:
-                return fn(*args, **kwargs)
+                result = fn(*args, **kwargs)
+                if result != np.inf:
+                    counted_cf.calls += 1
+                return result
+        counted_cf.calls = 0
         return counted_cf
     return decorator
 
