@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 example.py
 ----------
@@ -55,9 +54,9 @@ xbest, fbest, message = optimize(pars=['aa0', 'aa1', 'b', 'c', 'r', 's'],
 # Center field can be added
 
 exp_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB' \
-        '/210707/Prodel/awg2p_jb.exp'
+        '/210823/Prodel/awg2p_jb.exp'
 def_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB' \
-        '/210707/Prodel/awg2p_jb.def'
+        '/210823/Prodel/awg2p_jb.def'
 
 # Initialise Xepr module
 # needed to conduct several optimization (no method found to close XeprAPI
@@ -65,17 +64,16 @@ def_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB' \
 Xepr = Xepr_link.load_xepr()
 
 xbest0, fbest, message = optimize(Xepr,
-                                  pars=['p0', 'd1', 'Attenuation',
-                                        'CenterField'],
-                                  init=[12, 250, 5, 3510],
-                                  lb=[6, 150, 0, 3500],
-                                  ub=[36, 350, 10, 3520],
-                                  tol=[2, 4, 0.1, 0.1],
+                                  pars=['BrMinXPhase', 'BrMinxAmp'],
+                                  init=[90, 90],
+                                  lb=[10, 10],
+                                  ub=[100, 100],
+                                  tol=[0.049, 0.049],
                                   cost_function=maxabsint_echo,  # imported
                                   exp_file=exp_f,
                                   def_file=def_f,
-                                  maxfev=120,
-                                  nfactor=60)
+                                  maxfev=40,
+                                  nfactor=50)
 
 """
 # consecutive optimizations (not working)
@@ -91,7 +89,7 @@ xbest0, fbest, message = optimize(Xepr,
                                   cost_function=maxabsint_echo,
                                   exp_file=exp_f,
                                   def_file=def_f,
-                                  maxfev=2,
+                                  maxfev=2,12
                                   nfactor=10)
 
 
