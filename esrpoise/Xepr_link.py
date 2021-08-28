@@ -100,6 +100,9 @@ def load_def(Xepr, def_file):
         Xepr.XeprCmds.aqPgDefLoad(def_file)
         Xepr.XeprCmds.aqPgShowDef()
         Xepr.XeprCmds.aqPgCompile()
+
+        # wait for Xepr to finish compiling
+        time.sleep(0.25)
     except Exception:
         raise RuntimeError("Error loading and compiling definition file")
 
@@ -142,7 +145,7 @@ def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
         cmdStr = (var_name_i
                   + " = "
                   + var_value[i])
-        # print(cmdStr)
+
         for line in fullDefs:
             line = line.replace(" ", "")  # getting rid of spaces
             line = line[0:len(var_name_i) + 1]  # selecting first characters
@@ -171,17 +174,13 @@ def modif_def(Xepr, def_file, var_name, var_value):
         fullDefs = def_f.read()
     fullDefs = fullDefs.split("\n")
 
-    for i, var_name_i in enumerate(var_name):
-        # TODO delete if no bug next experimental session
-        # cmdStr = (var_name_i
-        #           + " = "
-        #           + var_value[i])
+    for name, value in zip(var_name, var_value):
 
         for j, line in enumerate(fullDefs):
             line = line.replace(" ", "")      # get rid of spaces
-            line = line[0:len(var_name_i)+1]  # select first characters
-            if var_name_i + "=" == line:
-                fullDefs[j] = var_name_i + " = " + str(var_value[i]) + " "
+            line = line[0:len(name)+1]  # select first characters
+            if name + "=" == line:
+                fullDefs[j] = name + " = " + value + " " # str(var_value[i]
 
     # new definition file with modifications
     def_file_modif = def_file[0:-4] + "_modif.def"
@@ -209,6 +208,9 @@ def load_shp(Xepr, shp_file):
         Xepr.XeprCmds.aqPgShpLoad(shp_file)
         Xepr.XeprCmds.aqPgShowShp()
         Xepr.XeprCmds.aqPgCompile()
+
+        # wait for Xepr to finish compiling
+        time.sleep(0.25)
     except Exception:
         raise RuntimeError("Error loading and compiling Xepr shape file")
 
