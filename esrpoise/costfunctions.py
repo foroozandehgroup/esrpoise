@@ -17,6 +17,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
 import numpy as np
 
 
+def max_n2p(data):
+    """
+    maximize n2p parameter for DEER trace
+    data should contain the 2 points of interest in position 0 and 1.
+    """
+    return -np.abs(data.O.real[0]-data.O.real[1])
+
 def minabsint(data):
     """
     Cost function which minimises the absolute (magnitude-mode) intensity of
@@ -40,6 +47,19 @@ def maxabsint_echo(data):
     """
     return -np.max(np.abs(data.O.real + 1j * data.O.imag))
 
+def sumabsint_echo(data):
+    """
+    Cost function which maximises the absolute (magnitude-mode) intensity of
+    an echo.
+    """
+    return -np.sum(np.abs(data.O.real + 1j * data.O.imag))
+
+def sumrealint_echo(data):
+    """
+    Cost function which maximises the absolute (magnitude-mode) intensity of
+    an echo.
+    """
+    return -np.sum(np.abs(data.O.real))
 
 def minrealint(data):
     """
@@ -62,6 +82,13 @@ def maxrealint_echo(data):
     Maximises the maximum intensity of the real part of the echo.
     """
     return -np.max(data.O.real)
+
+
+def maximagint_echo(data):
+    """
+    Maximises the maximum intensity of the real part of the echo.
+    """
+    return -np.max(data.O.imag)
 
 
 def zerorealint(data):
