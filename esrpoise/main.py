@@ -73,7 +73,6 @@ def optimize(Xepr,
     message : str
         A message indicating why the optimisation terminated.
     """
-    # TODO distinguish user par
     # Get start time
     tic = datetime.now()
 
@@ -256,9 +255,11 @@ def round2tol(values, tols):
         val = tol * np.round(val / tol)
         tol_str = str(tol)
 
-        if '.' not in tol_str:  # integer case
+        if '.' not in tol_str:  # integer case # tol.is_integer()
             values_str.append(str(int(val)))
-        else:
+        elif tol.is_integer():  # float which is an integer case
+            values_str.append(str(int(val)))
+        else:  # float case
             decimal_nb = len(tol_str[tol_str.index('.'):-1])
             # round to same number of decimal numbers
             values_str.append(str(np.round(val, decimal_nb)))
@@ -373,7 +374,7 @@ def param_set(Xepr, pars, val_str,
     # set parameters in definition file
     if def_modif:
 
-        Xepr_link.modif_def(Xepr, def_file, pars_def, np.array(val_str_def))
+        Xepr_link.modif_def(Xepr, def_file, pars_def, val_str_def)
 
         # .exp file load (necessary to update .def)
         Xepr_link.load_exp(Xepr, exp_file)
