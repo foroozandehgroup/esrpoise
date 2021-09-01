@@ -28,7 +28,7 @@ def optimize(Xepr,
              maxfev=0,
              nfactor=10,
              callback=None,
-	     callback_args=None) -> None:
+             callback_args=None) -> None:
     """
     Run an optimisation.
 
@@ -298,9 +298,9 @@ def param_set(Xepr, pars, val_str,
         #    automatic step made by Xepr (Fine -1)
 
         # User - callback parameters
-        callback_pars_dict[par] = float(val) # TODO look into better way of doing this
+        callback_pars_dict[par] = float(val)  # TODO look into better way
         if '&' in par:
-            pass            
+            pass
 
         # Bridge - Receiver Unit
         elif par == "VideoGain":
@@ -318,42 +318,23 @@ def param_set(Xepr, pars, val_str,
             Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.TMLevel", "Fine 1")
 
         # Bridge - MPFU control
-        elif par == "BrXPhase":
-            # +<x> Phase (%), 0 to 100, min tolerance of 0.049
+        # (%), 0 to 100, rounded in Xepr to closest 0.049 (approximately)
+        elif par == "BrXPhase":  # +<x> Phase
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase", val)
-            #Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXPhase", "Fine 1")
-        elif par == "BrXAmp":
-            # +<x> Amplitude (%), 0 to 100, min tolerance of 0.049
+        elif par == "BrXAmp":  # +<x> Amplitude
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXAmp", val)
-            #Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrXAmp", "Fine 1")
-        elif par == "BrYPhase":
-            # +<y> Phase (%), 0 to 100, min tolerance of 0.049
+        elif par == "BrYPhase":  # +<y> Phase
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYPhase", val)
-            #Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrYPhase", "Fine 1")
-        elif par == "BrYAmp":
-            # +<y> Amplitude (%), 0 to 100, min tolerance of 0.049
+        elif par == "BrYAmp":  # +<y> Amplitude
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYAmp", val)
-            #Xepr.XeprCmds.aqParStep("Accallback_pars_dictqHidden", "ftBridge.BrYAmp", "Fine 1")
-        elif par == "BrMinXPhase":
-            # -<x> Phase (%), 0 to 100, min tolerance of 0.049
+        elif par == "BrMinXPhase":  # -<x> Phase
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXPhase", val)
-            #Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXPhase",
-            #                        "Fine 1")
-        elif par == "BrMinXAmp":
-            # -<x> Amplitude (%), 0 to    p = pulse.Parametrized(bw=bw, tp=64e-9, Q=5, tres=0.625e-9) 100, min tolerance of 0.049
+        elif par == "BrMinXAmp":  # -<x> Amplitude
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXAmp", val)
-            #Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinXAmp",
-            #                        "Fine 1")
-        elif par == "BrMinYPhase":
-            # -<y> Phase (%), 0 to 100, min tolerance of 0.049
+        elif par == "BrMinYPhase":  # -<y> Phase
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYPhase", val)
-            #Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYPhase",
-            #                        "Fine 1")
-        elif par == "BrMinYAmp":
-            # -<y> Amplitude (%), 0 to 100, min tolerance of 0.049
+        elif par == "BrMinYAmp":  # -<y> Amplitude
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYAmp", val)
-            #Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.BrMinYAmp",
-            #                        "Fine 1")
 
         # FT EPR Parameters
         elif par == "CenterField":

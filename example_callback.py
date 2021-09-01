@@ -34,9 +34,11 @@ import os
 import numpy as np
 
 from esrpoise import optimize
-from esrpoise.costfunctions import maxabsint_echo, maxrealint_echo, sumrealint_echo, max_n2p
+from esrpoise.costfunctions import maxabsint_echo, maxrealint_echo
+from esrpoise.costfunctions import sumrealint_echo, max_n2p
 from esrpoise import Xepr_link
 from mrpypulse import pulse
+
 
 def shape_bw(callback_pars_dict, shp_nb):
     """
@@ -74,6 +76,7 @@ def shape_bw(callback_pars_dict, shp_nb):
 
     return None
 
+
 def shapes2Xepr(shp_paths, shps_path):
     """
     Concatenate xepr files together
@@ -86,14 +89,14 @@ def shapes2Xepr(shp_paths, shps_path):
     return None
 
 
-exp_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/4pDEER_Will.exp'
-def_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/4pDEER_Will.def'
+f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/'
+exp_f = f_loc + '4pDEER_Will.exp'
+def_f = f_loc + '4pDEER_Will.def'
 
 Xepr = Xepr_link.load_xepr()
 
-
 """
-# flip angle optimization 
+# flip angle optimization
 xbest0, fbest, message = optimize(Xepr,
                                   pars=['p0', 'Attenuation', 'd1'],
                                   init=[26, 0.2, 200],
@@ -182,8 +185,9 @@ xbest0, fbest, message = optimize(Xepr,
 
 
 # TODO tupple input -> a bit awkward
-exp_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/4pDEER_Will_shp.exp'
-def_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/4pDEER_Will_shp.def'
+f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/'
+exp_f = f_loc + '4pDEER_Will_shp.exp'
+def_f = f_loc + '4pDEER_Will_shp.def'
 # pulse bandwidth and spectral position optimization
 xbest0, fbest, message = optimize(Xepr,
                                   pars=['&bw', '&delta_f', '&k'],
@@ -198,9 +202,3 @@ xbest0, fbest, message = optimize(Xepr,
                                   nfactor=5,
                                   callback=shape_bw,
                                   callback_args=tuple([7770]))
-
-
-
-
-
-

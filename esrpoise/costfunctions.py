@@ -2,6 +2,8 @@
 costfunctions.py
 ----------------
 
+# TODO rename functions for more consistency
+
 Contains some typical cost functions. You can choose to take your cost
 functions from here, or create your own.
 
@@ -17,13 +19,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 import numpy as np
 
 
-def max_n2p(data):
-    """
-    maximize n2p parameter for DEER trace
-    data should contain the 2 points of interest in position 0 and 1.
-    """
-    return -np.abs(data.O.real[0]-data.O.real[1])
-
+# spectrum
 def minabsint(data):
     """
     Cost function which minimises the absolute (magnitude-mode) intensity of
@@ -39,27 +35,6 @@ def maxabsint(data):
     """
     return -np.max(np.abs(np.fft.fft(data.O.real + 1j * data.O.imag)))
 
-
-def maxabsint_echo(data):
-    """
-    Cost function which maximises the absolute (magnitude-mode) intensity of
-    an echo.
-    """
-    return -np.max(np.abs(data.O.real + 1j * data.O.imag))
-
-def sumabsint_echo(data):
-    """
-    Cost function which maximises the absolute (magnitude-mode) intensity of
-    an echo.
-    """
-    return -np.sum(np.abs(data.O.real + 1j * data.O.imag))
-
-def sumrealint_echo(data):
-    """
-    Cost function which maximises the absolute (magnitude-mode) intensity of
-    an echo.
-    """
-    return -np.sum(np.abs(data.O.real))
 
 def minrealint(data):
     """
@@ -77,11 +52,46 @@ def maxrealint(data):
     return -np.sum(np.real(np.fft.fft(data.O.real, 2 * len(data.O.real))))
 
 
+def zerorealint(data):
+    """
+    Tries to get the intensity of the real spectrum to be as close to zero as
+    possible. This works by summation, so dispersion-mode peaks will not
+    contribute to this cost function (as they add to zero).
+    """
+    raise NotImplementedError
+    # return np.abs(np.sum(np.fft(data.r)))
+
+
 def maxrealint_echo(data):
     """
     Maximises the maximum intensity of the real part of the echo.
     """
     return -np.max(data.O.real)
+
+
+# echo
+def maxabsint_echo(data):
+    """
+    Cost function which maximises the absolute (magnitude-mode) intensity of
+    an echo.
+    """
+    return -np.max(np.abs(data.O.real + 1j * data.O.imag))
+
+
+def sumabsint_echo(data):
+    """
+    Cost function which maximises the absolute (magnitude-mode) intensity of
+    an echo.
+    """
+    return -np.sum(np.abs(data.O.real + 1j * data.O.imag))
+
+
+def sumrealint_echo(data):
+    """
+    Cost function which maximises the absolute (magnitude-mode) intensity of
+    an echo.
+    """
+    return -np.sum(np.abs(data.O.real))
 
 
 def maximagint_echo(data):
@@ -91,11 +101,10 @@ def maximagint_echo(data):
     return -np.max(data.O.imag)
 
 
-def zerorealint(data):
+# DEER trace modulation depth
+def max_n2p(data):
     """
-    Tries to get the intensity of the real spectrum to be as close to zero as
-    possible. This works by summation, so dispersion-mode peaks will not
-    contribute to this cost function (as they add to zero).
+    maximize n2p parameter for DEER trace
+    data should contain the 2 points of interest in position 0 and 1.
     """
-    raise NotImplementedError
-    # return np.abs(np.sum(np.fft(data.r)))
+    return -np.abs(data.O.real[0]-data.O.real[1])

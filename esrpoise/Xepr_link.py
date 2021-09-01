@@ -177,10 +177,10 @@ def modif_def(Xepr, def_file, var_name, var_value):
     for name, value in zip(var_name, var_value):
 
         for j, line in enumerate(fullDefs):
-            line = line.replace(" ", "")      # get rid of spaces
-            line = line[0:len(name)+1]  # select first characters
+            line = line.replace(" ", "")  # get rid of spaces
+            line = line[0:len(name)+1]    # select first characters
             if name + "=" == line:
-                fullDefs[j] = name + " = " + value + " " # str(var_value[i]
+                fullDefs[j] = name + " = " + value
 
     # new definition file with modifications
     def_file_modif = def_file[0:-4] + "_modif.def"
