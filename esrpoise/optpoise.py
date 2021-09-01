@@ -7,7 +7,9 @@ Module containing optimisation functions.
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
+import itertools
 from functools import wraps
+from warnings import warn
 
 import numpy as np
 import pybobyqa as pb
@@ -237,7 +239,7 @@ def deco_count(fn):
     """
     Decorator which counts the number of times a function has been called, as
     long as the function does not return np.inf. This makes sure that
-    acquire_nmr.calls is not incremented when an out-of-bounds value is
+    acquire_esr.calls is not incremented when an out-of-bounds value is
     "sampled".
     """
     @wraps(fn)
@@ -255,10 +257,15 @@ def deco_maxfev(maxfev):
     Decorator factory which returns a decorator that causes a function to raise
     MaxFevalsReached if its number of calls is greater than maxfev.
 
-    Yes, it's confusing, but that's how decorators with parameters work...
-
     Decorate with @deco_maxfev(MAXFEVS), or in order to set maxfev dynamically
     (as is needed in POISE), do it using cf = deco_maxfev(MAXFEVS)(cf).
+
+    Note that we need to re-apply the counter on the counted_cf() function.
+    If we don't do this, then the *inner* function (i.e. "fn") will have a
+    'calls' attribute, but the *outer* function will not. So if we decorate a
+    cost function with cf = deco_maxfev(MAXFEVS)(cf), cf.calls will stop to
+    work. By re-applying the counter on the outside function, we make sure that
+    the decorated function always has a valid 'calls' attribute.
     """
     def decorator(fn):
         @wraps(fn)
@@ -266,7 +273,11 @@ def deco_maxfev(maxfev):
             if fn.calls >= maxfev:
                 raise MaxFevalsReached
             else:
-                return fn(*args, **kwargs)
+                result = fn(*args, **kwargs)
+                if result != np.inf:
+                    counted_cf.calls += 1
+                return result
+        counted_cf.calls = 0
         return counted_cf
     return decorator
 
@@ -294,7 +305,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
     Parameters
     ----------
     cf : function
-        The cost function. For POISE, this means acquire_nmr(), not the
+        The cost function. For POISE, this means acquire_esr(), not the
         user-defined cost function. However in general, this can be any cost
         function. The cost function *must* be decorated with deco_count() (for
         POISE, this is already done).
@@ -333,7 +344,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
             fbest (float)     : Cost function at the optimum.
             niter (int)       : Number of iterations.
             nfev (int)        : Number of function evaluations. Note that in
-                                the specific context of NMR optimisation, this
+                                the specific context of ESR optimisation, this
                                 is in general not equal to the number of
                                 experiments acquired.
             simplex (ndarray) : (N+1, N)-sized matrix of the final simplex.
@@ -346,7 +357,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
     The scipy implementation has a few tricks which are useful in making the
     actual computation run faster. However, here we have ignored these in
     favour of readability, since the speed of the optimisation is largely
-    limited by the acquisition time of the NMR experiment.
+    limited by the acquisition time of the experiment itself.
     """
 
     # Convert x0 to vector
@@ -368,7 +379,7 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
         raise ValueError("Nelder-Mead: x0 and xtol have incompatible lengths")
 
     if np.any(x0 < scaled_lb) or np.any(x0 > scaled_ub):
-        raise ValueError("Nelder-Mead: TODO: write polite message")
+        raise ValueError("Nelder-Mead: x0 is outside of specified bounds")
 
     # Create and initialise simplex object.
     sim = Simplex(x0, method=simplex_method, length=MAGIC_TOL * nfactor,
@@ -520,7 +531,7 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
     Parameters
     ----------
     cf : function
-        The cost function. For POISE, this means acquire_nmr(), not the
+        The cost function. For POISE, this means acquire_esr(), not the
         user-defined cost function. However in general, this can be any cost
         function. The cost function *must* be decorated with deco_count() (for
         POISE, this is already done).
@@ -559,7 +570,7 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
             fbest (float)     : Cost function at the optimum.
             niter (int)       : Number of iterations.
             nfev (int)        : Number of function evaluations. Note that in
-                                the specific context of NMR optimisation, this
+                                the specific context of ESR optimisation, this
                                 is in general not equal to the number of
                                 experiments acquired.
             simplex (ndarray) : (N+1, N)-sized matrix of the final simplex.
@@ -703,7 +714,7 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
     Parameters
     ----------
     cf : function
-        The cost function. For POISE, this means acquire_nmr(), not the
+        The cost function. For POISE, this means acquire_esr(), not the
         user-defined cost function. However in general, this can be any cost
         function.
     x0 : ndarray or list
@@ -712,16 +723,20 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
         Tolerances for each optimisation dimension. This is actually not used
         at all and is only here so that there is a unified interface for all
         three optimisers.
-    args : tuple, optional
-        A tuple of arguments to pass to the cost function.
-    simplex_method : str, optional
-        Method for generation of initial simplex.
-    scaled_lb : ndarray, optional
+    scaled_lb : ndarray
         Scaled lower bounds for the optimisation.
-    scaled_ub : ndarray, optional
+    scaled_ub : ndarray
         Scaled upper bounds for the optimisation. This is used to place an
         upper bound on the simplex size.
-    nfactor : TODO
+    args : tuple, optional
+        A tuple of arguments to pass to the cost function.
+    maxfev : int, optional
+        Maximum function evaluations to use. Defaults to 500 times the number
+        of parameters.
+    nfactor : float, default 10
+        The ratio of the initial trust region radius to the target trust region
+        radius. Essentially, the larger this is, the larger the initial search
+        region will be. Note that this is applied to all parameters at once.
 
     Returns
     -------
@@ -734,7 +749,7 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
                                 value is simply set to zero. (It is indirectly
                                 available if diagnostic info is requested.)
             nfev (int)        : Number of function evaluations. Note that in
-                                the specific context of NMR optimisation, this
+                                the specific context of ESR optimisation, this
                                 is in general not equal to the number of
                                 experiments acquired.
             message (str)     : Message indicating reason for termination.
@@ -775,3 +790,81 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
     return OptResult(xbest=pb_sol.x, fbest=pb_sol.f,
                      niter=0, nfev=pb_sol.nf,
                      message=msg)
+
+
+def brute_force(cf, x0, xtol, scaled_lb, scaled_ub,
+                args=(), maxfev=0):
+    """
+    Brute force solver. Evaluates equally spaced points on an n-dimensional
+    grid and returns the best of these.
+
+    Parameters
+    ----------
+    cf : function
+        The cost function. For POISE, this means acquire_esr(), not the
+        user-defined cost function. However in general, this can be any cost
+        function.
+    x0 : ndarray or list
+        Initial point for optimisation. This parameter is ignored by the brute
+        force optimiser.
+    xtol : ndarray or list
+        Tolerances for each optimisation dimension.
+    args : tuple, optional
+        A tuple of arguments to pass to the cost function.
+    scaled_lb : ndarray, optional
+        Scaled lower bounds for the optimisation.
+    scaled_ub : ndarray, optional
+        Scaled upper bounds for the optimisation. This is used to place an
+        upper bound on the simplex size.
+    maxfev : int, optional
+        Maximum number of function evaluations. Defaults to 0, i.e. no limit.
+
+    Returns
+    -------
+    OptResult
+        Object which contains the following attributes:
+            xbest (ndarray)   : Optimal values for the optimisation.
+            fbest (float)     : Cost function at the optimum.
+            niter (int)       : Number of iterations. In the case of the brute
+                                force solver, this is just equal to the number
+                                of function evaluations.
+            nfev (int)        : Number of function evaluations. Note that in
+                                the specific context of ESR optimisation, this
+                                is in general not equal to the number of
+                                experiments acquired.
+            message (str)     : Message indicating reason for termination.
+    """
+    xtol = np.asfarray(xtol).flatten()
+
+    # Generate points to sample. In the i-th dimension we want to choose the
+    # integer nvals[i] such that np.linspace(lb[i], ub[i], nvals[i]) gives
+    # uniformly spaced values which differ by as close to xtol[i] as possible.
+    N = np.around((scaled_ub - scaled_lb) / xtol).astype(int)
+    linspaces = [np.linspace(lb_i, ub_i, N_i)
+                 for (lb_i, ub_i, N_i) in zip(scaled_lb, scaled_ub, N)]
+
+    # Show a warning if spacing has been adjusted by > 1 ppm
+    spacing = (scaled_ub - scaled_lb) / N
+    if not np.allclose(spacing, xtol, rtol=1e-6, atol=1e-6):
+        warn("The spacing between values to be evaluated differs from the"
+             " specified tolerances. To avoid this warning, please ensure"
+             " that each element of xtol cleanly divides the corresponding"
+             " element of (ub - lb).")
+
+    # Evaluate cost function at every element of the Cartesian product of
+    # linspaces
+    fbest, xbest = np.inf, None
+    for x in itertools.product(*linspaces):
+        x = np.array(x)
+        if maxfev > 0 and cf.calls >= maxfev:
+            message = MESSAGE_OPT_MAXFEV_REACHED
+            break
+        f = cf(x, *args)
+        if f < fbest:
+            fbest, xbest = f, x
+    else:  # didn't break, i.e. evaluated all values
+        message = MESSAGE_OPT_SUCCESS
+
+    return OptResult(xbest=xbest, fbest=fbest,
+                     niter=cf.calls, nfev=cf.calls,
+                     message=message)
