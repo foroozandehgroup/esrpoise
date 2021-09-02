@@ -2,31 +2,16 @@
 Xepr_link.py
 ------------
 
-Xepr interface functions (largely taken from David's code)
+Xepr interface functions, communicate with Xepr usingXeprAPI
 
-modif_def should be enough to modify any parameter in the def file
-TBD: modif_exp, modif_shp +modif_def_file?
-
-
-###  Code inherited from David ###
-
-[Grouped in one package] Python functions to communicate with Xepr using
-XeprAPI
-    - Xepr_getdata.py -> run2getdata_exp
+Code from David updated to Python 3 and grouped into one package
     - Xepr_plsspel_deffile.py -> load_def
     - Xepr_plsspel_moddefs.py -> modif_def
     - Xepr_plsspel_expfile.py -> load_exp
     - Xepr_restexpt.py        -> reset_exp
     - Xepr_plsspel_shpfile.py -> load_shp
-Other functions from David:
-    - plsspel2spinach_ox.m -> create .exp file
-    - spinach2plsspel_ox.m -> select experiment and dimension in the .exp file
-    - awg_shp_ox.m         -> create .shp file
-    - [to be replaced by something simpler?] awg_interface_ox.m -> interface
-    using py_run_ox to run the  ifferent Python files
-        - contains different cases (def file, no def file ...)
-    - [not needed] py_run_ox.m -> allows to run a Python file
-    - [not needed] optimization functions
+
+TODO add possibility to modify exp file?
 
 SPDX-License-Identifier: GPL-3.0-or-later
 """
@@ -222,7 +207,7 @@ def load_shp(Xepr, shp_file):
         raise RuntimeError("Error loading and compiling Xepr shape file")
 
 
-def run2getdata_exp(Xepr, SignalType, exp_name):
+def run2getdata_exp(Xepr, SignalType=None, exp_name=None):
     """
     Run an experiment and get the data from it.
 
@@ -230,8 +215,9 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
     ----------
     Xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
-    SignalType : str from {"TM", "Signal", "RM"}
-    exp_name : str
+    SignalType : str, by default None
+        To change the signal type (pick from {"TM", "Signal", "RM"})
+    exp_name : str, by default None
         The name of the experiment to run, usually "AWGTransient" for the
         Signal or "AWG_1pulseSHP" for the TM.
 
@@ -251,11 +237,13 @@ def run2getdata_exp(Xepr, SignalType, exp_name):
         raise RuntimeError("No experiment has been selected in the"
                            " primary viewport of Xepr.")
 
-    # change detection mode and experiment select
+    # change detection mode and experiment select if needed
     try:
-        if hiddenExp["ftBridge.Detection"].value != SignalType:
+        if SignalType is not None and \
+                hiddenExp["ftBridge.Detection"].value != SignalType:
             hiddenExp["ftBridge.Detection"].value = SignalType
-        if currentExp["ftEpr.PlsSPELEXPSlct"].value != exp_name:
+        if exp_name is not None and \
+                currentExp["ftEpr.PlsSPELEXPSlct"].value != exp_name:
             currentExp["ftEpr.PlsSPELEXPSlct"].value = exp_name
     except Exception:
         raise RuntimeError("Error changing detection mode to TM,"

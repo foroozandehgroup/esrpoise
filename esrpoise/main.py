@@ -23,8 +23,8 @@ def optimize(Xepr,
              ub,
              tol,
              cost_function,
-             exp_file,
-             def_file,
+             exp_file=None,
+             def_file=None,
              optimiser="nm",
              maxfev=0,
              nfactor=10,
@@ -33,12 +33,14 @@ def optimize(Xepr,
     """
     Run an optimisation.
 
-    TODO: Document inputs properly.
-
     Parameters
     ----------
+    Xepr : instance of XeprAPI.Xepr
+        The instantiated Xepr object.
     pars : list of str
-        Parameter names.
+        Parameter names. Parameters starting with the character & are
+        considered user parameters which needs to be modified with the callback
+        function.
     lb : list of float
         Lower bounds for each parameter.
     ub : list of float
@@ -47,10 +49,12 @@ def optimize(Xepr,
         Optimisation tolerances for each parameter.
     cost_function : function
         A function which takes the data object and returns a float.
-    exp_file : str
-        ...
-    def_file : str
-        ...
+    exp_file : str, default None
+        Experiment file (.exp) path to be used for the experiment in Xepr.
+        Required to modify parameters in .def file.
+    def_file : str, default None
+        Definition file (.exp) path to be used for the experiment in Xepr.
+        Required to modify parameters in .def file.
     optimiser : str from {"nm", "mds", "bobyqa", "brute"}, default "nm"
         Optimisation algorithm to use. The options correspond to Nelder-Mead,
         multidimensional search, BOBYQA, and brute-force search respectively.
@@ -115,8 +119,8 @@ def optimize(Xepr,
 
     # Set up optimisation arguments. Basically, this needs to be everything
     # that acquire_esr() uses apart from x itself.
-    optimargs = (cost_function, pars, lb, ub, tol,
-                 optimiser, Xepr, exp_file, def_file,
+    optimargs = (cost_function, pars, lb, ub, tol, optimiser,
+                 Xepr, exp_file, def_file,
                  callback, callback_args)
 
     # Carry out the optimisation
@@ -153,8 +157,8 @@ def optimize(Xepr,
 
 
 @deco_count
-def acquire_esr(x, cost_function, pars, lb, ub, tol,
-                optimiser, Xepr, exp_file, def_file,
+def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
+                Xepr, exp_file=None, def_file=None,
                 callback=None, callback_args=None):
     """
     This is the function which is actually passed to the optimisation function
@@ -176,8 +180,33 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     x : ndarray
         Scaled values to be used for spectrum acquisition and cost function
         evaluation.
+    pars : list of str
+        Parameter names. Parameters starting with the character & are
+        considered user parameters which needs to be modified with the callback
+        function.
+    lb : list of float
+        Lower bounds for each parameter.
+    ub : list of float
+        Upper bounds for each parameter.
+    tol : list of float
+        Optimisation tolerances for each parameter.
+    optimiser : str from {"nm", "mds", "bobyqa", "brute"}, default "nm"
+        Optimisation algorithm to use. The options correspond to Nelder-Mead,
+        multidimensional search, BOBYQA, and brute-force search respectively.
+    Xepr : instance of XeprAPI.Xepr TODO doc
+        The instantiated Xepr object.
     cost_function : function
-        User-defined cost function.
+        A function which takes the data object and returns a float.
+    exp_file : str, default None
+        Experiment file (.exp) path to be used for the experiment in Xepr.
+        Required to modify parameters in .def file.
+    def_file : str, default None
+        Definition file (.exp) path to be used for the experiment in Xepr.
+        Required to modify parameters in .def file.
+    callback: function, default None
+        User defined function called when setting up parameters.
+    callback_args: tuple, default None
+        Arguments for callback function
 
     Returns
     -------
@@ -206,6 +235,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
 
     # convert parameters values to string with the same number of decimals as
     # tolerances
+    # TODO put into param_set
     val_str = round2tol(unscaled_val, tol)
 
     # Xepr reset needed for 114 sequential shape load and run
@@ -217,7 +247,8 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol,
     param_set(Xepr, pars, val_str, exp_file, def_file, callback, callback_args)
 
     # record data
-    data = Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
+    # TODO test that exp_file and type can indeed made optional
+    data = Xepr_link.run2getdata_exp(Xepr)
 
     # evaluate the cost function
     cf_val = cost_function(data)
@@ -270,7 +301,7 @@ def round2tol(values, tols):
 
 
 def param_set(Xepr, pars, val_str,
-              exp_file, def_file,
+              exp_file=None, def_file=None,
               callback=None, callback_args=None):
     """
     Set a variety of parameters in Xepr
@@ -279,18 +310,39 @@ def param_set(Xepr, pars, val_str,
     ----------
     Xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
-    pars :
-        name of parameters to be set in Xepr
+    pars : list of str
+        Parameter names. Parameters starting with the character & are
+        considered user parameters which needs to be modified with the callback
+        function.
+    pars : list of str
+        Parameter names. Parameters starting with the character & are
+        considered user parameters which needs to be modified with the callback
+        function.
     val_str:
         values of the parameters in string format
-    exp_file: string
-        experiment file path
-    def_file: string
-        definition file path
-    callback: function
-        user defined function
-    callback_args: tuple
-        arguments for the user defined function
+    lb : list of float
+        Lower bounds for each parameter.
+    ub : list of float
+        Upper bounds for each parameter.
+    tol : list of float
+        Optimisation tolerances for each parameter.
+    optimiser : str from {"nm", "mds", "bobyqa", "brute"}, default "nm"
+        Optimisation algorithm to use. The options correspond to Nelder-Mead,
+        multidimensional search, BOBYQA, and brute-force search respectively.
+    Xepr : instance of XeprAPI.Xepr TODO doc
+        The instantiated Xepr object.
+    cost_function : function
+        A function which takes the data object and returns a float.
+    exp_file : str, default None
+        Experiment file (.exp) path to be used for the experiment in Xepr.
+        Required to modify parameters in .def file.
+    def_file : str, default None
+        Definition file (.exp) path to be used for the experiment in Xepr.
+        Required to modify parameters in .def file.
+    callback: function, default None
+        User defined function called when setting up parameters.
+    callback_args: tuple, default None
+        Arguments for callback function
 
     Returns
     -------
@@ -367,7 +419,10 @@ def param_set(Xepr, pars, val_str,
     # set parameters in definition file
     if def_modif:
 
+        if def_file is None:
+            raise ValueError('def_file path required for .def modification')
         Xepr_link.modif_def(Xepr, def_file, pars_def, val_str_def)
 
-        # .exp file load (necessary to update .def)
+        if exp_file is None:
+            raise ValueError('exp_file path required to update .def file')
         Xepr_link.load_exp(Xepr, exp_file)
