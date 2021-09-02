@@ -177,16 +177,23 @@ def modif_def(Xepr, def_file, var_name, var_value):
     for name, value in zip(var_name, var_value):
 
         for j, line in enumerate(fullDefs):
-            line = line.replace(" ", "")  # get rid of spaces
-            line = line[0:len(name)+1]    # select first characters
-            if name + "=" == line:
-                fullDefs[j] = name + " = " + value
 
-    # new definition file with modifications
-    def_file_modif = def_file[0:-4] + "_modif.def"
-    with open(def_file_modif, 'w') as def_f:
+            equal_partition = line.partition("=")
+
+            if name == equal_partition[0].replace(" ", ""):
+                fullDefs[j] = equal_partition[0] + "= " + value
+
+                # preserve possible comment at the end of the line
+                comment_partition = equal_partition[-1].partition(";")
+                if comment_partition[1] == ";":
+                    fullDefs[j] += " " ";" + comment_partition[-1]
+
+    # replace definition file with modifications
+    with open(def_file, 'w') as def_f:
         def_f.write('\n'.join(fullDefs))
-    load_def(Xepr, def_file_modif)
+
+    if Xepr is not None:  # to allow test without Xepr
+        load_def(Xepr, def_file)
 
 
 def load_shp(Xepr, shp_file):

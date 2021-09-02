@@ -1,0 +1,9 @@
+; definition file for modifications tests
+
+; p0 = 15
+p0 = 32
+p1 = 92 ; second pulse length
+
+; pulses amplitudes
+aa1 = 88
+aa2 = 92
