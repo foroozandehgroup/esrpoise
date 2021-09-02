@@ -278,7 +278,17 @@ def param_set(Xepr, pars, val_str,
     Xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
     pars :
-        parameters to be set in Xepr
+        name of parameters to be set in Xepr
+    val_str:
+        values of the parameters in string format
+    exp_file: string
+        experiment file path
+    def_file: string
+        definition file path
+    callback: function
+        user defined function
+    callback_args: tuple
+        arguments for the user defined function
 
     Returns
     -------
