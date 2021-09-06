@@ -124,6 +124,7 @@ def optimize(Xepr,
                  callback, callback_args)
 
     # Carry out the optimisation
+    acquire_esr.calls = 0  # ensures that each optim starts from 0
     opt_result = optimfn(acquire_esr, scaled_x0, scaled_xtol,
                          scaled_lb, scaled_ub,
                          args=optimargs, maxfev=maxfev, nfactor=nfactor)
