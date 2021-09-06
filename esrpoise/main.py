@@ -5,6 +5,14 @@ main.py
 Contains the main code required for executing an optimisation.
 
 SPDX-License-Identifier: GPL-3.0-or-later
+
+TODO [Not urgent/super important]
+Optimizer
+    # different nfactor for each parameter
+    # bounce?
+Other
+    # add stop -> no bug observed in a while with manual quite (ctl+C)
+    # .exp file modif?
 """
 
 from datetime import datetime
@@ -95,8 +103,19 @@ def optimize(Xepr,
         raise ValueError(f"Invalid optimiser {optimiser} specified."
                          f" Allowed values are: {list(optimfndict.keys())}")
 
+
+
     # Scale the initial values and tolerances
     npars = len(pars)
+    # input length chek
+    if npars != len(init):
+        raise ValueError("pars and init should have the same length.")
+    if npars != len(lb):
+        raise ValueError("pars and lb should have the same length.")
+    if npars != len(ub):
+        raise ValueError("pars and ub should have the same length.")
+    if npars != len(tol):
+        raise ValueError("pars and tol should have the same length.")
     scaled_x0, scaled_lb, scaled_ub, scaled_xtol = scale(init, lb, ub, tol,
                                                          scaleby="tols")
 
@@ -240,14 +259,14 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
     # Xepr reset needed for 114 sequential shape load and run
     if acquire_esr.calls % 114 == 0 and acquire_esr.calls != 0:
         print('reset required')
-        # Xepr_link.reset_exp(Xepr) # TODO reset currently not working
+        # Xepr_link.reset_exp(Xepr)
+        # TODO find a way to only call reset for shape changes
 
     # set parameters values
     param_set(Xepr, pars, unscaled_val, tol,
               exp_file, def_file, callback, callback_args)
 
     # record data
-    # TODO test that exp_file and type can indeed be made optional
     data = Xepr_link.run2getdata_exp(Xepr)
 
     # evaluate the cost function
@@ -369,7 +388,7 @@ def param_set(Xepr, pars, val, tol,
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel", v_str)
 
         # Xepr parameters: Bridge - MPFU control
-        # (%), 0 to 100, rounded in Xepr to closest 0.049 (approximately)
+        # (%), 0 to 100, rounded in Xepr to closest 0.049 (approximately, not linear)
         elif par == "BrXPhase":  # +<x> Phase
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase", v_str)
         elif par == "BrXAmp":  # +<x> Amplitude
