@@ -20,7 +20,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import numpy as np
-from esrpoise import optimize, round2tol
+from esrpoise import optimize, round2tol_str
 from esrpoise.costfunctions import maxrealint_echo, maxabsint_echo
 from esrpoise import Xepr_link
 

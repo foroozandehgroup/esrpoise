@@ -144,7 +144,7 @@ def optimize(Xepr,
     print(fmt.format("Optimisation message", opt_result.message))
 
     # run experiment with optimal parameters
-    param_set(Xepr, pars, round2tol_str(best_values, tol),
+    param_set(Xepr, pars, best_values, tol,
               exp_file, def_file,
               callback=callback, callback_args=callback_args)
 
@@ -152,6 +152,9 @@ def optimize(Xepr,
 
     print("=" * 60)
     print("\n")
+
+    # TODO return string actually input for parameters
+    # context: resuse previously optimized values
 
     return best_values, opt_result.fbest, opt_result.message
 
@@ -348,7 +351,7 @@ def param_set(Xepr, pars, val, tol,
         if '&' in par:
             if callback is None:
                 raise TypeError('callback should not be None if user '
-                                'parameters are used.')
+                                'parameters (name starting with &) are used.')
 
         # Xepr parameters: Bridge - Receiver Unit
         elif par == "VideoGain":
@@ -363,7 +366,6 @@ def param_set(Xepr, pars, val, tol,
         elif par == "TMLevel":
             # Transmitter level (%), min tolerance of 0.049
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel", v_str)
-            Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.TMLevel", "Fine 1")
 
         # Xepr parameters: Bridge - MPFU control
         # (%), 0 to 100, rounded in Xepr to closest 0.049 (approximately)
@@ -407,9 +409,13 @@ def param_set(Xepr, pars, val, tol,
     if def_modif:
 
         if def_file is None:
-            raise ValueError('def_file path required for .def modification')
+            raise ValueError('Some parameters are considered .def file '
+                             'parameters. The file path def_file is '
+                             'required to modify them.')
         Xepr_link.modif_def(Xepr, def_file, pars_def, val_str_def)
 
         if exp_file is None:
-            raise ValueError('exp_file path required to update .def file')
+            raise ValueError('Some parameters are considered .def file '
+                             'parameters. The experiment file path '
+                             'exp_file is required to modify them.')
         Xepr_link.load_exp(Xepr, exp_file)
