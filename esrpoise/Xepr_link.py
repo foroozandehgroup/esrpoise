@@ -324,3 +324,8 @@ def reset_exp(Xepr):
 
     # wait for Xepr to reset the experiment
     time.sleep(2)
+
+    # prevent Xepr from reseting high power attenuation value
+    Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine 1")
+    Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine -1")
+
