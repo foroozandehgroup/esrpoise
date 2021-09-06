@@ -24,8 +24,6 @@ from esrpoise import optimize, round2tol_str
 from esrpoise.costfunctions import maxrealint_echo, maxabsint_echo
 from esrpoise import Xepr_link
 
-# Note that esrpoise.optimize() doesn't actually return anything yet
-
 """
 # Hahn echo lengths optimization
 xbest, fbest, message = optimize(pars=["p0", "p1"],
@@ -63,22 +61,8 @@ def_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB' \
 # wihout closing python/requiring the user to touch Xepr)
 Xepr = Xepr_link.load_xepr()
 
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=['BrMinXPhase', 'BrMinxAmp'],
-                                  init=[90, 90],
-                                  lb=[10, 10],
-                                  ub=[100, 100],
-                                  tol=[0.049, 0.049],
-                                  cost_function=maxabsint_echo,  # imported
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=40,
-                                  nfactor=50)
 
-"""
-# consecutive optimizations (not working)
-
-
+# consecutive optimizations
 tol0 = [2, 10, 0.5]
 xbest0, fbest, message = optimize(Xepr,
                                   pars=['p0', 'd1','Attenuation'],
@@ -92,6 +76,9 @@ xbest0, fbest, message = optimize(Xepr,
                                   maxfev=2,12
                                   nfactor=10)
 
+# let time for Xepr to record an experiment 
+# with the previous optimized value
+time.sleep(10)
 
 xbest, fbest, message = optimize(Xepr,
                                  pars=['CenterField'],
@@ -105,6 +92,10 @@ xbest, fbest, message = optimize(Xepr,
                                  maxfev=2,
                                  nfactor=10)
 
+# let time for Xepr to record an experiment 
+# with the previous optimized value
+time.sleep(10)
+
 xbest, fbest, message = optimize(Xepr,
                                  pars=['p0', 'd1','Attenuation'],
                                  init=xbest0,
@@ -117,24 +108,4 @@ xbest, fbest, message = optimize(Xepr,
                                  maxfev=2,
                                  nfactor=10)
 
-"""
 
-"""
-TODO
-
-Optimizer
-    # add check for same size of pars, init, lb, ub, tol
-    # more flexibility in exploration
-        # different factor size of simplex for each parameter
-        # bounce?
-        # launch several consecutive optimization from same script
-    # add some kind of brute force optimizer for easy comparison?
-
-Main
-    # parameters input/set-up
-        # make exp/def files optional (in case the user does not optimize
-        anything from .def)
-    # add stop
-    # .exp file modif?
-    # cleaner def modif (no comment/spaces scrapped)
-"""
