@@ -793,7 +793,7 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
 
 
 def brute_force(cf, x0, xtol, scaled_lb, scaled_ub,
-                args=(), maxfev=0):
+                args=(), maxfev=0, nfactor=None):
     """
     Brute force solver. Evaluates equally spaced points on an n-dimensional
     grid and returns the best of these.
@@ -818,6 +818,8 @@ def brute_force(cf, x0, xtol, scaled_lb, scaled_ub,
         upper bound on the simplex size.
     maxfev : int, optional
         Maximum number of function evaluations. Defaults to 0, i.e. no limit.
+    nfactor : float, default None
+        Not applicable, ignored.
 
     Returns
     -------
