@@ -61,7 +61,7 @@ def load_exp(Xepr, exp_file):
         Xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
-        time.sleep(0.25)
+        time.sleep(0.5)
     except Exception:
         raise RuntimeError("Error loading and compiling experiment file")
 
@@ -277,9 +277,6 @@ def reset_exp(Xepr):
     Copy the current experiment and use it to replace the current experiment.
 
     Needed to reset the AWG after 114 sequential shape load and run.
-
-    TODO !Currently not working - something isn't loading properly -> no signal
-    after reset
 
     Parameters
     ----------

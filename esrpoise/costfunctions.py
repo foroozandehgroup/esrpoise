@@ -130,7 +130,7 @@ def minabsmax_echo(data):
     """
     Minimises the absolute (magnitude-mode) maximum of the echo.
     """
-    return -np.max(np.abs(data.O.real + 1j * data.O.imag))
+    return np.max(np.abs(data.O.real + 1j * data.O.imag))
 
 
 def maxabsmax_echo(data):

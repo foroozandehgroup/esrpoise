@@ -103,8 +103,6 @@ def optimize(Xepr,
         raise ValueError(f"Invalid optimiser {optimiser} specified."
                          f" Allowed values are: {list(optimfndict.keys())}")
 
-
-
     # Scale the initial values and tolerances
     npars = len(pars)
     # input length chek
@@ -173,8 +171,8 @@ def optimize(Xepr,
     print("=" * 60)
     print("\n")
 
-    # TODO return string actually input for parameters
-    # context: resuse previously optimized values
+    # TODO return string actually input for parameters?
+    # context: reuse previously optimized values
 
     return best_values, opt_result.fbest, opt_result.message
 
@@ -255,12 +253,6 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
         # print(fstr.format(*unscaled_val, cf_val))
         # Return immediately.
         return cf_val
-
-    # Xepr reset needed for 114 sequential shape load and run
-    if acquire_esr.calls % 114 == 0 and acquire_esr.calls != 0:
-        print('reset required')
-        # Xepr_link.reset_exp(Xepr)
-        # TODO find a way to only call reset for shape changes
 
     # set parameters values
     param_set(Xepr, pars, unscaled_val, tol,

@@ -73,7 +73,7 @@ xbest0, fbest, message = optimize(Xepr,
                                   cost_function=maxabsint_echo,
                                   exp_file=exp_f,
                                   def_file=def_f,
-                                  maxfev=2,12
+                                  maxfev=20,
                                   nfactor=10)
 
 # let time for Xepr to record an experiment 
@@ -87,9 +87,7 @@ xbest, fbest, message = optimize(Xepr,
                                  ub=[3520],
                                  tol=[0.1],
                                  cost_function=maxabsint_echo,
-                                 exp_file=exp_f,
-                                 def_file=def_f,
-                                 maxfev=2,
+                                 maxfev=20,
                                  nfactor=10)
 
 # let time for Xepr to record an experiment 
@@ -105,7 +103,7 @@ xbest, fbest, message = optimize(Xepr,
                                  cost_function=maxabsint_echo,
                                  exp_file=exp_f,
                                  def_file=def_f,
-                                 maxfev=2,
+                                 maxfev=20,
                                  nfactor=10)
 
 
