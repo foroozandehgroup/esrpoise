@@ -126,6 +126,30 @@ def maximagint_echo(data):
     return -minimagint_echo(data)
 
 
+def zerorealint_echo(data):
+    """
+    Tries to get the intensity of the real part of the echo to be as close to 
+    zero as possible.
+    """
+    return np.abs(np.sum(data.O.real))
+
+
+def zeroimagint_echo(data):
+    """
+    Tries to get the intensity of the imaginary part of the echo to be as close to 
+    zero as possible.
+    """
+    return np.abs(np.sum(data.O.imag))
+
+
+def maxrealint_plus_zeroimagint_echo(data):
+    """
+    Tries to get the intensity of the imaginary part of the echo to be as close to 
+    zero as possible.
+    """
+    return maxrealint_echo(data)+zeroimagint_echo(data)
+
+
 def minabsmax_echo(data):
     """
     Minimises the absolute (magnitude-mode) maximum of the echo.
