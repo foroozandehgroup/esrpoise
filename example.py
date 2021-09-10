@@ -61,7 +61,7 @@ def_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB' \
 # wihout closing python/requiring the user to touch Xepr)
 Xepr = Xepr_link.load_xepr()
 
-
+"""
 # consecutive optimizations
 tol0 = [2, 10, 0.5]
 xbest0, fbest, message = optimize(Xepr,
@@ -79,17 +79,14 @@ xbest0, fbest, message = optimize(Xepr,
 # let time for Xepr to record an experiment 
 # with the previous optimized value
 time.sleep(10)
-
-xbest, fbest, message = optimize(Xepr,
-                                 pars=['CenterField'],
-                                 init=[3510],
-                                 lb=[3500],
-                                 ub=[3520],
-                                 tol=[0.1],
-                                 cost_function=maxabsint_echo,
-                                 maxfev=20,
-                                 nfactor=10)
-
+"""
+# fine adjustment of center field
+init=[3450]
+xbest, fbest, message = optimize(Xepr, pars=['CenterField'],
+                                 init=init, lb=[init[0]-5], ub=[init[0]+5],
+                                 tol=[0.1], cost_function=maxabsint_echo,
+                                 maxfev=20, nfactor=10)
+"""
 # let time for Xepr to record an experiment 
 # with the previous optimized value
 time.sleep(10)
@@ -105,5 +102,5 @@ xbest, fbest, message = optimize(Xepr,
                                  def_file=def_f,
                                  maxfev=20,
                                  nfactor=10)
-
+"""
 

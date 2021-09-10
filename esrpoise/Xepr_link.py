@@ -12,6 +12,7 @@ Code from David updated to Python 3 and grouped into one package
     - Xepr_plsspel_shpfile.py -> load_shp
 
 TODO add possibility to modify exp file?
+TODO add modification of compilation time?
 
 SPDX-License-Identifier: GPL-3.0-or-later
 """
@@ -61,7 +62,7 @@ def load_exp(Xepr, exp_file):
         Xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
-        time.sleep(0.5)
+        time.sleep(1)
     except Exception:
         raise RuntimeError("Error loading and compiling experiment file")
 
@@ -87,7 +88,7 @@ def load_def(Xepr, def_file):
         Xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
-        time.sleep(0.25)
+        time.sleep(1)
     except Exception:
         raise RuntimeError("Error loading and compiling definition file")
 

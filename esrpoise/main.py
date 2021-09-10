@@ -13,6 +13,7 @@ Optimizer
 Other
     # add stop -> no bug observed in a while with manual quite (ctl+C)
     # .exp file modif?
+    # add option to avoid run with optimal parameters?
 """
 
 from datetime import datetime
@@ -173,6 +174,7 @@ def optimize(Xepr,
 
     # TODO return string actually input for parameters?
     # context: reuse previously optimized values
+    # in particular, check with mpfu phases values
 
     return best_values, opt_result.fbest, opt_result.message
 
