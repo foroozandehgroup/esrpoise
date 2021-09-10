@@ -326,4 +326,3 @@ def reset_exp(Xepr):
     # prevent Xepr from reseting high power attenuation value
     Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine 1")
     Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine -1")
-

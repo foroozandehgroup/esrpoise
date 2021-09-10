@@ -19,37 +19,10 @@ Run parameter optimization of any ESR experiment:
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
-import numpy as np
-from esrpoise import optimize, round2tol_str
-from esrpoise.costfunctions import maxrealint_echo, maxabsint_echo
+import time
+from esrpoise import optimize
+from esrpoise.costfunctions import maxabsint_echo
 from esrpoise import Xepr_link
-
-"""
-# Hahn echo lengths optimization
-xbest, fbest, message = optimize(pars=["p0", "p1"],
-                                 init=[4, 6],
-                                 lb=[2, 4],
-                                 ub=[16, 32],
-                                 tol=[2, 2],
-                                 cost_function=maxabsint,   # imported
-                                 exp_file="echo_decay.exp",
-                                 def_file="descrESEEM_jb.def",
-                                 maxfev=50)
-
-# Hahn echo quadrature error optimization
-xbest, fbest, message = optimize(pars=['aa0', 'aa1', 'b', 'c', 'r', 's'],
-                                 init=[90, 90, 50, 50, 50, 50],
-                                 lb=[80, 80, 0, 0, 0, 0],
-                                 ub=[100, 100, 100, 100, 100, 100],
-                                 tol=[1, 1, 1, 1, 1, 1],
-                                 cost_function=maxrealint_echo,   # imported
-                                 exp_file='/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210706/Prodel/awg2p_jb.exp',
-                                 def_file='/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210706/Prodel/awg2p_jb.def',
-                                 maxfev=4,
-                                 nfactor=10)
-"""
-# Hahn echo set-up: amplitude (Attenuation) and length (p1 = 2p0) of pulses
-# Center field can be added
 
 exp_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB' \
         '/210823/Prodel/awg2p_jb.exp'
@@ -61,46 +34,27 @@ def_f = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB' \
 # wihout closing python/requiring the user to touch Xepr)
 Xepr = Xepr_link.load_xepr()
 
-"""
-# consecutive optimizations
-tol0 = [2, 10, 0.5]
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=['p0', 'd1','Attenuation'],
-                                  init=[12, 250, 5],
-                                  lb=[6, 150, 0],
-                                  ub=[36, 350, 10],
-                                  tol=tol0,
-                                  cost_function=maxabsint_echo,
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=20,
-                                  nfactor=10)
 
-# let time for Xepr to record an experiment 
+# consecutive optimizations
+
+# Pulse flip angle
+tol0 = [2, 10, 0.5]
+xbest0, fbest, message = optimize(Xepr, pars=['p0', 'Attenuation'],
+                                  init=[12, 5],
+                                  lb=[6, 0],
+                                  ub=[36, 10],
+                                  tol=[2, 0.5],
+                                  cost_function=maxabsint_echo,
+                                  exp_file=exp_f, def_file=def_f,
+                                  maxfev=20, nfactor=10)
+
+# let time for Xepr to record an experiment
 # with the previous optimized value
 time.sleep(10)
-"""
-# fine adjustment of center field
-init=[3450]
+
+# Fine adjustment of center field
+init = [3450]
 xbest, fbest, message = optimize(Xepr, pars=['CenterField'],
                                  init=init, lb=[init[0]-5], ub=[init[0]+5],
                                  tol=[0.1], cost_function=maxabsint_echo,
                                  maxfev=20, nfactor=10)
-"""
-# let time for Xepr to record an experiment 
-# with the previous optimized value
-time.sleep(10)
-
-xbest, fbest, message = optimize(Xepr,
-                                 pars=['p0', 'd1','Attenuation'],
-                                 init=xbest0,
-                                 lb=[6, 150, 0],
-                                 ub=[36, 350, 10],
-                                 tol=[2, 2, 0.1],
-                                 cost_function=maxabsint_echo,
-                                 exp_file=exp_f,
-                                 def_file=def_f,
-                                 maxfev=20,
-                                 nfactor=10)
-"""
-

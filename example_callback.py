@@ -76,7 +76,7 @@ def shape_bw(callback_pars_dict, shp_nb):
 
     # TODO note on AWG memory overloading
     # present it as a note/remark in case the user encounters this bug
-    # the user should be able to get the number of iterations in the 
+    # the user should be able to get the number of iterations in the
     # callback function
     # # Xepr reset needed for 114 sequential shape load and run
     # if acquire_esr.calls % 114 == 0 and acquire_esr.calls != 0:

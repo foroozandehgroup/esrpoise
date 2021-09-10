@@ -382,7 +382,8 @@ def param_set(Xepr, pars, val, tol,
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel", v_str)
 
         # Xepr parameters: Bridge - MPFU control
-        # (%), 0 to 100, rounded in Xepr to closest 0.049 (approximately, not linear)
+        # (%), 0 to 100, rounded in Xepr to closest 0.049
+        # (approximately, not linear)
         elif par == "BrXPhase":  # +<x> Phase
             Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase", v_str)
         elif par == "BrXAmp":  # +<x> Amplitude
