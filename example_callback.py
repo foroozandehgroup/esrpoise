@@ -34,8 +34,7 @@ import os
 import numpy as np
 
 from esrpoise import optimize
-from esrpoise.costfunctions import maxabsint_echo, maxrealint_echo
-from esrpoise.costfunctions import sumrealint_echo, max_n2p
+from esrpoise.costfunctions import max_n2p
 from esrpoise import Xepr_link
 from mrpypulse import pulse
 
@@ -50,14 +49,13 @@ def shape_bw(callback_pars_dict, shp_nb):
         dictionary with the name of the parameters to optimize as key and their
         value as value
     """
-    bw = callback_pars_dict["&bw"]
-    delta_f = callback_pars_dict["&delta_f"]
+
     k = callback_pars_dict["&k"]
 
     # NB: Q doesn't matter much as the shape is at max amplitude in Xepr
     tp = 64e-9
-    p = pulse.Parametrized(bw=bw, tp=tp, Q=15, tres=0.625e-9,
-                           delta_f=delta_f, B=k/tp,
+    p = pulse.Parametrized(bw=60e6, tp=tp, Q=15, tres=0.625e-9,
+                           delta_f=-65e6, B=k/tp,
                            AM="tanh", FM="sech")
 
     # create shape files (phase 0 and 180)
@@ -65,14 +63,9 @@ def shape_bw(callback_pars_dict, shp_nb):
     p.phi0 += np.pi
     p.xepr_file(shp_nb+1)
 
-    # send shapes to Xepr
-    path1 = os.path.join(os.getcwd(), str(shp_nb) + '.shp')
-    path2 = os.path.join(os.getcwd(), str(shp_nb+1) + '.shp')
-
-    shp_paths = [path1, path2]
-    shps_path = os.path.join(os.getcwd(), str(shp_nb+2) + '.shp')
-    shapes2Xepr(shp_paths, shps_path)
-    Xepr_link.load_shp(Xepr, shps_path)
+    # send shape to Xepr
+    path = os.path.join(os.getcwd(), str(shp_nb) + '.shp')
+    Xepr_link.load_shp(Xepr, path)
 
     # TODO note on AWG memory overloading
     # present it as a note/remark in case the user encounters this bug
@@ -98,116 +91,18 @@ def shapes2Xepr(shp_paths, shps_path):
     return None
 
 
-f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/'
-exp_f = f_loc + '4pDEER_Will.exp'
-def_f = f_loc + '4pDEER_Will.def'
-
 Xepr = Xepr_link.load_xepr()
-
-"""
-# flip angle optimization
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=['p0', 'Attenuation', 'd1'],
-                                  init=[26, 0.2, 200],
-                                  lb=[8, 0, 150],
-                                  ub=[32, 5, 250],
-                                  tol=[2, 0.2, 2],
-                                  cost_function=maxabsint_echo,  # imported
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=80,
-                                  nfactor=10)
-"""
-
-"""
-# x phase optimization
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=['ap1'],
-                                  init=[0],
-                                  lb=[-200],
-                                  ub=[200],
-                                  tol=[1],
-                                  cost_function=maxrealint_echo,  # imported
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=60,
-                                  nfactor=90)
-
-"""
-
-
-"""
-# -x, y, -y phase optimization
-ap1 = 175
-pars = ['ap2', 'ap3', 'ap4']
-init = np.array([-90, 180, 90]) + ap1
-lb = init - 170
-ub = init + 170
-tol = np.ones(len(pars))
-
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=pars,
-                                  init=init,
-                                  lb=lb,
-                                  ub=ub,
-                                  tol=tol,
-                                  cost_function=sumrealint_echo,  # imported
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=80,
-                                  nfactor=80)
-"""
-
-"""
-# observer pulses amplitudes optimization
-# get 5-10% more on PE
-# not really seen on RVE but data is noisy
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=['aa0', 'aa1'],
-                                  init=[43, 99],
-                                  lb=[10, 50],
-                                  ub=[80, 100],
-                                  tol=[1, 1],
-                                  cost_function=maxrealint_echo,  # imported
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=60,
-                                  nfactor=10)
-"""
-
-"""
-# pump pulse optimization
-# 58 100
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=['p3', 'aa2'],
-                                  init=[40, 80],
-                                  lb=[40, 70],
-                                  ub=[80, 100],
-                                  tol=[1, 1],
-                                  cost_function=max_n2p,
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=30,
-                                  nfactor=10)
-
-"""
-
 
 # TODO tupple input -> a bit awkward
 f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/'
-exp_f = f_loc + '4pDEER_Will_shp.exp'
-def_f = f_loc + '4pDEER_Will_shp.def'
-# pulse bandwidth and spectral position optimization
-xbest0, fbest, message = optimize(Xepr,
-                                  pars=['&bw', '&delta_f', '&k'],
-                                  init=[50e6, -65e6, 10.6],
-                                  lb=[30e6, -85e6, 5.8],
-                                  ub=[70e6, -45e6, 15.4],
-                                  tol=[2.5e6, 2.5e6, 0.6],
+exp_f = f_loc + '4pDEER.exp'
+def_f = f_loc + '4pDEER.def'
+
+#  HS pump pulse selectivity factor optimization
+xbest0, fbest, message = optimize(Xepr, pars=['&k'], init=[10],
+                                  lb=[1], ub=[15], tol=[1],
                                   cost_function=max_n2p,
-                                  exp_file=exp_f,
-                                  def_file=def_f,
-                                  maxfev=112,
-                                  nfactor=5,
+                                  exp_file=exp_f, def_file=def_f,
+                                  maxfev=112, nfactor=5,
                                   callback=shape_bw,
                                   callback_args=tuple([7770]))
