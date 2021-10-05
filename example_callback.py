@@ -93,7 +93,6 @@ def shapes2Xepr(shp_paths, shps_path):
 
 Xepr = Xepr_link.load_xepr()
 
-# TODO tupple input -> a bit awkward
 f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/'
 exp_f = f_loc + '4pDEER.exp'
 def_f = f_loc + '4pDEER.def'
@@ -105,4 +104,6 @@ xbest0, fbest, message = optimize(Xepr, pars=['&k'], init=[10],
                                   exp_file=exp_f, def_file=def_f,
                                   maxfev=112, nfactor=5,
                                   callback=shape_bw,
-                                  callback_args=tuple([7770]))
+                                  callback_args=(7770,))
+
+# TODO add comment about tuple([7770])

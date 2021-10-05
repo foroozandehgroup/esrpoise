@@ -6,14 +6,6 @@ Contains the main code required for executing an optimisation.
 
 SPDX-License-Identifier: GPL-3.0-or-later
 
-TODO [Not urgent/super important]
-Optimizer
-    # different nfactor for each parameter
-    # bounce?
-Other
-    # add stop -> no bug observed in a while with manual quite (ctl+C)
-    # .exp file modif?
-    # add option to avoid run with optimal parameters?
 """
 
 from datetime import datetime
@@ -86,6 +78,10 @@ def optimize(Xepr,
         Value of the cost function at x = xbest.
     message : str
         A message indicating why the optimisation terminated.
+
+    To quit the optimization, simply type 'ctlr+C' in the terminal.
+    It is recommended to do so during an acquisition phase of Xepr to avoid
+    Xepr crashes.
     """
     # Get start time
     tic = datetime.now()
@@ -161,22 +157,31 @@ def optimize(Xepr,
     print(fmt.format("Number of experiments ran", acquire_esr.calls))
     print(fmt.format("Total time taken", time_taken))
     print(fmt.format("Optimisation message", opt_result.message))
-
-    # run experiment with optimal parameters
-    param_set(Xepr, pars, best_values, tol,
-              exp_file, def_file,
-              callback=callback, callback_args=callback_args)
-
-    Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
-
     print("=" * 60)
     print("\n")
 
     # TODO return string actually input for parameters?
     # context: reuse previously optimized values
     # in particular, check with mpfu phases values
+    # return best_values as string
+    # Jon's advice: return a class with all the information
 
     return best_values, opt_result.fbest, opt_result.message
+
+
+def run_optimized(Xepr, pars, best_values,
+                  exp_file=None, def_file=None,
+                  callback=None, callback_args=None):
+    """
+    Run the experiments with the optimized parameters
+    """
+    # TODO fix this function
+    # run experiment with optimal parameters
+    param_set(Xepr, pars, best_values,
+              exp_file, def_file,
+              callback=callback, callback_args=callback_args)
+
+    Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
 
 
 @deco_count

@@ -11,8 +11,8 @@ Code from David updated to Python 3 and grouped into one package
     - Xepr_restexpt.py        -> reset_exp
     - Xepr_plsspel_shpfile.py -> load_shp
 
-TODO add possibility to modify exp file?
-TODO add modification of compilation time?
+TODO add modification of compilation time? try to find a way to get that from
+Xepr
 
 SPDX-License-Identifier: GPL-3.0-or-later
 """

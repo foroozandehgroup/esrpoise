@@ -17,7 +17,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 import numpy as np
 
 
-# spectrum.
+# spectrum
 def spectrum(data):
     return np.fft.fft(data.O.real + 1j * data.O.imag)
 
