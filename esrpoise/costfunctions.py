@@ -26,7 +26,7 @@ def minabsint(data):
     """
     Minimises the absolute (magnitude-mode) intensity of the spectrum.
     """
-    return np.sum(spectrum(data))
+    return np.sum(np.abs(spectrum(data)))
 
 
 def maxabsint(data):
