@@ -160,24 +160,16 @@ def optimize(Xepr,
     print("=" * 60)
     print("\n")
 
-    # TODO return string actually input for parameters?
-    # context: reuse previously optimized values
-    # in particular, check with mpfu phases values
-    # return best_values as string
-    # Jon's advice: return a class with all the information
-
     return best_values, opt_result.fbest, opt_result.message
 
 
-def run_optimized(Xepr, pars, best_values,
+def run_optimized(Xepr, pars,best_values, tol,
                   exp_file=None, def_file=None,
                   callback=None, callback_args=None):
     """
     Run the experiments with the optimized parameters
     """
-    # TODO fix this function
-    # run experiment with optimal parameters
-    param_set(Xepr, pars, best_values,
+    param_set(Xepr, pars, best_values, tol,
               exp_file, def_file,
               callback=callback, callback_args=callback_args)
 
@@ -423,7 +415,10 @@ def param_set(Xepr, pars, val, tol,
     # set user parameters
     if callback is not None:
         # user parameters grouped in a dictionary
-        callback(dict(zip(pars, val)), *callback_args)
+        if callback_args == None:
+            callback(dict(zip(pars, val)))
+        else:
+            callback(dict(zip(pars, val)), *callback_args)
 
     # set parameters in definition file
     if def_modif:
