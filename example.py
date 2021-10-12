@@ -27,6 +27,7 @@ from esrpoise import optimize
 from esrpoise.costfunctions import maxabsint_echo
 from esrpoise import Xepr_link
 
+# load Xepr instance
 Xepr = Xepr_link.load_xepr()
 
 # Fine adjustment of center field

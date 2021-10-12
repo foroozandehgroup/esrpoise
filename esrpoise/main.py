@@ -163,19 +163,6 @@ def optimize(Xepr,
     return best_values, opt_result.fbest, opt_result.message
 
 
-def run_optimized(Xepr, pars,best_values, tol,
-                  exp_file=None, def_file=None,
-                  callback=None, callback_args=None):
-    """
-    Run the experiments with the optimized parameters
-    """
-    param_set(Xepr, pars, best_values, tol,
-              exp_file, def_file,
-              callback=callback, callback_args=callback_args)
-
-    Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
-
-
 @deco_count
 def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
                 Xepr, exp_file=None, def_file=None,
@@ -248,8 +235,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
             (np.any(unscaled_val < lb) or np.any(unscaled_val > ub))):
         # Set the value of the cost function to infinity.
         cf_val = np.inf
-        # Log that.
-        # print(fstr.format(*unscaled_val, cf_val))
+
         # Return immediately.
         return cf_val
 
@@ -266,8 +252,6 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
     # log
     fstr = "{:^10.4f}  " * (len(x) + 1)  # Format string for logging
 
-    # print(fstr.format(*unscaled_val, cf_val)) # optimizer values
-
     # print values sent to Xepr
     print(fstr.format(*np.array(
         round2tol_str(unscaled_val, tol)).astype(np.float), cf_val))
@@ -275,40 +259,17 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
     return cf_val
 
 
-def round2tol_str(values, tols):
+def run_optimized(Xepr, pars, best_values, tol,
+                  exp_file=None, def_file=None,
+                  callback=None, callback_args=None):
     """
-    Round values to closest multiple of tolerance
-
-    Parameters
-    ----------
-    values : list or ndarray
-        values to round
-    tol : list or ndarray
-        values tolerances
-
-    Returns
-    -------
-    values_str :
-        rounded values as a list of strings
+    Run the experiments with the optimized parameters
     """
+    param_set(Xepr, pars, best_values, tol,
+              exp_file, def_file,
+              callback=callback, callback_args=callback_args)
 
-    values_str = list()
-    for val, tol in zip(values, tols):
-
-        # round to tolerance multiple
-        val = tol * np.round(val / tol)
-        tol_str = str(tol)
-
-        if '.' not in tol_str:  # integer case # tol.is_integer()
-            values_str.append(str(int(val)))
-        elif tol.is_integer():  # float which is an integer case
-            values_str.append(str(int(val)))
-        else:  # float case
-            decimal_nb = len(tol_str[tol_str.index('.'):-1])
-            # round to same number of decimal numbers
-            values_str.append(str(np.round(val, decimal_nb)))
-
-    return values_str
+    Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
 
 
 def param_set(Xepr, pars, val, tol,
@@ -415,7 +376,7 @@ def param_set(Xepr, pars, val, tol,
     # set user parameters
     if callback is not None:
         # user parameters grouped in a dictionary
-        if callback_args == None:
+        if callback_args is None:
             callback(dict(zip(pars, val)))
         else:
             callback(dict(zip(pars, val)), *callback_args)
@@ -434,3 +395,39 @@ def param_set(Xepr, pars, val, tol,
                              'parameters. The experiment file path '
                              'exp_file is required to modify them.')
         Xepr_link.load_exp(Xepr, exp_file)
+
+
+def round2tol_str(values, tols):
+    """
+    Round values to closest multiple of tolerance
+
+    Parameters
+    ----------
+    values : list or ndarray
+        values to round
+    tol : list or ndarray
+        values tolerances
+
+    Returns
+    -------
+    values_str :
+        rounded values as a list of strings
+    """
+
+    values_str = list()
+    for val, tol in zip(values, tols):
+
+        # round to tolerance multiple
+        val = tol * np.round(val / tol)
+        tol_str = str(tol)
+
+        if '.' not in tol_str:  # integer case # tol.is_integer()
+            values_str.append(str(int(val)))
+        elif tol.is_integer():  # float which is an integer case
+            values_str.append(str(int(val)))
+        else:  # float case
+            decimal_nb = len(tol_str[tol_str.index('.'):-1])
+            # round to same number of decimal numbers
+            values_str.append(str(np.round(val, decimal_nb)))
+
+    return values_str

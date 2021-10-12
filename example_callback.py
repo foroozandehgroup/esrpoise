@@ -31,8 +31,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import os
-import numpy as np
-
 from esrpoise import optimize
 from esrpoise.costfunctions import max_n2p
 from esrpoise import Xepr_link
@@ -41,36 +39,39 @@ from mrpypulse import pulse
 
 def shape_bw(callback_pars_dict, shp_nb):
     """
-    Modifies the shape bandwidth
+    Modifies a hyperbolic sechant pulse shape via its selectivity k (B=k/tp).
 
     Parameters
     ----------
     callback_pars_dict: dictionary
         dictionary with the name of the parameters to optimize as key and their
         value as value
+    shp_nb: int
+        number of the shape to be modified
     """
 
+    # getting k value from the callback parameters to be optimised
     k = callback_pars_dict["&k"]
 
-    # NB: Q doesn't matter much as the shape is at max amplitude in Xepr
+    # create hyperbolic sechant shape with k value
     tp = 64e-9
     p = pulse.Parametrized(bw=60e6, tp=tp, Q=15, tres=0.625e-9,
                            delta_f=-65e6, B=k/tp,
                            AM="tanh", FM="sech")
 
-    # create shape files (phase 0 and 180)
+    # create shape file
     p.xepr_file(shp_nb)
-    p.phi0 += np.pi
-    p.xepr_file(shp_nb+1)
+
+    # shape path
+    path = os.path.join(os.getcwd(), str(shp_nb) + '.shp')
 
     # send shape to Xepr
-    path = os.path.join(os.getcwd(), str(shp_nb) + '.shp')
     Xepr_link.load_shp(Xepr, path)
 
-    # TODO note on AWG memory overloading
-    # present it as a note/remark in case the user encounters this bug
-    # the user should be able to get the number of iterations in the
-    # callback function
+    # NB: AWG memory overloading
+    # If a bug with shape loading is encountered after a certain number
+    # of iterations (typically 114 on older version of Xepr), it can be solved
+    # by reseting Xepr. Uncomment the following lines:
     # # Xepr reset needed for 114 sequential shape load and run
     # if acquire_esr.calls % 114 == 0 and acquire_esr.calls != 0:
     #     print('reset required')
@@ -79,31 +80,16 @@ def shape_bw(callback_pars_dict, shp_nb):
     return None
 
 
-def shapes2Xepr(shp_paths, shps_path):
-    """
-    Concatenate xepr files together
-    """
-    with open(shps_path, 'w') as merged_file:
-        for names in shp_paths:
-            with open(names) as infile:
-                merged_file.write(infile.read())
-
-    return None
-
-
+# load Xepr instance
 Xepr = Xepr_link.load_xepr()
-
-f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210823/deer/'
-exp_f = f_loc + '4pDEER.exp'
-def_f = f_loc + '4pDEER.def'
 
 #  HS pump pulse selectivity factor optimization
 xbest0, fbest, message = optimize(Xepr, pars=['&k'], init=[10],
                                   lb=[1], ub=[15], tol=[1],
                                   cost_function=max_n2p,
-                                  exp_file=exp_f, def_file=def_f,
                                   maxfev=112, nfactor=5,
                                   callback=shape_bw,
                                   callback_args=(7770,))
 
-# TODO add comment about tuple([7770])
+# NB: callback_args needs to be input as a tupple
+# (7770,) is equivalent to tuple([7770])
