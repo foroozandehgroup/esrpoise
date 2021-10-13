@@ -15,6 +15,16 @@ from esrpoise import optimize
 from esrpoise.costfunctions import maxabsint_echo
 
 
+# NB: the compilation time of the .exp/.def files is 1s by default but can be
+# modified with the global variable COMPILATION_TIME from Xepr_link.
+# This can be used to:
+#     - avoid bugs caused by a slow compilation time when Xepr does not finish
+#       compiling before receiving its next instruction),
+#     - accelerate an optimisation routine if the Xepr files are compiling
+#       faster.
+# To test a modification of the compilation time, uncomment the next line
+# Xepr_link.COMPILATION_TIME = 2  # (s)
+
 Xepr = Xepr_link.load_xepr()
 
 # .exp and .def files location

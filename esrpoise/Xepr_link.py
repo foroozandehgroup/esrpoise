@@ -2,23 +2,17 @@
 Xepr_link.py
 ------------
 
-Xepr interface functions, communicate with Xepr usingXeprAPI
-
-Code from David updated to Python 3 and grouped into one package
-    - Xepr_plsspel_deffile.py -> load_def
-    - Xepr_plsspel_moddefs.py -> modif_def
-    - Xepr_plsspel_expfile.py -> load_exp
-    - Xepr_restexpt.py        -> reset_exp
-    - Xepr_plsspel_shpfile.py -> load_shp
-
-TODO add modification of compilation time? try to find a way to get that from
-Xepr
+Xepr interface functions, communicate with Xepr usingXeprAPI.
 
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import time
 import XeprAPI         # load the Xepr API module
+
+
+# global variable to control Xepr files compilation time
+COMPILATION_TIME = 1  # (s)
 
 
 def load_xepr():
@@ -62,7 +56,7 @@ def load_exp(Xepr, exp_file):
         Xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
-        time.sleep(1)
+        time.sleep(COMPILATION_TIME)
     except Exception:
         raise RuntimeError("Error loading and compiling experiment file")
 
@@ -88,7 +82,7 @@ def load_def(Xepr, def_file):
         Xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
-        time.sleep(1)
+        time.sleep(COMPILATION_TIME)
     except Exception:
         raise RuntimeError("Error loading and compiling definition file")
 
@@ -203,7 +197,7 @@ def load_shp(Xepr, shp_file):
         Xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
-        time.sleep(0.25)
+        time.sleep(COMPILATION_TIME*0.25)
     except Exception:
         raise RuntimeError("Error loading and compiling Xepr shape file")
 
@@ -289,7 +283,7 @@ def reset_exp(Xepr):
     None
     """
     # wait for Xepr to be ready to reset the experiment
-    time.sleep(2)
+    time.sleep(2*COMPILATION_TIME)
 
     # get current experiment name
     curr_exp = Xepr.XeprExperiment()
@@ -321,7 +315,7 @@ def reset_exp(Xepr):
     input('when done, press enter in python console to continue:')
 
     # wait for Xepr to reset the experiment
-    time.sleep(2)
+    time.sleep(2*COMPILATION_TIME)
 
     # prevent Xepr from reseting high power attenuation value
     Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine 1")
