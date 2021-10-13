@@ -3,8 +3,8 @@
 begin defs
 
 ; Variables    ; Comments:
-p0   = 16 ; pi/2 pulse length
-p1   = 30 ; pi pulse length
+p0   = 16      ; pi/2 pulse length
+p1   = 30      ; pi pulse length
 pg   = 40      ; Integrator Gate Width
 d0   = 350     ; Detection Trigger offset time
 d1   = 200     ; tau

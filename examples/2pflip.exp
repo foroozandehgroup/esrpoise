@@ -58,7 +58,7 @@ end lists3
 ;
 ; Single pulse
 ;
-begin exp "Single pulse" [TRANS QUAD]
+begin exp "Single-pulse" [TRANS QUAD]
         ; QUAD detection of Transient
 
     shot i=1 to a               ; accumulation loop

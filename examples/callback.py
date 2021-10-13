@@ -79,7 +79,7 @@ def shape_bw(callback_pars_dict, shp_nb):
 
 Xepr = Xepr_link.load_xepr()
 
-#  HS pump pulse selectivity factor optimization
+#  HS pulse bandwidth optimisation
 xbest0, fbest, message = optimize(Xepr,
                                   pars=['&bw'],
                                   init=[80e6],

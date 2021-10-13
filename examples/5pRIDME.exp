@@ -9,7 +9,7 @@
 ;
 
 begin defs		  ; dimension of data array [sx,sy]
- dim s[256]	  ;  PE transient
+ dim s[256]	      ;  PE transient
  dim1 s[256]	  ;  SE transient
  dim2 s[256]	  ;  RVE transient
  dim3 s[100]      ;  5-pulse RIDME
@@ -103,10 +103,10 @@ begin exp1 "SE transient" [TRANS QUAD]
 
 p5=p1
 aa1=0
-  d2=d7+d3                 ; calculate separation
+  d2=d7+d3                      ; calculate separation
   d2=d2-d1
  for k=1 to n                   ; averaging loop
-    shot i=1 to a                ; accumulation loop
+    shot i=1 to a               ; accumulation loop
 
     d9                          ; DAF (Delay After Flash)
     p0 [ph1]                    ; 1st pulse
@@ -127,7 +127,7 @@ aa1=0
 end exp1
 
 ;
-; Refocused Virtual Echo 
+; Refocused Virtual Echo
 ;
 
 begin exp2 "RVE transient" [TRANS QUAD]
@@ -135,10 +135,10 @@ begin exp2 "RVE transient" [TRANS QUAD]
 
 p5=p1
 aa1=0
-  d2=d7+d3                 ; calculate separation
+  d2=d7+d3                      ; calculate separation
   d2=d2-d1
-  for k=1 to n                   ; averaging loop
-    shot i=1 to a                ; accumulation loop
+  for k=1 to n                  ; averaging loop
+    shot i=1 to a               ; accumulation loop
 
     d9                          ; DAF (Delay After Flash)
     p0 [ph1]                    ; 1st pulse
@@ -175,7 +175,7 @@ d13=d7
   totscans (n)                  ; output of total number of scans
   d3=d8                         ; recall T for averaging loop
   d7=d13
-  d2=d7+d3                 ; calculate separation
+  d2=d7+d3                      ; calculate separation
   d2=d2-d1
   dx=d3-d1                      ; and define x-axis
 
@@ -222,7 +222,7 @@ for y=1 to sy
   totscans (n)                  ; output of total number of scans
   d3=d8                         ; recall T for averaging loop
   d7=d13
-  d2=d7+d3                 ; calculate separation
+  d2=d7+d3                      ; calculate separation
   d2=d2-d1
   dx=d3-d1                      ; and define x-axis
   sweep x=1 to sx               ; T sweep loop
@@ -263,14 +263,14 @@ d6=d1
 for y=1 to sy
  
  for k=1 to n                   ; averaging loop
- totscans (n)                  ; output of total number of scans
+ totscans (n)                   ; output of total number of scans
 
 d11 = d12
 d1=d6
  for j=1 to m
 d5=j-1
 d5=d5*d31
-d3 = d8 + d5                          ; recall T for averaging
+d3 = d8 + d5                    ; recall T for averaging
 d1 = d6 + d5
 d7 = d13 
 
@@ -279,7 +279,7 @@ for l = 1 to q
   d14 = l-1
   d14 = d14*d31
   d7=d13 + d14
-  d2=d7+d3                 ; calculate separation
+  d2=d7+d3                      ; calculate separation
   d2=d2-d1
   dx=d3-d1                      ; and define x-axis
   sweep x=1 to sx               ; T sweep loop

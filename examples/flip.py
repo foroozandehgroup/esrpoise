@@ -42,3 +42,6 @@ xbest0, fbest0, message0 = optimize(Xepr,
                                     cost_function=maxabsint_echo,
                                     exp_file=exp_f, def_file=def_f,
                                     optimiser="bobyqa", maxfev=20)
+
+# run experiment with optimal parameters
+Xepr_link.run2getdata_exp(Xepr, "Signal", exp_f)

@@ -32,6 +32,7 @@ ub = [100]
 tol = [1]
 
 # +<x> channel phase adjustment
+# NB: no space should be present in the experiment name
 Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "mpfu+x")
 pars = ["BrXPhase"]
 xbest0, fbest0, msg0 = optimize(Xepr, pars=pars, init=init, lb=lb, ub=ub,

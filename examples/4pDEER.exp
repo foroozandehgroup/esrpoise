@@ -12,15 +12,15 @@
 ;
 
 begin defs              ; dimension of data array [sx,sy]
- dim s[512]            ;    for set-up
+ dim s[512]             ;    for set-up
  dim1 s[400]            ;    for integrated echo vs. time with phase cycle
  dim2 s[525]            ;    for 4-Pulse ELDOR
  dim3 s[178]            ;    for tau averaging
  dim4 s[265,128]        ;    for tau averaging, n scans saved each y index 
  dim5 s[200,200]        ;    "DEERxy not tavg", n scans saved each y index
  dim6 s[525,8]          ;    "DEER 2D tavg", n scans saved each y index
- dim7 s[512]
- dim8 s[4]
+ dim7 s[512]            ;    for 2 pulse set-up
+ dim8 s[4]              ;    for n2p measurement
 end defs
 
 ;
@@ -244,7 +244,7 @@ begin exp4 "4pDeer tavg yscans"  [INTG QUAD ]
 d8=d3                           ; store T
 d6 = d1
 
-for y=1 to sy             ;
+for y=1 to sy                   ;
  for k=1 to n                   ; averaging loop
    totscans (n)                 ; output of total number of scans
 
@@ -402,11 +402,11 @@ begin exp8 "4P-ELDOR-n2p"  [INTG QUAD ]
  for k=1 to n                   ; averaging loop
    totscans (n)                 ; output of total number of scans
 
-   d3=d12                        ; recall T for averaging loop
-   dx=d12-d1                     ; and define x-axis
+   d3=d12                       ; recall T for averaging loop
+   dx=d12-d1                    ; and define x-axis
 
-   for x=1 to 2              ; T sweep loop
-    d8=d1+d2                     ; calculate separation
+   for x=1 to 2                 ; T sweep loop
+    d8=d1+d2                    ; calculate separation
     d8=d8-d3
     shot i=1 to h               ; accumulation loop
       d9                        ; DAF (Delay After Flash)
@@ -422,9 +422,9 @@ begin exp8 "4P-ELDOR-n2p"  [INTG QUAD ]
       acq [sg1]
     next i                      ; end of accumulation loop
 
-    d3=d13                   ; increment T
+    d3=d13                      ; increment T
     d14=d13-d12
-    dx=dx+d14              ; increment x axis
+    dx=dx+d14                   ; increment x axis
    next x                       ; end of T sweep loop
 
   scansdone(k)                  ; output number of scans done

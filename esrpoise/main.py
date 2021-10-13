@@ -263,19 +263,6 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
     return cf_val
 
 
-def run_optimized(Xepr, pars, best_values, tol,
-                  exp_file=None, def_file=None,
-                  callback=None, callback_args=None):
-    """
-    Run the experiments with the optimized parameters
-    """
-    param_set(Xepr, pars, best_values, tol,
-              exp_file, def_file,
-              callback=callback, callback_args=callback_args)
-
-    Xepr_link.run2getdata_exp(Xepr, "Signal", exp_file)
-
-
 def param_set(Xepr, pars, val, tol,
               exp_file=None, def_file=None,
               callback=None, callback_args=None):
