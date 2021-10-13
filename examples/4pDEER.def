@@ -1,0 +1,91 @@
+;
+;  ELDOR package, for 8-step phase cycle, with pump pulse phase-cycled
+;
+;  PulseSPEL general variables, definitions & conventions
+
+begin defs
+
+; Variables
+; Comments:
+
+p0   = 84 ; observe pi/2 pulse length
+p1   = p0 ; observe pi pulse length
+p2   = 0       ; not used
+p3   = 100       ; pump pi pulse length
+
+pg   = 98      ; Integrator Gate Width
+d0   = 380     ; Detection Trigger offset time
+
+d1   = 200     ; tau1
+d2   = 1000     ; tau2
+d3   = 50      ; T
+d4   = 60      ; deadtime for 3-pulse, time before 1st det. pulse
+
+d9   = 0       ; DAF (Delay After Flash) delay pulse sequence until
+               ; after external event (eg. laser pulse)
+
+d11   = d1-d3   ; start of DEER trace time axis
+d12   = d1-6   ; T for maximum in n2p - add its position from deer trace
+d13   = d1+116 ; T for minimum in n2p - add its position from deer trace
+
+d30  = 2       ; 1st time scale increment
+m    = 8       ; number of tau1's to average
+d31  = 8       ; time step for tau1 avging
+
+da0  = 1       ; AWG amplitude steps
+da1  = 1       ; AWG amplitude steps
+da2  = 1       ; AWG amplitude steps
+
+ap1  = 69 ; observe phases pi/2
+ap2  = 90+ap1      ; 70
+ap3  = 180+ap1     ; 152
+ap4  = 270+ap1     ; 250
+ap5  = 0       ; pump phases
+ap6  = 180     ;
+
+a    = 1024    ; (RESERVED) number of transient averages (TRANS)
+                ; if greater than 1024, a must be a multiple of 1024
+h    = 256 ; (CONVENTION) number of shots per point (INTG and SPT)
+n    = 1 ; (CONVENTION) number of sweeps to accumulate
+
+srt  = 1200 * srtu ; (RESERVED) SRT - Shot Repetition Time (srtu=1.02 us)
+
+; VARIABLES for AWG
+; pump pulse variables
+af2  = 0  ; start frequency / MHz -65000 for standard shapes
+af3  = 0  ; end frequency / MHz -65000 for standard shapes
+aa2 = 100 
+as1  = 8000       ; shape phase 0
+as2  = 8001       ; shape phase 180
+
+; observe pulse variables
+; pi/2 pulses
+af0  = 0       ; start frequency / MHz
+af1  = 0       ; end frequency / MHz
+aa0 = 65
+as0  = 1       ; shape
+; pi pulses
+aa1 = 100
+
+; end of AWG variables
+
+b    = 1       ;
+c    = 1       ;
+r    = 1       ;
+s    = 1       ;
+t    = 1       ;
+
+w    = 800     ; (RESERVED) Split point of sweeps (ns)
+
+
+dx   = 0       ; (RESERVED) 1st time scale starting value
+dy   = 0       ; (RESERVED) 2nd time scale starting value
+
+end defs
+
+; Note:
+;        Variables Marked 'RESERVED' = variable may be used for other times,
+;               however only this variable can change
+;               the indicated parameter.
+;               eg. only 'a' will change the number of
+;               transients averaged in SpecJet

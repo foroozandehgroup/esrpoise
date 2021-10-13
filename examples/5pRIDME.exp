@@ -1,0 +1,315 @@
+;
+;  Dead-time free 5-pulse RIDME 
+;
+;   Sergey Milikisyants, Francesco Scarpelli, Michelina G. Finiguerra, 
+;   Marcellus Ubbink, Martina Huber, "A pulsed EPR method to determine 
+;   distances between paramagnetic centers with strong spectral anisotropy 
+;   and radicals: The dead-time free RIDME sequence", Journal of Magnetic Resonance 
+;   2009, 201(1), pp. 48-56
+;
+
+begin defs		  ; dimension of data array [sx,sy]
+ dim s[256]	  ;  PE transient
+ dim1 s[256]	  ;  SE transient
+ dim2 s[256]	  ;  RVE transient
+ dim3 s[100]      ;  5-pulse RIDME
+ dim4 s[68,20]    ;  5-pulse RIDME, vary T
+ dim5 s[68,20]    ;  5-pulse RIDME, double tau-average
+end defs
+
+; phase cycles
+
+begin lists "mpfu+x"
+ ph0 +<x>
+ ph1 +<x>
+ ph2 +<x>
+ ph3 +<x>
+ ph4 +<x>
+ ph5 +<x>
+ asg1 +a
+ bsg1 +b
+end lists
+
+begin lists1 "mpfu-x"
+ ph0 +<x> -<x>
+ ph1 +<x>
+ ph2 +<x>
+ ph3 +<x>                ; not used
+ ph4 +<x>
+ ph5 +<x>
+ asg1 +a -a
+ bsg1 +b -b
+end lists1
+
+begin lists2 "mpfu+y"
+ ph0 +<x> +<y> -<x> +<y>
+ ph1 +<x>
+ ph2 +<x>
+ ph3 +<x>                ; not used
+ ph4 +<x>
+ ph5 +<x>
+ asg1 +a +b -a +b
+ bsg1 +b +a -b +a
+end lists2
+
+begin lists3 "mpfu-y"
+ ph0 +<x> +<y> -<x> -<y>
+ ph1 +<x>
+ ph2 +<x>
+ ph3 +<x>
+ ph4 +<x>
+ ph5 +<x>
+ asg1 +a +b -a -b
+ bsg1 +b +a -b -a 
+end lists3
+
+begin lists4 "8-step"
+ ph0 +<x> +<x> +<x> +<x> -<x> -<x> -<x> -<x>
+ ph1 +<x> +<x> +<x> +<x> -<x> -<x> -<x> -<x>
+ ph2 +<x>                                      ; not cycled
+ ph3 +<x> -<x> +<y> -<y> +<x> -<x> +<y> -<y>
+ ph4 +<x> -<x> +<y> -<y> +<x> -<x> +<y> -<y>   ; same as ph3
+ ph5 +<x>                                      ; not cycled
+ asg1 +a +a +a +a -a -a -a -a
+ bsg1 +b +b +b +b -b -b -b -b
+end lists4
+
+;
+; Primary Echo 
+;
+
+begin exp "PE transient" [TRANS QUAD]
+	; QUAD detection with Integration
+
+    shot i=1 to a                ; accumulation loop
+
+    d9                          ; DAF (Delay After Flash)
+    p0 [ph0]                    ; 1st pulse
+    d1                          ; tau1
+    p1 [ph2]                    ; 2nd pulse
+    d1
+    d0
+    dig [sg1]
+    next i
+
+end exp
+
+;
+; Secondary Echo 
+;
+
+begin exp1 "SE transient" [TRANS QUAD]
+	; QUAD detection with Integration
+
+p5=p1
+aa1=0
+  d2=d7+d3                 ; calculate separation
+  d2=d2-d1
+ for k=1 to n                   ; averaging loop
+    shot i=1 to a                ; accumulation loop
+
+    d9                          ; DAF (Delay After Flash)
+    p0 [ph1]                    ; 1st pulse
+    d1                          ; tau1
+    p1 [ph2]                    ; 2nd pulse
+    d3                          ; T + d30 * sx-1 < d1 + d2
+    p0 [ph3]                    ; 3rd pulse
+    d11                         ; Mixing time
+    p0 [ph4]                    ; 4th pulse
+    dig [sg1]
+
+    next i
+
+  scansdone(k)                  ; output number of scans done
+
+ next k
+
+end exp1
+
+;
+; Refocused Virtual Echo 
+;
+
+begin exp2 "RVE transient" [TRANS QUAD]
+	; QUAD detection with Integration
+
+p5=p1
+aa1=0
+  d2=d7+d3                 ; calculate separation
+  d2=d2-d1
+  for k=1 to n                   ; averaging loop
+    shot i=1 to a                ; accumulation loop
+
+    d9                          ; DAF (Delay After Flash)
+    p0 [ph1]                    ; 1st pulse
+    d1                          ; tau1
+    p1 [ph2]                    ; 2nd pulse
+    d3                          ; T + d30 * sx-1 < d1 + d2
+    p0 [ph3]                    ; 3rd pulse
+    d11                         ; Mixing time
+    p0 [ph4]                    ; 4th pulse
+    d7                          ; 
+    p1 [ph5]                    ; 5th pulse
+    d2                          ; tau2
+    d0                          ; constant acquisition delay
+    dig [sg1]
+
+    next i
+
+   scansdone(k)                  ; output number of scans done
+
+  next k
+
+end exp2
+
+
+
+begin exp3 "5P RIDME"  [INTG QUAD]
+; QUAD detection with Integration
+
+d8=d3                           ; store T
+d13=d7
+
+ for k=1 to n                   ; averaging loop
+
+  totscans (n)                  ; output of total number of scans
+  d3=d8                         ; recall T for averaging loop
+  d7=d13
+  d2=d7+d3                 ; calculate separation
+  d2=d2-d1
+  dx=d3-d1                      ; and define x-axis
+
+  sweep x=1 to sx               ; T sweep loop
+
+   shot i=1 to h                ; accumulation loop
+    d9                          ; DAF (Delay After Flash)
+    p0 [ph1]                    ; 1st pulse
+    d1                          ; tau1
+    p1 [ph2]                    ; 2nd pulse
+    d3                          ; T + d30 * sx-1 < d1 + d2
+    p0 [ph3]                    ; 3rd pulse
+    d11                         ; Mixing time
+    p0 [ph4]                    ; 4th pulse
+    d7                          ; 
+    p1 [ph5]                    ; 5th pulse
+    d2                          ; tau2
+    d0                          ; constant acquisition delay
+    acq [sg1]
+   next i                       ; end of accumulation loop
+
+   d3=d3+d30                    ; increment T
+   d7=d7-d30                    ; decrement time between pulse 3 and 4
+   dx=dx+d30                    ; increment x axis
+
+  next x                        ; end of T sweep loop
+
+  scansdone(k)                  ; output number of scans done
+
+ next k
+
+end exp3
+ 
+
+begin exp4 "2D 5P RIDME"  [INTG QUAD]
+; QUAD detection with Integration
+
+d8=d3                           ; store T
+d13=d7
+d12 = d11
+ for k=1 to n                   ; averaging loop
+d11 = d12
+for y=1 to sy
+  totscans (n)                  ; output of total number of scans
+  d3=d8                         ; recall T for averaging loop
+  d7=d13
+  d2=d7+d3                 ; calculate separation
+  d2=d2-d1
+  dx=d3-d1                      ; and define x-axis
+  sweep x=1 to sx               ; T sweep loop
+   shot i=1 to h                ; accumulation loop
+    d9                          ; DAF (Delay After Flash)
+    p0 [ph1]                    ; 1st pulse
+    d1                          ; tau1
+    p1 [ph2]                    ; 2nd pulse
+    d3                          ; T + d30 * sx-1 < d1 + d2
+    p0 [ph3]                    ; 3rd pulse
+    d11                         ; Mixing time
+    p0 [ph4]                    ; 4th pulse
+    d7                          ; 
+    p1 [ph5]                    ; 5th pulse
+    d2                          ; tau2
+    d0                          ; constant acquisition delay
+    acq [sg1]
+   next i                       ; end of accumulation loop
+   d3=d3+d30                    ; increment T
+   d7=d7-d30                    ; decrement time between pulse 3 and 4
+   dx=dx+d30                    ; increment x axis
+  next x                        ; end of T sweep loop
+d11 = d11 + d31
+next y
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp4
+
+ 
+begin exp5 "2D 5P RIDME double tau avg"  [INTG QUAD]
+; QUAD detection with Integration
+
+d8=d3                           ; store T
+d13=d7
+d12 = d11
+d6=d1
+for y=1 to sy
+ 
+ for k=1 to n                   ; averaging loop
+ totscans (n)                  ; output of total number of scans
+
+d11 = d12
+d1=d6
+ for j=1 to m
+d5=j-1
+d5=d5*d31
+d3 = d8 + d5                          ; recall T for averaging
+d1 = d6 + d5
+d7 = d13 
+
+for l = 1 to q
+  d3= d8 + d5
+  d14 = l-1
+  d14 = d14*d31
+  d7=d13 + d14
+  d2=d7+d3                 ; calculate separation
+  d2=d2-d1
+  dx=d3-d1                      ; and define x-axis
+  sweep x=1 to sx               ; T sweep loop
+   shot i=1 to h                ; accumulation loop
+    d9                          ; DAF (Delay After Flash)
+    p0 [ph1]                    ; 1st pulse
+    d1                          ; tau1
+    p1 [ph2]                    ; 2nd pulse
+    d3                          ; T + d30 * sx-1 < d1 + d2
+    p0 [ph3]                    ; 3rd pulse
+    d11                         ; Mixing time
+    p0 [ph4]                    ; 4th pulse
+    d7                          ; 
+    p1 [ph5]                    ; 5th pulse
+    d2                          ; tau2
+    d0                          ; constant acquisition delay
+    acq [sg1]
+   next i                       ; end of accumulation loop
+   d3=d3+d30                    ; increment T
+   d7=d7-d30                    ; decrement time between pulse 3 and 4
+   dx=dx+d30                    ; increment x axis
+  next x                        ; end of T sweep loop
+
+next l
+next j
+
+  scansdone(k)                  ; output number of scans done
+ next k
+next y
+
+end exp5
+
+

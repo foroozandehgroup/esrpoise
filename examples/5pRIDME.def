@@ -1,0 +1,69 @@
+;
+;  Dead-time free 5-pulse RIDME 
+;
+;       PulseSPEL general variables, definitions & conventions
+;
+;   Sergey Milikisyants, Francesco Scarpelli, Michelina G. Finiguerra, 
+;   Marcellus Ubbink, Martina Huber, "A pulsed EPR method to determine 
+;   distances between paramagnetic centers with strong spectral anisotropy 
+;   and radicals: The dead-time free RIDME sequence", Journal of Magnetic Resonance 
+;   2009, 201(1), pp. 48-56
+;
+begin defs
+
+; Variables
+; Comments:
+
+p0   = 16      ; 90 pulse length
+p1   = 32      ; 180 pulse length
+p2   = 200     ; shaped pump pulse
+p3   = 12      ; ELDOR pulse width
+p4   = 300     ; shaped second pulse
+
+pg   = 56      ; Integrator Gate Width
+d0   = 350     ; Detection Trigger offset time
+
+d1   = 200 ; tau1
+d3   = 100     ; T
+d7   = 224    ; d7 longer than sx*d30-(d1-d3)
+d11  = 13000   
+d9   = 0       ; DAF (Delay After Flash) delay pulse sequence until
+                        ; after external event (eg. laser pulse)
+d30  = 2       ; 1st time scale increment
+m    = 12      ; number of tau1's to average
+q    = 12      ; numbe r of tau2's to average
+d31  = 8       ; time step for T increments
+
+
+
+a    = 1024    ; (RESERVED) number of transient averages (TRANS)
+               ; if greater than 1024, a must be a multiple of 1024
+h    = 200     ; (CONVENTION) number of shots per point (INTG and SPT)
+n    = 64     ; (CONVENTION) number of sweeps to accumulate
+
+srt  = 150 * srtu ; (RESERVED) SRT - Shot Repetition Time (srtu=1.02 us)
+
+
+; end of AWG variables
+
+b    = 1       ;
+c    = 1       ; number of scans within a slice
+r    = 1       ;
+s    = 1       ;
+t    = 1       ;
+
+w    = 800     ; (RESERVED) Split point of sweeps (ns)
+
+
+dx   = 0       ; (RESERVED) 1st time scale starting value
+dy   = 0       ; (RESERVED) 2nd time scale starting value
+
+end defs
+
+; Note:
+;        Variables Marked 'RESERVED' = variable may be used for other times,
+;               however only this variable can change
+;               the indicated parameter.
+;               eg. only 'a' will change the number of
+;               transients averaged in SpecJet
+

@@ -144,6 +144,10 @@ def optimize(Xepr,
                          args=optimargs, maxfev=maxfev, nfactor=nfactor)
     best_values = unscale(opt_result.xbest, lb, ub, tol, scaleby="tols")
 
+    # set up optimal parameters values
+    param_set(Xepr, pars, best_values, tol,
+              exp_file, def_file, callback, callback_args)
+
     # final logging
     toc = datetime.now()
     time_taken = str(toc - tic).split(".")[0]  # remove microseconds

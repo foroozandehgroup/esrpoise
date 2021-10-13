@@ -1,0 +1,89 @@
+;
+; Hahn echo with 2 pulses
+;
+
+begin defs             ; dimension of data array [sx,sy]
+ dim s[512]            ; for single pulse
+ dim1 s[256]           ; for Hahn-echo
+end defs
+
+
+;
+; first detection pulse
+;   ph1 +x -x +y -y
+;
+begin awg0
+        af0 af0 af0 af0   ; start frequency [MHz]
+        af1 af1 af1 af1   ; end frequency [MHz]
+        ap0 ap1 ap2 ap3   ; phase [degrees] 0 180 90 270
+        aa0 aa0 aa0 aa0   ; amplitude [%]
+        as0 as0 as0 as0   ; shape
+end awg0
+
+;
+; second detection pulse
+;   ph2 +x -x +y -y  -x +x -y +y  +y -y -x +x  -y +y +x -x
+;
+begin awg1
+        af0 af0 af0 af0   af0 af0 af0 af0   af0 af0 af0 af0   af0 af0 af0 af0   ; start frequency [MHz]
+        af1 af1 af1 af1   af1 af1 af1 af1   af1 af1 af1 af1   af1 af1 af1 af1   ; end frequency [MHz]
+        ap4 ap5 ap6 ap7   ap5 ap4 ap7 ap6   ap6 ap7 ap5 ap4   ap7 ap6 ap4 ap5   ; phase [degrees] 0 180 90 270   180 0 270 90   90 270 180 0   270 90 0 180
+        aa1 aa1 aa1 aa1   aa1 aa1 aa1 aa1   aa1 aa1 aa1 aa1   aa1 aa1 aa1 aa1   ; amplitude [%]
+        as0 as0 as0 as0   as0 as0 as0 as0   as0 as0 as0 as0   as0 as0 as0 as0   ; shape
+end awg1
+
+;
+; phase cycles
+;
+begin lists "none"
+ asg1 +a
+ bsg1 +b
+end lists
+
+begin lists1 "2-step"
+ asg1 +a -a                    ; sign program for RE part
+ bsg1 +b +b                    ; sign program for IM part
+end lists1
+
+begin lists2 "4-step"
+ asg1 +a -b -a +b              ; sign program for RE part
+ bsg1 +b +a -b -a              ; sign program for IM part
+end lists2
+
+begin lists3 "16-step"
+ asg1 +a -a +b -b  +a -a +b -b  -a +a -b +b  -a +a -b +b
+ bsg1 +b -b -a +a  +b -b -a +a  -b +b +a -a  -b +b +a -a
+end lists3
+
+;
+; Single pulse
+;
+begin exp "Single pulse" [TRANS QUAD]
+        ; QUAD detection of Transient
+
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+
+end exp
+
+;
+; Hahn-echo
+;
+begin exp1 "Hahn-echo" [TRANS QUAD]
+        ; QUAD detection of Transient
+
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+
+end exp1

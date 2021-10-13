@@ -1,0 +1,50 @@
+;       Hahn-echo - PulseSPEL general variables, definitions & conventions
+
+begin defs
+
+; Variables    ; Comments:
+p0   = 16 ; pi/2 pulse length
+p1   = 30 ; pi pulse length
+pg   = 40      ; Integrator Gate Width
+d0   = 350     ; Detection Trigger offset time
+d1   = 200     ; tau
+a    = 1024    ; (RESERVED) number of transient averages (TRANS) if > 1024, must be a multiple of 1024
+h    = 1       ; (CONVENTION) nb of shots per pt (INTG and SPT)
+n    = 1       ; (CONVENTION) nbof sweeps to accumulate
+srt  = 200 * srtu ; (RESERVED) SRT - Shot Repetition Time (srtu=1.02 us)
+
+; VARIABLES for AWG
+af0  = 0       ; start frequency / MHz
+af1  = 0       ; end frequency / MHz
+
+as0  = 0       ; shape
+
+aa0  = 100     ; amplitude / %
+ap0  = 0       ; phases / degrees
+ap1  = 180     ;
+ap2  = 90      ;
+ap3  = 270     ;
+
+aa1  = 100     ; amp / %
+ap4  = 0       ; phases / degrees
+ap5  = 180     ;
+ap6  = 90      ;
+ap7  = 270     ;
+; end of AWG variables
+
+t    = 1       ;
+
+w    = 800     ; (RESERVED) Split point of sweeps (ns)
+
+dx   = 0       ; (RESERVED) 1st time scale starting value
+dy   = 0       ; (RESERVED) 2nd time scale starting value
+
+end defs
+
+; Note:
+;        Variables Marked 'RESERVED' = variable may be used for other times,
+;               however only this variable can change
+;               the indicated parameter.
+;               eg. only 'a' will change the number of
+;               transients averaged in SpecJet
+

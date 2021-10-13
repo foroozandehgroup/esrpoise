@@ -1,5 +1,5 @@
 """
-example_callback.py
+callback.py
 ----------
 
 A minimal example of how to use the esrpoise interface with user defined
@@ -31,33 +31,30 @@ SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import os
-from esrpoise import optimize
-from esrpoise.costfunctions import max_n2p
 from esrpoise import Xepr_link
+from esrpoise import optimize
+from esrpoise.costfunctions import maxabsint_echo
 from mrpypulse import pulse
 
 
 def shape_bw(callback_pars_dict, shp_nb):
     """
-    Modifies a hyperbolic sechant pulse shape via its selectivity k (B=k/tp).
+    Modifies a hyperbolic sechant pulse bandwidth.
 
     Parameters
     ----------
     callback_pars_dict: dictionary
-        dictionary with the name of the parameters to optimize as key and their
-        value as value
+        dictionary with one entry ({'&bw': bw_value})
     shp_nb: int
         number of the shape to be modified
     """
 
-    # getting k value from the callback parameters to be optimised
-    k = callback_pars_dict["&k"]
+    # getting  bw value from the callback parameters to be optimised
+    bw = callback_pars_dict["&bw"]
 
     # create hyperbolic sechant shape with k value
-    tp = 64e-9
-    p = pulse.Parametrized(bw=60e6, tp=tp, Q=15, tres=0.625e-9,
-                           delta_f=-65e6, B=k/tp,
-                           AM="tanh", FM="sech")
+    p = pulse.Parametrized(bw=bw, tp=80e-9, Q=15, tres=0.625e-9,
+                           delta_f=-65e6, AM="tanh", FM="sech")
 
     # create shape file
     p.xepr_file(shp_nb)
@@ -80,16 +77,20 @@ def shape_bw(callback_pars_dict, shp_nb):
     return None
 
 
-# load Xepr instance
 Xepr = Xepr_link.load_xepr()
 
 #  HS pump pulse selectivity factor optimization
-xbest0, fbest, message = optimize(Xepr, pars=['&k'], init=[10],
-                                  lb=[1], ub=[15], tol=[1],
-                                  cost_function=max_n2p,
-                                  maxfev=112, nfactor=5,
+xbest0, fbest, message = optimize(Xepr,
+                                  pars=['&bw'],
+                                  init=[80e6],
+                                  lb=[30e6],
+                                  ub=[120e6],
+                                  tol=[1e6],
+                                  cost_function=maxabsint_echo,
+                                  maxfev=120,
+                                  nfactor=5,
                                   callback=shape_bw,
                                   callback_args=(7770,))
 
 # NB: callback_args needs to be input as a tupple
-# (7770,) is equivalent to tuple([7770])
+# '(7770,)' is equivalent to 'tuple([7770])'

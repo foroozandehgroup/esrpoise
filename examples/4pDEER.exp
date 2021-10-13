@@ -1,0 +1,433 @@
+;
+; 4-Pulse ELDOR, phase cycle the pump pulse
+;
+;       M. Pannier, S. Veit, A. Godt, G. Jeschke, and H. W. Spiess
+;               J. Magn Res. 2000, v. 142, p. 331
+;
+; no safe guards are present to prevent ELDOR pulse from overlapping Probe Pulse
+; sx = ( d1 + d2 - 2 * d3 ) / d30 (this leaves a time d3 between ELDOR pulse and 3rd pulse)
+; choose d30 and dim1 accordingly
+; adjust d3 to start at tau1 or before tau1
+; the axis is calculated as t-tau1
+;
+
+begin defs              ; dimension of data array [sx,sy]
+ dim s[512]            ;    for set-up
+ dim1 s[400]            ;    for integrated echo vs. time with phase cycle
+ dim2 s[525]            ;    for 4-Pulse ELDOR
+ dim3 s[178]            ;    for tau averaging
+ dim4 s[265,128]        ;    for tau averaging, n scans saved each y index 
+ dim5 s[200,200]        ;    "DEERxy not tavg", n scans saved each y index
+ dim6 s[525,8]          ;    "DEER 2D tavg", n scans saved each y index
+ dim7 s[512]
+ dim8 s[4]
+end defs
+
+;
+; first pulse
+;   ph1 +x -x +y -y  +x -x +y -y
+;
+begin awg0
+        af0  af0  af0  af0  af0  af0  af0  af0 ; start frequency [MHz]
+        af1  af1  af1  af1  af1  af1  af1  af1; end frequency [MHz]
+        ap1  ap1  ap2  ap2  ap3  ap3  ap4  ap4  ; phase [degrees]
+        aa0  aa0  aa0  aa0  aa0  aa0  aa0  aa0; amplitude [%]
+        as0  as0  as0  as0  as0  as0  as0  as0; shape
+end awg0
+
+;
+; second pulse
+;   ph2 +x -x +y -y  -x +x -y +y  +y -y -x +x  -y +y +x -x
+;
+begin awg1
+        af0 ; start frequency [MHz]
+        af1 ; end frequency [MHz]
+        0   ; phase [degrees]
+        aa1 ; amplitude [%]
+        as0 ; shape
+end awg1
+
+;
+; third pulse "PUMP PULSE"
+;
+begin awg2
+        af2 af2    ; start frequency [MHz]
+        af3 af3    ; end frequency [MHz]
+        ap5 ap5    ; phase [degrees]
+        aa2 aa2    ; amplitude [%]
+        as1 as2    ; shape
+end awg2
+
+;
+; fourth pulse
+;
+begin awg3
+        af0  ; start frequency [MHz]
+        af1  ; end frequency [MHz]
+        0    ; phase [degrees]
+        aa1  ; amplitude [%]
+        as0  ; shape
+end awg3
+
+; phase cycles
+
+begin lists "none"
+ asg1 +a
+ bsg1 +b
+end lists
+
+begin lists1 "8-step"
+ asg1 +a +a +b +b -a -a -b -b 
+ bsg1 +b +b -a -a -b -b +a +a
+end lists1
+
+begin lists2 "8-steps-2p"
+ asg1 +a +a -b -b -a -a +b +b 
+ bsg1 -b -b -a -a +b +b +a +a
+end lists2
+
+
+;
+; 4-Pulse ELDOR Set-Up
+;
+begin exp "4P-ELDOR-Setup" [TRANS QUAD ]
+        ; QUAD detection of Transient
+
+d7=d1+d2                        ; calculate seperation
+d7=d7-d3
+
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d7                        ; tau2+tau1-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+
+end exp
+
+;
+; 4-Pulse ELDOR Set-Up
+;
+begin exp1 "4P ELDORvTime" [INTG QUAD]
+        ; QUAD detection of Transient
+
+d7=d1+d2                        ; calculate seperation
+d7=d7-d3
+dx = 1
+
+sweep x = 1 to sx
+
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d7                        ; tau2+tau1-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      acq [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+   dx = dx  +1                  ;
+   next x                       ;
+
+end exp1
+
+;
+; 4-Pulse ELDOR
+;
+begin exp2 "4P ELDOR"  [INTG QUAD ]
+        ; QUAD detection with Integration
+
+d8=d3                           ; store T
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+   d3=d8                        ; recall T for averaging loop
+   d7=d1+d2                     ; calculate separation
+   d7=d7-d3
+   dx=d3-d1                     ; and define x-axis
+
+   sweep x=1 to sx              ; T sweep loop
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx-1 < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d7                        ; tau1+tau2-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      acq [sg1]
+    next i                      ; end of accumulation loop
+
+    d3=d3+d30                   ; increment T
+    d7=d7-d30                   ; decrement time between pulse 3 and 4
+    dx=dx+d30                   ; increment x axis
+   next x                       ; end of T sweep loop
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp2
+
+;
+; 4-Pulse ELDOR
+;
+begin exp3 "4P ELDOR tau1 avg"  [INTG QUAD ]
+        ; QUAD detection with Integration
+
+d8=d3                           ; store T
+d6 = d1
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+   d1 = d6                      ; recall tau1 for tau avging
+
+for j = 1 to m multislice
+
+d5 = j - 1
+d5 = d5 *d31
+   d3=d8 + d5                   ; recall T for averaging loop
+   d7=d1+d2                     ; calculate separation
+   d7=d7-d3
+   dx=d3-d1                     ; and define x-axis
+
+
+   sweep x=1 to sx              ; T sweep loop
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx-1 < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d7                        ; tau1+tau2-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      acq [sg1]
+    next i                      ; end of accumulation loop
+
+    d3=d3+d30                   ; increment T
+    d7=d7-d30                   ; decrement time between pulse 3 and 4
+    dx=dx+d30                   ; increment x axis
+   next x                       ; end of T sweep loop
+
+d1 = d1 + d31
+d3 = d3 + d31
+next j
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp3
+
+;
+; 4-Pulse ELDOR
+;
+begin exp4 "4pDeer tavg yscans"  [INTG QUAD ]
+        ; QUAD detection with Integration
+
+d8=d3                           ; store T
+d6 = d1
+
+for y=1 to sy             ;
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+   d1 = d6                      ; recall tau1 for tau avging
+
+for j = 1 to m multislice
+
+d5 = j - 1
+d5 = d5 *d31
+   d3=d8 + d5                   ; recall T for averaging loop
+   d7=d1+d2                     ; calculate separation
+   d7=d7-d3
+   dx=d3-d1                     ; and define x-axis
+
+
+   sweep x=1 to sx              ; T sweep loop
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx-1 < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d7                        ; tau1+tau2-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      acq [sg1]
+    next i                      ; end of accumulation loop
+
+    d3=d3+d30                   ; increment T
+    d7=d7-d30                   ; decrement time between pulse 3 and 4
+    dx=dx+d30                   ; increment x axis
+   next x                       ; end of T sweep loop
+
+d1 = d1 + d31
+d3 = d3 + d31
+next j
+
+  scansdone(k)                  ; output number of scans done
+ next k
+next y
+
+end exp4
+
+
+;
+; 4-Pulse ELDOR
+;
+begin exp5 "DEERxy not tavg"  [INTG QUAD ]
+        ; QUAD detection with Integration
+
+d8=d3                           ; store T
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+   d3=d8                        ; recall T for averaging loop
+   d7=d1+d2                     ; calculate separation
+   d7=d7-d3
+   dx=d3-d1                     ; and define x-axis
+
+   sweep x=1 to sx              ; T sweep loop
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx-1 < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d7                        ; tau1+tau2-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      acq [sg1]
+    next i                      ; end of accumulation loop
+
+    d3=d3+d30                   ; increment T
+    d7=d7-d30                   ; decrement time between pulse 3 and 4
+    dx=dx+d30                   ; increment x axis
+   next x                       ; end of T sweep loop
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp5
+
+
+;
+; 4-Pulse ELDOR
+;
+begin exp6 "Deer-2DtauAvg"  [INTG QUAD ]
+        ; QUAD detection with Integration
+
+d8=d3                           ; store T
+d6=d1                           ; store tau1
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+   d1 = d6                      ; reset tau1
+
+  for y=1 to sy
+   d3=d8                        ; recall T for averaging loop
+   d7=d1+d2                     ; calculate separation
+   d7=d7-d3
+   dx=d3-d1                     ; and define x-axis
+
+   sweep x=1 to sx              ; T sweep loop
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx-1 < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d7                        ; tau1+tau2-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      acq [sg1]
+    next i                      ; end of accumulation loop
+
+    d3=d3+d30                   ; increment T
+    d7=d7-d30                   ; decrement time between pulse 3 and 4
+    dx=dx+d30                   ; increment x axis
+   next x                       ; end of T sweep loop
+
+   d1=d1+d31                    ; increment tau
+  next y
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp6
+
+
+begin exp7 "2P-Hahn-echo-Setup" [TRANS QUAD ]
+        ; QUAD detection of Transient
+
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+
+end exp7
+
+
+begin exp8 "4P-ELDOR-n2p"  [INTG QUAD ]
+        ; QUAD detection with Integration
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+   d3=d12                        ; recall T for averaging loop
+   dx=d12-d1                     ; and define x-axis
+
+   for x=1 to 2              ; T sweep loop
+    d8=d1+d2                     ; calculate separation
+    d8=d8-d3
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d3                        ; T + d30 * sx-1 < d1 + d2
+      p3 [awg2]                 ; PUMP pulse
+      d8                        ; tau1+tau2-T
+      p1 [awg3]                 ; 3rd pulse
+      d2                        ; tau2
+      d0                        ; constant acquisition delay
+      acq [sg1]
+    next i                      ; end of accumulation loop
+
+    d3=d13                   ; increment T
+    d14=d13-d12
+    dx=dx+d14              ; increment x axis
+   next x                       ; end of T sweep loop
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp8
