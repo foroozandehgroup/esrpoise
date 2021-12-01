@@ -29,8 +29,8 @@ Xepr = Xepr_link.load_xepr()
 
 # .exp and .def files location
 location = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/flip/'
-exp_f = location + 'flip.exp'
-def_f = location + 'flip.def'
+exp_f = location + '2pflip.exp'
+def_f = location + '2pflip.def'
 
 # optimization of pulse length and amplitude
 xbest0, fbest0, message0 = optimize(Xepr,
