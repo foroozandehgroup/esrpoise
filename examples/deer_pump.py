@@ -48,7 +48,7 @@ def shape_HS(callback_pars_dict, shp_nb):
     merge_xepr_shps(shp_paths, shps_path)
 
     # send .shp file to Xepr
-    Xepr_link.load_shp(Xepr, shps_path)
+    Xepr_link.load_shp(xepr, shps_path)
 
     return None
 
@@ -72,7 +72,7 @@ def merge_xepr_shps(shp_paths, shps_path):
     return None
 
 
-Xepr = Xepr_link.load_xepr()
+xepr = Xepr_link.load_xepr()
 
 f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/deer_pump_pulse/'
 exp_f = f_loc + '4pDEER.exp'
@@ -80,22 +80,22 @@ def_f = f_loc + '4pDEER.def'
 
 # 1. observer pi pulse length
 # set up a p0-2p0 Hahn echo without phase cycling
-Xepr_link.modif_def(Xepr, def_f,
+Xepr_link.modif_def(xepr, def_f,
                     ['p0', 'p1', 'aa0', 'aa1'],
                     ['32', '2*p0', '100', 'aa0'])
-Xepr_link.load_exp(Xepr, exp_f)
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "none")
+Xepr_link.load_exp(xepr, exp_f)
+xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "none")
 # adjust phase on x channel to get real part of the echo
-xbest0, fbest, message = optimize(Xepr, pars=['ap1'],
+xbest0, fbest, message = optimize(xepr, pars=['ap1'],
                                   init=[0], lb=[-200], ub=[200], tol=[1],
                                   cost_function=maxrealint_echo,
                                   exp_file=exp_f, def_file=def_f,
                                   optimiser="bobyqa", maxfev=60, nfactor=90)
 # add phase cycle
 # NB: no space should be present in the phase
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "8-steps-2p")
+xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "8-steps-2p")
 # find flip angle
-xbest0, fbest0, mesg0 = optimize(Xepr, pars=['p0', 'aa0'],
+xbest0, fbest0, mesg0 = optimize(xepr, pars=['p0', 'aa0'],
                                  init=[40, 90],
                                  lb=[20, 70],
                                  ub=[70, 100],
@@ -109,20 +109,20 @@ aa1 = round2tol_str([xbest0[1]], [1])[0]
 
 # 2. observer pulses amplitudes optimization
 # set up a p0-p0 Hahn echo
-Xepr_link.modif_def(Xepr, def_f, ['p0', 'p1', 'aa1'], [p0, 'p0', aa1])
-xbest1, fbest1, msg1 = optimize(Xepr, pars=['aa0'],
+Xepr_link.modif_def(xepr, def_f, ['p0', 'p1', 'aa1'], [p0, 'p0', aa1])
+xbest1, fbest1, msg1 = optimize(xepr, pars=['aa0'],
                                 init=[25], lb=[10], ub=[80], tol=[1],
                                 cost_function=maxrealint_echo,
                                 exp_file=exp_f, def_file=def_f,
                                 optimiser="bobyqa", maxfev=40, nfactor=20)
 
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "8-steps-2p")
+xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "8-steps-2p")
 
 # adjust phase on x channel to get real part of the echo
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-Setup")
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "8-step")
+xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-Setup")
+xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "8-step")
 init = xbest0[0]
-xbest0, fbest, message = optimize(Xepr, pars=['ap1'], init=[init],
+xbest0, fbest, message = optimize(xepr, pars=['ap1'], init=[init],
                                   lb=[init-50], ub=[init+50], tol=[1],
                                   cost_function=maxrealint_echo,
                                   exp_file=exp_f, def_file=def_f,
@@ -130,10 +130,10 @@ xbest0, fbest, message = optimize(Xepr, pars=['ap1'], init=[init],
 
 # 3. pulse selectivity optimization
 # select n2p measurement experiment
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-n2p")
-Xepr_link.modif_def(Xepr, def_f, ['n', 'h'], ['1', '1024'])
-Xepr_link.load_exp(Xepr, exp_f)
-xbest0, fbest, message = optimize(Xepr, pars=['&k'],
+xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-n2p")
+Xepr_link.modif_def(xepr, def_f, ['n', 'h'], ['1', '1024'])
+Xepr_link.load_exp(xepr, exp_f)
+xbest0, fbest, message = optimize(xepr, pars=['&k'],
                                   init=[10], lb=[1], ub=[12], tol=[1],
                                   cost_function=max_n2p, optimiser='bobyqa',
                                   exp_file=exp_f, def_file=def_f,
@@ -142,8 +142,8 @@ xbest0, fbest, message = optimize(Xepr, pars=['&k'],
 
 # 4. DEER measurement
 # select DEER measurement
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "Deer-2DtauAvg")
-Xepr_link.modif_def(Xepr, def_f, ['h'], ['256'])
-Xepr_link.load_exp(Xepr, exp_f)
+xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "Deer-2DtauAvg")
+Xepr_link.modif_def(xepr, def_f, ['h'], ['256'])
+Xepr_link.load_exp(xepr, exp_f)
 # run DEER
-data = Xepr_link.run2getdata_exp(Xepr)
+data = Xepr_link.run2getdata_exp(xepr)

@@ -4,11 +4,20 @@ Xepr_link.py
 
 Xepr interface functions, communicate with Xepr usingXeprAPI.
 
+Pause times necesary to let Xepr process command are accessed through the
+global variable COMPILATION_TIME (s, 1 by default). It applies pauses of
+lengths:
+    - COMPILATION_TIME after compilation of .exp file
+    - COMPILATION_TIME after compilation of .def file
+    - COMPILATION_TIME/4 after compilation of .def file
+    - 2*COMPILATION_TIME before and after Xepr reset
+
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import time
 import XeprAPI         # load the Xepr API module
+from typing import List
 
 
 # global variable to control Xepr files compilation time
@@ -29,18 +38,18 @@ def load_xepr():
         The instantiated Xepr object, used for communication with
         Xepr-the-programme.
     """
-    Xepr = XeprAPI.Xepr()  # start Xepr API module
+    xepr = XeprAPI.Xepr()  # start Xepr API module
 
-    return Xepr
+    return xepr
 
 
-def load_exp(Xepr, exp_file):
+def load_exp(xepr, exp_file: str) -> None:
     """
     Load and compile an Xepr experiment file.
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
     exp_file : str
         The Xepr experiment file (the full path with .exp extension).
@@ -50,10 +59,10 @@ def load_exp(Xepr, exp_file):
     None
     """
     try:
-        Xepr.XeprCmds.aqPgLoad(exp_file)
-        Xepr.XeprCmds.aqPgShowPrg()
-        Xepr.XeprCmds.aqPgCompValid()
-        Xepr.XeprCmds.aqPgCompile()
+        xepr.XeprCmds.aqPgLoad(exp_file)
+        xepr.XeprCmds.aqPgShowPrg()
+        xepr.XeprCmds.aqPgCompValid()
+        xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
         time.sleep(COMPILATION_TIME)
@@ -61,13 +70,13 @@ def load_exp(Xepr, exp_file):
         raise RuntimeError("Error loading and compiling experiment file")
 
 
-def load_def(Xepr, def_file):
+def load_def(xepr, def_file: str) -> None:
     """
     Load and compile an Xepr definition file.
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
     def_file : str
         Name of the Xepr definition file (full path with .def extension).
@@ -77,9 +86,9 @@ def load_def(Xepr, def_file):
     None
     """
     try:
-        Xepr.XeprCmds.aqPgDefLoad(def_file)
-        Xepr.XeprCmds.aqPgShowDef()
-        Xepr.XeprCmds.aqPgCompile()
+        xepr.XeprCmds.aqPgDefLoad(def_file)
+        xepr.XeprCmds.aqPgShowDef()
+        xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
         time.sleep(COMPILATION_TIME)
@@ -87,7 +96,8 @@ def load_def(Xepr, def_file):
         raise RuntimeError("Error loading and compiling definition file")
 
 
-def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
+def modif_def_PlsSPELGlbTxt(xepr, def_file: str,
+                            var_name: List[str], var_value: List[str]) -> None:
     """
     Directly modify definitions in the current experiment.
     !Limited by the number of lines contained in PlsSPELGlbTxt
@@ -95,11 +105,13 @@ def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
-    var_name : list of str)
+    def_file : str
+        Name of the Xepr definition file (full path with .def extension).
+    var_name : list of strings
         Variable names as named in the .def file.
-    var_value : list of str
+    var_value : list of strings
         List of variable values to be input.
 
     Returns
@@ -107,7 +119,7 @@ def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
     None
     """
     try:
-        currentExp = Xepr.XeprExperiment()
+        currentExp = xepr.XeprExperiment()
     except Exception:
         raise RuntimeError("No experiment has been selected in the"
                            " primary viewport of Xepr.")
@@ -133,17 +145,20 @@ def modif_def_PlsSPELGlbTxt(Xepr, def_file, var_name, var_value):
                 currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
 
 
-def modif_def(Xepr, def_file, var_name, var_value):
+def modif_def(xepr, def_file: str,
+              var_name: List[str], var_value: List[str]) -> None:
     """
-    Modify definitions by modifying the .def file and reloading it
+    Modify definitions by modifying the .def file and reloading it.
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
-    var_name : list of str)
+    def_file : str
+        Name of the Xepr definition file (full path with .def extension).
+    var_name : list of strings
         Variable names as named in the .def file.
-    var_value : list of str
+    var_value : list of strings
         List of variable values to be input.
 
     Returns
@@ -172,17 +187,17 @@ def modif_def(Xepr, def_file, var_name, var_value):
     with open(def_file, 'w') as def_f:
         def_f.write('\n'.join(fullDefs))
 
-    if Xepr is not None:  # to allow test without Xepr
-        load_def(Xepr, def_file)
+    if xepr is not None:  # to allow test without Xepr
+        load_def(xepr, def_file)
 
 
-def load_shp(Xepr, shp_file):
+def load_shp(xepr, shp_file: str) -> None:
     """
     Load and compile an Xepr shape file.
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
     shp_file : str
         Shape file name (full path, including .shp extension).
@@ -192,9 +207,9 @@ def load_shp(Xepr, shp_file):
     None
     """
     try:
-        Xepr.XeprCmds.aqPgShpLoad(shp_file)
-        Xepr.XeprCmds.aqPgShowShp()
-        Xepr.XeprCmds.aqPgCompile()
+        xepr.XeprCmds.aqPgShpLoad(shp_file)
+        xepr.XeprCmds.aqPgShowShp()
+        xepr.XeprCmds.aqPgCompile()
 
         # wait for Xepr to finish compiling
         time.sleep(COMPILATION_TIME*0.25)
@@ -202,13 +217,13 @@ def load_shp(Xepr, shp_file):
         raise RuntimeError("Error loading and compiling Xepr shape file")
 
 
-def run2getdata_exp(Xepr, SignalType=None, exp_name=None):
+def run2getdata_exp(xepr, SignalType: str = None, exp_name: str = None):
     """
     Run an experiment and get the data from it.
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
     SignalType : str, by default None
         To change the signal type (pick from {"TM", "Signal", "RM"})
@@ -226,8 +241,8 @@ def run2getdata_exp(Xepr, SignalType=None, exp_name=None):
             - data.O.imag : imaginary part of the signal
     """
     try:
-        currentExp = Xepr.XeprExperiment()
-        hiddenExp = Xepr.XeprExperiment("AcqHidden")
+        currentExp = xepr.XeprExperiment()
+        hiddenExp = xepr.XeprExperiment("AcqHidden")
     except Exception:
         raise RuntimeError("No experiment has been selected in the"
                            " primary viewport of Xepr.")
@@ -251,13 +266,13 @@ def run2getdata_exp(Xepr, SignalType=None, exp_name=None):
         raise RuntimeError("Error running current experiment")
 
     # retrieve data
-    data = Xepr.XeprDataset()
+    data = xepr.XeprDataset()
 
     # no data? -- try to run current experiment (if possible)
     if not data.datasetAvailable():
         try:
             print("Trying to run current experiment to create some data...")
-            Xepr.XeprExperiment().aqExpRunAndWait()
+            xepr.XeprExperiment().aqExpRunAndWait()
         except XeprAPI.ExperimentError:
             raise RuntimeError("No dataset available and no (working)"
                                " experiment to run; aborting")
@@ -267,7 +282,7 @@ def run2getdata_exp(Xepr, SignalType=None, exp_name=None):
     return data
 
 
-def reset_exp(Xepr):
+def reset_exp(xepr) -> None:
     """
     Copy the current experiment and use it to replace the current experiment.
 
@@ -275,7 +290,7 @@ def reset_exp(Xepr):
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
 
     Returns
@@ -286,27 +301,27 @@ def reset_exp(Xepr):
     time.sleep(2*COMPILATION_TIME)
 
     # get current experiment name
-    curr_exp = Xepr.XeprExperiment()
+    curr_exp = xepr.XeprExperiment()
     expt_name = curr_exp.aqGetExpName()
 
     # duplicate current experiment
     print(f"replacing experiment <{expt_name}> with new"
           " instance of its copy...")
-    Xepr.XeprCmds.aqExpCut(expt_name)
+    xepr.XeprCmds.aqExpCut(expt_name)
 
     print(f"new instance of experiment <{expt_name}> created...")
-    Xepr.XeprCmds.aqExpPaste()
+    xepr.XeprCmds.aqExpPaste()
 
     # select new experiment
-    Xepr.XeprCmds.aqExpSelect(expt_name)
+    xepr.XeprCmds.aqExpSelect(expt_name)
     print(f"new instance of experiment <{expt_name}> selected...")
 
     # activate new experiment
-    Xepr.XeprCmds.aqExpActivate(expt_name)
+    xepr.XeprCmds.aqExpActivate(expt_name)
     print(f"new instance of experiment <{expt_name}> activated.")
 
     # open parameter panel
-    Xepr.XeprCmds.aqParOpen()
+    xepr.XeprCmds.aqParOpen()
 
     # ask user to allow .exp file to be loaded
     print('Experiment reset')
@@ -318,5 +333,5 @@ def reset_exp(Xepr):
     time.sleep(2*COMPILATION_TIME)
 
     # prevent Xepr from reseting high power attenuation value
-    Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine 1")
-    Xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine -1")
+    xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine 1")
+    xepr.XeprCmds.aqParStep("AcqHidden", "ftBridge.Attenuation", "Fine -1")

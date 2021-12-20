@@ -25,7 +25,7 @@ from esrpoise.costfunctions import maxabsint_echo
 # To test a modification of the compilation time, uncomment the next line
 # Xepr_link.COMPILATION_TIME = 2  # (s)
 
-Xepr = Xepr_link.load_xepr()
+xepr = Xepr_link.load_xepr()
 
 # .exp and .def files location
 location = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/flip/'
@@ -33,7 +33,7 @@ exp_f = location + '2pflip.exp'
 def_f = location + '2pflip.def'
 
 # optimization of pulse length and amplitude
-xbest0, fbest0, message0 = optimize(Xepr,
+xbest0, fbest0, message0 = optimize(xepr,
                                     pars=["p0", "Attenuation"],
                                     init=[8, 5],
                                     lb=[2, 0],
@@ -44,4 +44,4 @@ xbest0, fbest0, message0 = optimize(Xepr,
                                     optimiser="bobyqa", maxfev=20)
 
 # run experiment with optimal parameters
-Xepr_link.run2getdata_exp(Xepr, "Signal", exp_f)
+Xepr_link.run2getdata_exp(xepr, "Signal", exp_f)

@@ -15,33 +15,36 @@ from .optpoise import (scale, unscale, deco_count,
                        nelder_mead, multid_search, pybobyqa_interface,
                        brute_force)
 from . import Xepr_link
+from typing import List, Union
 
 
-def optimize(Xepr,
-             pars,
-             init,
-             lb,
-             ub,
-             tol,
-             cost_function,
-             exp_file=None,
-             def_file=None,
-             optimiser="nm",
-             maxfev=0,
-             nfactor=10,
-             callback=None,
-             callback_args=None) -> None:
+def optimize(xepr,
+             pars: List[str],
+             init: Union[list, np.ndarray],
+             lb: Union[list, np.ndarray],
+             ub: Union[list, np.ndarray],
+             tol: Union[list, np.ndarray],
+             cost_function: callable,
+             exp_file: str = None,
+             def_file: str = None,
+             optimiser: str = "bobyqa",
+             maxfev: int = 0,
+             nfactor: int = 10,
+             callback: callable = None,
+             callback_args: tuple = None) -> None:
     """
     Run an optimisation.
 
     Parameters
     ----------
-    Xepr : instance of XeprAPI.Xepr
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     pars : list of str
         Parameter names. Parameters starting with the character & are
         considered user parameters which needs to be modified with the callback
         function.
+    init: list of float
+        Initial value for each parameter.
     lb : list of float
         Lower bounds for each parameter.
     ub : list of float
@@ -64,9 +67,9 @@ def optimize(Xepr,
         default of '0' sets this to 500 times the number of parameters.
     nfactor : int, default 10
         Initial search region relative to tols
-    callback: function, default None
+    callback : function, default None
         User defined function called when setting up parameters.
-    callback_args: tuple, default None
+    callback_args : tuple, default None
         Arguments for callback function
 
     Returns
@@ -82,6 +85,8 @@ def optimize(Xepr,
     To quit the optimization, simply type 'ctlr+C' in the terminal.
     It is recommended to do so during an acquisition phase of Xepr to avoid
     Xepr crashes.
+    Note once the optimisation is done, the best parameters found are set up in
+    Xepr but the experiment is not run.
     """
     # Get start time
     tic = datetime.now()
@@ -134,7 +139,7 @@ def optimize(Xepr,
     # Set up optimisation arguments. Basically, this needs to be everything
     # that acquire_esr() uses apart from x itself.
     optimargs = (cost_function, pars, lb, ub, tol, optimiser,
-                 Xepr, exp_file, def_file,
+                 xepr, exp_file, def_file,
                  callback, callback_args)
 
     # Carry out the optimisation
@@ -145,7 +150,7 @@ def optimize(Xepr,
     best_values = unscale(opt_result.xbest, lb, ub, tol, scaleby="tols")
 
     # set up optimal parameters values
-    param_set(Xepr, pars, best_values, tol,
+    param_set(xepr, pars, best_values, tol,
               exp_file, def_file, callback, callback_args)
 
     # final logging
@@ -168,9 +173,18 @@ def optimize(Xepr,
 
 
 @deco_count
-def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
-                Xepr, exp_file=None, def_file=None,
-                callback=None, callback_args=None):
+def acquire_esr(x: np.ndarray,
+                cost_function: callable,
+                pars: Union[list, np.ndarray],
+                lb: Union[list, np.ndarray],
+                ub: Union[list, np.ndarray],
+                tol: Union[list, np.ndarray],
+                optimiser: str,
+                xepr,
+                exp_file: str = None,
+                def_file: str = None,
+                callback: callable = None,
+                callback_args: tuple = None) -> float:
     """
     This is the function which is actually passed to the optimisation function
     as the "cost function", and is responsible for triggering acquisition in
@@ -204,7 +218,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
     optimiser : str from {"nm", "mds", "bobyqa", "brute"}, default "nm"
         Optimisation algorithm to use. The options correspond to Nelder-Mead,
         multidimensional search, BOBYQA, and brute-force search respectively.
-    Xepr : instance of XeprAPI.Xepr TODO doc
+    xepr : instance of XeprAPI.Xepr TODO doc
         The instantiated Xepr object.
     cost_function : function
         A function which takes the data object and returns a float.
@@ -214,7 +228,7 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
     def_file : str, default None
         Definition file (.exp) path to be used for the experiment in Xepr.
         Required to modify parameters in .def file.
-    callback: function, default None
+    callback : function, default None
         User defined function called when setting up parameters.
     callback_args: tuple, default None
         Arguments for callback function
@@ -244,11 +258,11 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
         return cf_val
 
     # set parameters values
-    param_set(Xepr, pars, unscaled_val, tol,
+    param_set(xepr, pars, unscaled_val, tol,
               exp_file, def_file, callback, callback_args)
 
     # record data
-    data = Xepr_link.run2getdata_exp(Xepr)
+    data = Xepr_link.run2getdata_exp(xepr)
 
     # evaluate the cost function
     cf_val = cost_function(data)
@@ -263,15 +277,20 @@ def acquire_esr(x, cost_function, pars, lb, ub, tol, optimiser,
     return cf_val
 
 
-def param_set(Xepr, pars, val, tol,
-              exp_file=None, def_file=None,
-              callback=None, callback_args=None):
+def param_set(xepr,
+              pars: List[str],
+              val: Union[list, np.ndarray],
+              tol: Union[list, np.ndarray],
+              exp_file: str = None,
+              def_file: str = None,
+              callback: callable = None,
+              callback_args: tuple = None) -> None:
     """
-    Set a variety of parameters in Xepr
+    Set a variety of parameters in Xepr.
 
     Parameters
     ----------
-    Xepr : XeprAPI.Xepr object
+    xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
     pars : list of str
         Parameter names. Parameters starting with the character & are
@@ -287,9 +306,9 @@ def param_set(Xepr, pars, val, tol,
     def_file : str, default None
         Definition file (.exp) path to be used for the experiment in Xepr.
         Required to modify parameters in .def file.
-    callback: function, default None
+    callback : function, default None
         User defined function called when setting up parameters.
-    callback_args: tuple, default None
+    callback_args : tuple, default None
         Arguments for callback function
 
     Returns
@@ -306,11 +325,11 @@ def param_set(Xepr, pars, val, tol,
     val_str_def = list()
 
     for par, v_str in zip(pars, val_str):
-        # Remarks:
-        #  - Xepr.XeprCmds.aqParSet does not accept v_str if numpy array of
+        # Remark:
+        #  - xepr.XeprCmds.aqParSet does not accept v_str if numpy array of
         #    strings
 
-        # user parmeters
+        # user parameters
         if '&' in par:
             if callback is None:
                 raise TypeError('callback should not be None if user '
@@ -319,42 +338,42 @@ def param_set(Xepr, pars, val, tol,
         # Xepr parameters: Bridge - Receiver Unit
         elif par == "VideoGain":
             # Video gain (dB), 0 to 48 (1MHz bandwidth),min tolerance of 6
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.VideoGain", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.VideoGain", v_str)
         elif par == "Attenuation":
             # High power attenuation (dB), ,min tolerance of 0.01
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.Attenuation", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.Attenuation", v_str)
         elif par == "SignalPhase":
             # Signal phse (~0.129deg), min tolerance of 1
-            Xepr.XeprCmds.aqParSet("AcqHidden", "cwBridge.SignalPhase", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "cwBridge.SignalPhase", v_str)
         elif par == "TMLevel":
             # Transmitter level (%), min tolerance of 0.049
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.TMLevel", v_str)
 
         # Xepr parameters: Bridge - MPFU control
         # (%), 0 to 100, rounded in Xepr to closest 0.049
         # (approximately, not linear)
         elif par == "BrXPhase":  # +<x> Phase
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXPhase", v_str)
         elif par == "BrXAmp":  # +<x> Amplitude
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXAmp", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrXAmp", v_str)
         elif par == "BrYPhase":  # +<y> Phase
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYPhase", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYPhase", v_str)
         elif par == "BrYAmp":  # +<y> Amplitude
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYAmp", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrYAmp", v_str)
         elif par == "BrMinXPhase":  # -<x> Phase
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXPhase", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXPhase", v_str)
         elif par == "BrMinXAmp":  # -<x> Amplitude
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXAmp", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinXAmp", v_str)
         elif par == "BrMinYPhase":  # -<y> Phase
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYPhase", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYPhase", v_str)
         elif par == "BrMinYAmp":  # -<y> Amplitude
-            Xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYAmp", v_str)
+            xepr.XeprCmds.aqParSet("AcqHidden", "ftBridge.BrMinYAmp", v_str)
 
         # Xepr parameters: FT EPR Parameters
         elif par == "CenterField":
             # Field Position (G), variation around expected value, min
             # tolerance of 0.05
-            Xepr.XeprCmds.aqParSet(
+            xepr.XeprCmds.aqParSet(
                 "Experiment", "fieldCtrl.CenterField", v_str)
 
         # Xepr parameters: .def file
@@ -379,18 +398,19 @@ def param_set(Xepr, pars, val, tol,
             raise ValueError('Some parameters are considered .def file '
                              'parameters. The file path def_file is '
                              'required to modify them.')
-        Xepr_link.modif_def(Xepr, def_file, pars_def, val_str_def)
+        Xepr_link.modif_def(xepr, def_file, pars_def, val_str_def)
 
         if exp_file is None:
             raise ValueError('Some parameters are considered .def file '
                              'parameters. The experiment file path '
                              'exp_file is required to modify them.')
-        Xepr_link.load_exp(Xepr, exp_file)
+        Xepr_link.load_exp(xepr, exp_file)
 
 
-def round2tol_str(values, tols):
+def round2tol_str(values: Union[list, np.ndarray],
+                  tols: Union[list, np.ndarray]) -> list:
     """
-    Round values to closest multiple of tolerance
+    Round values to closest multiple of tolerance.
 
     Parameters
     ----------

@@ -27,11 +27,12 @@ from esrpoise.costfunctions import maxabsint_echo
 
 
 # load Xepr instance
-Xepr = Xepr_link.load_xepr()
+xepr = Xepr_link.load_xepr()
 
 # fine adjustment of center field for bisnitroxide sample at X-band
 init = [3450]
-xbest, fbest, message = optimize(Xepr, pars=['CenterField'],
+xbest, fbest, message = optimize(xepr,
+                                 pars=['CenterField'],
                                  init=init,
                                  lb=[init[0]-5],
                                  ub=[init[0]+5],

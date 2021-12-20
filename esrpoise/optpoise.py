@@ -14,6 +14,8 @@ from warnings import warn
 import numpy as np
 import pybobyqa as pb
 
+from typing import Union
+
 # Magic constant which tells us how much to scale each tolerance to when
 # scaling by tols. It is basically arbitrarily chosen, but should not have an
 # effect on the actual optimisation.
@@ -25,7 +27,11 @@ MESSAGE_OPT_MAXFEV_REACHED = "Maximum function evaluations reached."
 MESSAGE_OPT_MAXITER_REACHED = "Maximum iterations reached."
 
 
-def scale(val, lb, ub, tol, scaleby="bounds"):
+def scale(val: Union[list, np.ndarray],
+          lb: Union[list, np.ndarray],
+          ub: Union[list, np.ndarray],
+          tol: Union[list, np.ndarray],
+          scaleby: str = "bounds"):
     """
     Scales a set of values so that the optimisation behaves better.
 
@@ -81,7 +87,11 @@ def scale(val, lb, ub, tol, scaleby="bounds"):
     return scaled_val, scaled_lb, scaled_ub, scaled_tol
 
 
-def unscale(scaled_val, orig_lb, orig_ub, orig_tol, scaleby="bounds"):
+def unscale(scaled_val: Union[list, np.ndarray],
+            orig_lb: Union[list, np.ndarray],
+            orig_ub: Union[list, np.ndarray],
+            orig_tol: Union[list, np.ndarray],
+            scaleby: str = "bounds"):
     """
     Unscales a set of scaled values to their original values.
 
@@ -119,8 +129,9 @@ class Simplex():
     """
     Simplex class.
     """
-    def __init__(self, x0, method="spendley",
-                 length=MAGIC_TOL * 10, seed=None):
+
+    def __init__(self, x0: np.ndarray, method: str = "spendley",
+                 length: float = MAGIC_TOL*10, seed=None):
         """
         Initialises a Simplex object.
 
@@ -183,8 +194,8 @@ class Simplex():
             for i in range(1, self.N + 1):
                 self.x[i] = rng.uniform(size=self.N)
         else:
-            raise ValueError(f"invalid simplex generation method "
-                             "'{method}' specified")
+            raise ValueError(f"invalid simplex generation method '{method}'"
+                             " specified")
 
     def sort(self):
         """
@@ -288,6 +299,7 @@ class OptResult:
     optimisation. There's no functionality needed because this is just used
     as a way of passing a message back to the calling script.
     """
+
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -295,9 +307,16 @@ class OptResult:
         return str(self.__dict__)
 
 
-def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
-                args=(), maxfev=0, simplex_method="spendley",
-                seed=None, nfactor=10):
+def nelder_mead(cf: callable,
+                x0: Union[list, np.ndarray],
+                xtol: Union[list, np.ndarray],
+                scaled_lb: np.ndarray,
+                scaled_ub: np.ndarray,
+                args: tuple = (),
+                maxfev: int = 0,
+                simplex_method: str = "spendley",
+                seed=None,
+                nfactor: int = 10):
     """
     Nelder-Mead optimiser, as described in Section 8.1 of Kelley, "Iterative
     Methods for Optimization".
@@ -521,9 +540,16 @@ def nelder_mead(cf, x0, xtol, scaled_lb, scaled_ub,
                      message=message)
 
 
-def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
-                  args=(), maxfev=0, simplex_method="spendley",
-                  seed=None, nfactor=10):
+def multid_search(cf: callable,
+                  x0: Union[list, np.ndarray],
+                  xtol: Union[list, np.ndarray],
+                  scaled_lb: np.ndarray,
+                  scaled_ub: np.ndarray,
+                  args: tuple = (),
+                  maxfev: int = 0,
+                  simplex_method: str = "spendley",
+                  seed=None,
+                  nfactor: float = 10):
     """
     Multidimensional search optimiser, as described in Secion 8.2 of Kelley,
     "Iterative Methods for Optimization".
@@ -705,8 +731,14 @@ def multid_search(cf, x0, xtol, scaled_lb, scaled_ub,
                      message=message)
 
 
-def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
-                       args=(), maxfev=0, nfactor=10):
+def pybobyqa_interface(cf: callable,
+                       x0: Union[list, np.ndarray],
+                       xtol: Union[list, np.ndarray],
+                       scaled_lb: np.ndarray,
+                       scaled_ub: np.ndarray,
+                       args: tuple = (),
+                       maxfev: int = 0,
+                       nfactor: float = 10):
     """
     Interface to pybobyqa.solve() which takes similar arguments to the other
     two optimisation functions and returns an OptResult object.
@@ -792,8 +824,14 @@ def pybobyqa_interface(cf, x0, xtol, scaled_lb, scaled_ub,
                      message=msg)
 
 
-def brute_force(cf, x0, xtol, scaled_lb, scaled_ub,
-                args=(), maxfev=0, nfactor=None):
+def brute_force(cf: callable,
+                x0: Union[list, np.ndarray],
+                xtol: Union[list, np.ndarray],
+                scaled_lb: np.ndarray,
+                scaled_ub: np.ndarray,
+                args: tuple = (),
+                maxfev: int = 0,
+                nfactor: float = None):
     """
     Brute force solver. Evaluates equally spaced points on an n-dimensional
     grid and returns the best of these.
@@ -809,13 +847,13 @@ def brute_force(cf, x0, xtol, scaled_lb, scaled_ub,
         force optimiser.
     xtol : ndarray or list
         Tolerances for each optimisation dimension.
-    args : tuple, optional
-        A tuple of arguments to pass to the cost function.
     scaled_lb : ndarray, optional
         Scaled lower bounds for the optimisation.
     scaled_ub : ndarray, optional
         Scaled upper bounds for the optimisation. This is used to place an
         upper bound on the simplex size.
+    args : tuple, optional
+        A tuple of arguments to pass to the cost function.
     maxfev : int, optional
         Maximum number of function evaluations. Defaults to 0, i.e. no limit.
     nfactor : float, default None

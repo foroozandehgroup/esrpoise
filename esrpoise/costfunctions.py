@@ -195,7 +195,7 @@ def maximagmax_echo(data):
 # DEER trace modulation depth
 def max_n2p(data):
     """
-    Maximizes n2p parameter for DEER trace
+    Maximizes n2p parameter for DEER trace.
     Data should contain the 2 points of interest in position 0 and 1.
     """
     return -np.abs(data.O.real[0]-data.O.real[1])

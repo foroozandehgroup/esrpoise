@@ -63,7 +63,7 @@ def shape_bw(callback_pars_dict, shp_nb):
     path = os.path.join(os.getcwd(), str(shp_nb) + '.shp')
 
     # send shape to Xepr
-    Xepr_link.load_shp(Xepr, path)
+    Xepr_link.load_shp(xepr, path)
 
     # NB: AWG memory overloading
     # If a bug with shape loading is encountered after a certain number
@@ -77,10 +77,10 @@ def shape_bw(callback_pars_dict, shp_nb):
     return None
 
 
-Xepr = Xepr_link.load_xepr()
+xepr = Xepr_link.load_xepr()
 
 #  HS pulse bandwidth optimisation
-xbest0, fbest, message = optimize(Xepr,
+xbest0, fbest, message = optimize(xepr,
                                   pars=['&bw'],
                                   init=[80e6],
                                   lb=[30e6],
