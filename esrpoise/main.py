@@ -14,11 +14,11 @@ import numpy as np
 from .optpoise import (scale, unscale, deco_count,
                        nelder_mead, multid_search, pybobyqa_interface,
                        brute_force)
-from . import Xepr_link
+from . import xepr_link
 from typing import List, Union
 
 
-def optimize(xepr,
+def optimise(xepr,
              pars: List[str],
              init: Union[list, np.ndarray],
              lb: Union[list, np.ndarray],
@@ -82,9 +82,12 @@ def optimize(xepr,
     message : str
         A message indicating why the optimisation terminated.
 
-    To quit the optimization, simply type 'ctlr+C' in the terminal.
+    Notes
+    -----
+    To quit the optimisation, simply type 'ctlr+C' in the terminal.
     It is recommended to do so during an acquisition phase of Xepr to avoid
     Xepr crashes.
+
     Note once the optimisation is done, the best parameters found are set up in
     Xepr but the experiment is not run.
     """
@@ -262,7 +265,7 @@ def acquire_esr(x: np.ndarray,
               exp_file, def_file, callback, callback_args)
 
     # record data
-    data = Xepr_link.run2getdata_exp(xepr)
+    data = xepr_link.run2getdata_exp(xepr)
 
     # evaluate the cost function
     cf_val = cost_function(data)
@@ -398,13 +401,13 @@ def param_set(xepr,
             raise ValueError('Some parameters are considered .def file '
                              'parameters. The file path def_file is '
                              'required to modify them.')
-        Xepr_link.modif_def(xepr, def_file, pars_def, val_str_def)
+        xepr_link.modif_def(xepr, def_file, pars_def, val_str_def)
 
         if exp_file is None:
             raise ValueError('Some parameters are considered .def file '
                              'parameters. The experiment file path '
                              'exp_file is required to modify them.')
-        Xepr_link.load_exp(xepr, exp_file)
+        xepr_link.load_exp(xepr, exp_file)
 
 
 def round2tol_str(values: Union[list, np.ndarray],

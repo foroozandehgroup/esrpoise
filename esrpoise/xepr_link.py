@@ -1,18 +1,23 @@
 """
-Xepr_link.py
+xepr_link.py
 ------------
 
 Xepr interface functions, communicate with Xepr usingXeprAPI.
 
 Pause times necesary to let Xepr process command are accessed through the
-global variable COMPILATION_TIME (s, 1 by default). It applies pauses of
-lengths:
-    - COMPILATION_TIME after compilation of .exp file
-    - COMPILATION_TIME after compilation of .def file
-    - COMPILATION_TIME/4 after compilation of .def file
-    - 2*COMPILATION_TIME before and after Xepr reset
+global variable ``COMPILATION_TIME`` (s, ``1`` by default).
+It applies pauses of lengths:
+
+ - ``COMPILATION_TIME`` after compilation of .exp file
+
+ - ``COMPILATION_TIME`` after compilation of .def file
+
+ - ``COMPILATION_TIME/4`` after compilation of .shp file
+
+ - ``2*COMPILATION_TIME`` before and after Xepr reset
 
 SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 
 import time

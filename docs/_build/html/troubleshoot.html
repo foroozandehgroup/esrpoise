@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Troubleshoot &#8212; ESR-POISE  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Modules" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="troubleshoot">
+<h1>Troubleshoot<a class="headerlink" href="#troubleshoot" title="Permalink to this headline">¶</a></h1>
+<section id="compilation">
+<h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h2>
+<p>Bugs can be created if <code class="docutils literal notranslate"><span class="pre">Xepr_link</span></code> does not allow enough time for compilation.</p>
+<p>Increase the compilation time of the .exp, .def and .shp files (1s by default) with the global variable <code class="docutils literal notranslate"><span class="pre">COMPILATION_TIME</span></code> from <code class="docutils literal notranslate"><span class="pre">Xepr_link</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Xepr_link</span><span class="o">.</span><span class="n">COMPILATION_TIME</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># (s)</span>
+
+<span class="n">xepr</span> <span class="o">=</span> <span class="n">Xepr_link</span><span class="o">.</span><span class="n">load_xepr</span><span class="p">()</span>
+
+<span class="c1"># .exp and .def files location</span>
+<span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;/home/xuser/xeprFiles/Data/&#39;</span>
+<span class="n">exp_f</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;2pflip.exp&#39;</span>
+<span class="n">def_f</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;2pflip.def&#39;</span>
+
+<span class="c1"># optimisation of pulse length and amplitude</span>
+<span class="n">xbest</span><span class="p">,</span> <span class="n">fbest</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">optimise</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span>
+                                 <span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;p0&quot;</span><span class="p">,</span> <span class="s2">&quot;Attenuation&quot;</span><span class="p">],</span>
+                                 <span class="n">init</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+                                 <span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                 <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="mi">36</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                                 <span class="n">tol</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                                 <span class="n">cost_function</span><span class="o">=</span><span class="n">maxabsint_echo</span><span class="p">,</span>
+                                 <span class="n">exp_file</span><span class="o">=</span><span class="n">exp_f</span><span class="p">,</span>
+                                 <span class="n">def_file</span><span class="o">=</span><span class="n">def_f</span><span class="p">,</span>
+                                 <span class="n">optimiser</span><span class="o">=</span><span class="s2">&quot;bobyqa&quot;</span><span class="p">,</span>
+                                 <span class="n">maxfev</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># run experiment with optimal parameters</span>
+<span class="n">Xepr_link</span><span class="o">.</span><span class="n">run2getdata_exp</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span> <span class="s2">&quot;Signal&quot;</span><span class="p">,</span> <span class="n">exp_f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If decreased, this can also be used to accelerate an optimisation routine if the files are compiling fast enough.</p>
+</section>
+<section id="shape-loading">
+<h2>Shape loading<a class="headerlink" href="#shape-loading" title="Permalink to this headline">¶</a></h2>
+<p>If a bug with shape loading is encountered after a certain number of iterations (typically 114 on older versions of Xepr), it should be solved by reseting Xepr to avoid AWG overloading.
+Use the following lines in your callback function (requires to import <code class="docutils literal notranslate"><span class="pre">acquire_esr</span></code> from <code class="docutils literal notranslate"><span class="pre">esrpoise</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">acquire_esr</span><span class="o">.</span><span class="n">calls</span> <span class="o">%</span> <span class="mi">114</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">acquire_esr</span><span class="o">.</span><span class="n">calls</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;reset required&#39;</span><span class="p">)</span>
+    <span class="n">Xepr_link</span><span class="o">.</span><span class="n">reset_exp</span><span class="p">(</span><span class="n">Xepr</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ESR-POISE</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Set up an optimisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Run an optimisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="builtinpar.html">Built-in parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshoot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#compilation">Compilation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shape-loading">Shape loading</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">Modules</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/troubleshoot.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

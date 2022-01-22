@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Set up an optimisation &#8212; ESR-POISE  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Run an optimisation" href="run.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="set-up-an-optimisation">
+<h1>Set up an optimisation<a class="headerlink" href="#set-up-an-optimisation" title="Permalink to this headline">¶</a></h1>
+<dl class="simple">
+<dt>To set up an optimisation, you can to create a small python script which:</dt><dd><ul class="simple">
+<li><p>loads an instance Xepr of the XeprAPI,</p></li>
+<li><p>calls the function optimise from esrpoise.</p></li>
+</ul>
+</dd>
+</dl>
+<section id="with-standard-parameters">
+<h2>with standard parameters<a class="headerlink" href="#with-standard-parameters" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>When calling <code class="docutils literal notranslate"><span class="pre">optimise()</span></code>, you should to at least pass:</dt><dd><ul class="simple">
+<li><p>the Xepr instance,</p></li>
+<li><p>your parameters names, initial values, lower bounds and upper bounds as lists,</p></li>
+<li><p>a cost function, which can be imported from the pre-existing ones (cf. <a class="reference internal" href="modules.html#costfunctions-py"><span class="std std-ref">costfunctions.py</span></a>),</p></li>
+<li><p>the maximum number of function evaluations (not technically mandatory but set to <code class="docutils literal notranslate"><span class="pre">0</span></code> by default).</p></li>
+</ul>
+</dd>
+</dl>
+<p>Only a handful of Xepr parameters can be accessed through a simple optimisation (cf. <a class="reference internal" href="builtinpar.html#built-in-parameters"><span class="std std-ref">Built-in parameters</span></a>).</p>
+<p>Example of standard parameter optimisation script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">Xepr_link</span>
+<span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">optimise</span>
+<span class="kn">from</span> <span class="nn">esrpoise.costfunctions</span> <span class="kn">import</span> <span class="n">maxabsint_echo</span>
+
+<span class="c1"># load Xepr instance</span>
+<span class="n">xepr</span> <span class="o">=</span> <span class="n">Xepr_link</span><span class="o">.</span><span class="n">load_xepr</span><span class="p">()</span>
+
+<span class="c1"># fine adjustment of centre field for bisnitroxide sample at X-band</span>
+<span class="n">xbest</span><span class="p">,</span> <span class="n">fbest</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">optimise</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span>
+                                 <span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CenterField&#39;</span><span class="p">],</span>
+                                 <span class="n">init</span><span class="o">=</span><span class="p">[</span><span class="mi">3450</span><span class="p">],</span>
+                                 <span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="mi">3445</span><span class="p">],</span>
+                                 <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="mi">3455</span><span class="p">],</span>
+                                 <span class="n">tol</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">],</span>
+                                 <span class="n">cost_function</span><span class="o">=</span><span class="n">maxabsint_echo</span><span class="p">,</span>
+                                 <span class="n">maxfev</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">xepr</span></code>, <code class="docutils literal notranslate"><span class="pre">pars</span></code>, <code class="docutils literal notranslate"><span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">lb</span></code>, <code class="docutils literal notranslate"><span class="pre">ub</span></code>, <code class="docutils literal notranslate"><span class="pre">tol</span></code> need to be input in this order, all other parameters are keywords arguments whose order does not matter.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Make sure to chose an appropriate tolerance for your instrumentation. For example, delays and pulse duration need to be multiple of 2ns on our instrument. We therefore must choose a tolerance which is a multiple of 2ns when optimising those parameters.</p>
+</div>
+</section>
+<section id="with-def-file-parameters">
+<h2>with .def file parameters<a class="headerlink" href="#with-def-file-parameters" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Optimise parameters from your .def file by indicating their names. In addition to the standard parameter requirements, you should precise:</dt><dd><ul class="simple">
+<li><p>the path of your .exp file,</p></li>
+<li><p>the path of your .def file.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example (also note the use of several parameters in lists and the optimiser explicit choice):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># .exp and .def files location</span>
+<span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;/home/xuser/xeprFiles/Data/&#39;</span>
+<span class="n">exp_f</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;2pflip.exp&#39;</span>
+<span class="n">def_f</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;2pflip.def&#39;</span>
+
+<span class="c1"># optimisation of pulse length and amplitude</span>
+<span class="n">xbest</span><span class="p">,</span> <span class="n">fbest</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">optimise</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span>
+                                 <span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;p0&quot;</span><span class="p">,</span> <span class="s2">&quot;Attenuation&quot;</span><span class="p">],</span>
+                                 <span class="n">init</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+                                 <span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                 <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="mi">36</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                                 <span class="n">tol</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                                 <span class="n">cost_function</span><span class="o">=</span><span class="n">maxabsint_echo</span><span class="p">,</span>
+                                 <span class="n">exp_file</span><span class="o">=</span><span class="n">exp_f</span><span class="p">,</span>
+                                 <span class="n">def_file</span><span class="o">=</span><span class="n">def_f</span><span class="p">,</span>
+                                 <span class="n">optimiser</span><span class="o">=</span><span class="s2">&quot;bobyqa&quot;</span><span class="p">,</span>
+                                 <span class="n">maxfev</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="with-user-defined-parameters-advanced">
+<h2>with user-defined parameters (advanced)<a class="headerlink" href="#with-user-defined-parameters-advanced" title="Permalink to this headline">¶</a></h2>
+<p>To optimise your own parameters, you should define a callback function, used to set up your parameters. The simplest is to define it in your optimisation script (after the imports and before your script code):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_callback</span><span class="p">(</span><span class="n">my_callback_pars_dict</span><span class="p">,</span> <span class="o">*</span><span class="n">mycallback_args</span><span class="p">):</span>
+    <span class="s2">&quot;&quot;</span>
+    <span class="n">Parameters</span>
+    <span class="o">----------</span>
+    <span class="n">pars_dict</span><span class="p">:</span> <span class="n">dictionary</span>
+        <span class="n">dictionary</span> <span class="k">with</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">parameters</span> <span class="n">to</span> <span class="n">optimise</span> <span class="k">as</span> <span class="n">key</span> <span class="ow">and</span>
+        <span class="n">their</span> <span class="n">value</span> <span class="k">as</span> <span class="n">value</span>
+    <span class="o">*</span><span class="n">mycallback_args</span>
+        <span class="n">other</span> <span class="n">possible</span> <span class="n">arguments</span> <span class="k">for</span> <span class="n">callback</span> <span class="n">function</span>
+    <span class="s2">&quot;&quot;</span>
+    <span class="c1"># user operations and parameters modifications</span>
+</pre></div>
+</div>
+<p>Indicate that your parameter is user-defined by including ‘&amp;’ at the start of its name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">optimise</span><span class="p">(</span><span class="n">Xepr</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="o">...</span> <span class="p">,</span> <span class="s1">&#39;&amp;_&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">,</span>
+               <span class="n">callback</span><span class="o">=</span><span class="n">my_callback</span><span class="p">,</span> <span class="n">callback_args</span><span class="o">=</span><span class="n">my_callback_args</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can pass arguments (as a tuple) to <code class="docutils literal notranslate"><span class="pre">callback</span></code> by using <code class="docutils literal notranslate"><span class="pre">callback_pars</span></code>.</p>
+<p>In the following example, we modify a shape parameter with the module <code class="docutils literal notranslate"><span class="pre">mrpypulse</span></code> (bandwidth <code class="docutils literal notranslate"><span class="pre">bw</span></code> of an HS1 pulse)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">Xepr_link</span>
+<span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">optimise</span>
+<span class="kn">from</span> <span class="nn">esrpoise.costfunctions</span> <span class="kn">import</span> <span class="n">maxabsint_echo</span>
+<span class="kn">from</span> <span class="nn">mrpypulse</span> <span class="kn">import</span> <span class="n">pulse</span>
+
+
+<span class="k">def</span> <span class="nf">shape_bw</span><span class="p">(</span><span class="n">callback_pars_dict</span><span class="p">,</span> <span class="n">shp_nb</span><span class="p">):</span>
+
+    <span class="c1"># getting  bw value from the callback parameters to be optimised</span>
+    <span class="n">bw</span> <span class="o">=</span> <span class="n">callback_pars_dict</span><span class="p">[</span><span class="s2">&quot;&amp;bw&quot;</span><span class="p">]</span>
+
+    <span class="c1"># create hyperbolic sechant shape bw value</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">Parametrized</span><span class="p">(</span><span class="n">bw</span><span class="o">=</span><span class="n">bw</span><span class="p">,</span> <span class="n">tp</span><span class="o">=</span><span class="mf">80e-9</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tres</span><span class="o">=</span><span class="mf">0.625e-9</span><span class="p">,</span>
+                           <span class="n">delta_f</span><span class="o">=-</span><span class="mf">65e6</span><span class="p">,</span> <span class="n">AM</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">FM</span><span class="o">=</span><span class="s2">&quot;sech&quot;</span><span class="p">)</span>
+
+    <span class="n">p</span><span class="o">.</span><span class="n">xepr_file</span><span class="p">(</span><span class="n">shp_nb</span><span class="p">)</span>    <span class="c1"># create shape file</span>
+
+    <span class="c1"># shape path</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="n">shp_nb</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.shp&#39;</span><span class="p">)</span>
+
+    <span class="n">Xepr_link</span><span class="o">.</span><span class="n">load_shp</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>  <span class="c1"># send shape to Xepr</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="n">xepr</span> <span class="o">=</span> <span class="n">Xepr_link</span><span class="o">.</span><span class="n">load_xepr</span><span class="p">()</span>
+
+<span class="c1">#  HS pulse bandwidth optimisation</span>
+<span class="n">xbest</span><span class="p">,</span> <span class="n">fbest</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">optimise</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span>
+                                 <span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&amp;bw&#39;</span><span class="p">],</span>
+                                 <span class="n">init</span><span class="o">=</span><span class="p">[</span><span class="mf">80e6</span><span class="p">],</span>
+                                 <span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="mf">30e6</span><span class="p">],</span>
+                                 <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="mf">120e6</span><span class="p">],</span>
+                                 <span class="n">tol</span><span class="o">=</span><span class="p">[</span><span class="mf">1e6</span><span class="p">],</span>
+                                 <span class="n">cost_function</span><span class="o">=</span><span class="n">maxabsint_echo</span><span class="p">,</span>
+                                 <span class="n">maxfev</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+                                 <span class="n">nfactor</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                 <span class="n">callback</span><span class="o">=</span><span class="n">shape_bw</span><span class="p">,</span>
+                                 <span class="n">callback_args</span><span class="o">=</span><span class="p">(</span><span class="mi">7770</span><span class="p">,))</span>
+<span class="c1"># NB: &#39;(7770,)&#39; is equivalent to &#39;tuple([7770])&#39;</span>
+</pre></div>
+</div>
+<p>Note that we first have to import the modules, then defining the function before writing the actual optimisation script.</p>
+</section>
+<section id="with-user-defined-cost-function-advanced">
+<h2>with user-defined cost function (advanced)<a class="headerlink" href="#with-user-defined-cost-function-advanced" title="Permalink to this headline">¶</a></h2>
+<p>You can define your own cost function and pass it to the function optimise. Your cost function should treat the data from one of your experiment run to return a single number which will be minimised by the optimiser.</p>
+<p>We can for example conduct an optmisation on the spectrum with a zero-filling operation (data is here a simple time-domain FID):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">Xepr_link</span>
+<span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">optimise</span>
+
+<span class="k">def</span> <span class="nf">maxabsint</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maximises the absolute (magnitude-mode) intensity of the spectrum.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">zero_filling</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">length</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+    <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">zero_filling</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">spectrum</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
+
+
+<span class="c1"># load Xepr instance</span>
+<span class="n">xepr</span> <span class="o">=</span> <span class="n">Xepr_link</span><span class="o">.</span><span class="n">load_xepr</span><span class="p">()</span>
+
+<span class="c1"># fine adjustment of center field for bisnitroxide sample at X-band</span>
+<span class="n">xbest</span><span class="p">,</span> <span class="n">fbest</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">optimise</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span>
+                                 <span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CenterField&#39;</span><span class="p">],</span>
+                                 <span class="n">init</span><span class="o">=</span><span class="p">[</span><span class="mi">3450</span><span class="p">],</span>
+                                 <span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="mi">3445</span><span class="p">],</span>
+                                 <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="mi">3455</span><span class="p">],</span>
+                                 <span class="n">tol</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">],</span>
+                                 <span class="n">cost_function</span><span class="o">=</span><span class="n">maxabsint</span><span class="p">,</span>
+                                 <span class="n">maxfev</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="setup-tips-advanced">
+<h2>Setup Tips (advanced)<a class="headerlink" href="#setup-tips-advanced" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Put several optimisations in one script.</p></li>
+<li><p>Automate your actions by using XeprAPI commands, the functions from <a class="reference internal" href="modules.html#xepr-link-py"><span class="std std-ref">Xepr_link.py</span></a> and <code class="docutils literal notranslate"><span class="pre">param_set</span></code> from <a class="reference internal" href="modules.html#main-py"><span class="std std-ref">main.py</span></a></p></li>
+<li><p>Reuse the best parameter from the optimiser <code class="docutils literal notranslate"><span class="pre">xbest</span></code>.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">callbak</span></code> to add user-specific operation at each iteration. You do not need to indicate user-defined parameters, <code class="docutils literal notranslate"><span class="pre">callback_pars_dict</span></code> is sent back empty if no user-defined parameters are found.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">acquire_esr.calls</span></code> in your callback function to access the current number of your iteration.</p></li>
+<li><p>Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with <code class="docutils literal notranslate"><span class="pre">Xepr_link.COMPILATION_TIME</span></code> (cf. :ref:<code class="docutils literal notranslate"><span class="pre">Compilation</span></code>)</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ESR-POISE</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Set up an optimisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#with-standard-parameters">with standard parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#with-def-file-parameters">with .def file parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#with-user-defined-parameters-advanced">with user-defined parameters (advanced)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#with-user-defined-cost-function-advanced">with user-defined cost function (advanced)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-tips-advanced">Setup Tips (advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Run an optimisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="builtinpar.html">Built-in parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshoot.html">Troubleshoot</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="install.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="run.html" title="next chapter">Run an optimisation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/setup.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

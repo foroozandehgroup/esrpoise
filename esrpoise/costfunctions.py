@@ -5,13 +5,14 @@ costfunctions.py
 Contains some typical cost functions. You can choose to take your cost
 functions from here, or create your own.
 
-Cost functions must be defined as follows. They must take one parameter (named
-anything you like), which is an instance of the XeprDataset class and
-represents a set of ESR data. Then they must return a float, which corresponds
-to how 'bad' the data is. The worse the data, the larger the return
-value should be.
+Cost functions must be defined as:
+- taking one parameter (namedn anything you like), which is an instance of the
+``XeprDataset`` class and represents a set of ESR data,
+- returning a float, which corresponds to how 'bad' the data is. The worse the
+data, the larger the return value should be.
 
 SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 
 import numpy as np
@@ -19,7 +20,21 @@ import numpy as np
 
 # spectrum
 def spectrum(data):
-    return np.fft.fft(data.O.real + 1j * data.O.imag)
+    """Computes a spectrum from Xepr standard time domain data.
+
+    Parameters
+    ----------
+    data : XeprAPI.Dataset
+        data retrieved from Xepr
+
+    Returns
+    -------
+    spectrum : ndarray
+        spectrum computed from time domain data
+    """
+    spectrum = np.fft.fft(data.O.real + 1j * data.O.imag)
+
+    return spectrum
 
 
 def minabsint(data):

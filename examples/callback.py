@@ -1,13 +1,13 @@
 """
 callback.py
-----------
+-----------
 
 A minimal example of how to use the esrpoise interface with user defined
 function callback and user defined parameters '&_'.
 
 
-User parameters to be optimized should be indicated by a preceding '&'
-    optimize(Xepr, pars=[... , '&_', ...], ...,
+User parameters to be optimised should be indicated by a preceding '&'
+    optimise(Xepr, pars=[... , '&_', ...], ...,
                    callback=my_callback, callback_args=my_callback_args)
 
 User defined parameter function guidelines:
@@ -16,14 +16,14 @@ User defined parameter function guidelines:
         Parameters
         ----------
         pars_dict: dictionary
-            dictionary with the name of the parameters to optimize as key and
+            dictionary with the name of the parameters to optimise as key and
             their value as value
         *mycallback_args
             other possible arguments for callback function
         ""
         # user operations and parameters modifications
 
-callbak should not necessarily add user parameters to optimize, it can just
+callbak should not necessarily add user parameters to optimise, it can just
 add user-specific operation (callback_pars_dict is sent back empty if no user
                              parameters are found)
 
@@ -31,8 +31,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 """
 
 import os
-from esrpoise import Xepr_link
-from esrpoise import optimize
+from esrpoise import xepr_link
+from esrpoise import optimise
 from esrpoise.costfunctions import maxabsint_echo
 from mrpypulse import pulse
 
@@ -53,7 +53,7 @@ def shape_bw(callback_pars_dict, shp_nb):
     bw = callback_pars_dict["&bw"]
 
     # create hyperbolic sechant shape with k value
-    p = pulse.Parametrized(bw=bw, tp=80e-9, Q=15, tres=0.625e-9,
+    p = pulse.Parametrized(bw=bw, tp=80e-9, Q=5, tres=0.625e-9,
                            delta_f=-65e6, AM="tanh", FM="sech")
 
     # create shape file
@@ -63,7 +63,7 @@ def shape_bw(callback_pars_dict, shp_nb):
     path = os.path.join(os.getcwd(), str(shp_nb) + '.shp')
 
     # send shape to Xepr
-    Xepr_link.load_shp(xepr, path)
+    xepr_link.load_shp(xepr, path)
 
     # NB: AWG memory overloading
     # If a bug with shape loading is encountered after a certain number
@@ -72,15 +72,15 @@ def shape_bw(callback_pars_dict, shp_nb):
     # # Xepr reset needed for 114 sequential shape load and run
     # if acquire_esr.calls % 114 == 0 and acquire_esr.calls != 0:
     #     print('reset required')
-    #     Xepr_link.reset_exp(Xepr)
+    #     xepr_link.reset_exp(Xepr)
 
     return None
 
 
-xepr = Xepr_link.load_xepr()
+xepr = xepr_link.load_xepr()
 
 #  HS pulse bandwidth optimisation
-xbest0, fbest, message = optimize(xepr,
+xbest0, fbest, message = optimise(xepr,
                                   pars=['&bw'],
                                   init=[80e6],
                                   lb=[30e6],
