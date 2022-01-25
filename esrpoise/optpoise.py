@@ -884,7 +884,7 @@ def brute_force(cf: callable,
                  for (lb_i, ub_i, N_i) in zip(scaled_lb, scaled_ub, N)]
 
     # Show a warning if spacing has been adjusted by > 1 ppm
-    spacing = (scaled_ub - scaled_lb) / N
+    spacing = (scaled_ub - scaled_lb) / (N - 1)
     if not np.allclose(spacing, xtol, rtol=1e-6, atol=1e-6):
         warn("The spacing between values to be evaluated differs from the"
              " specified tolerances. To avoid this warning, please ensure"
