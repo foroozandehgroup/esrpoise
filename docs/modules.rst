@@ -3,7 +3,7 @@ Modules
 
 The esrpoise code is organized into 4 modules:
  - ``main.py`` for the optimisation to take place (set parameters, run the experiment, report results...),
- - ``Xepr_link.py`` to handle communication with Xepr,
+ - ``xepr_link.py`` to handle communication with Xepr,
  - ``costfunctions.py`` which contains standard cost functions,
  - ``optpoise.py`` which contains the necessary for the optimisers (cf. source code for more details).
 
@@ -28,10 +28,10 @@ The esrpoise code is organized into 4 modules:
 
 |
 
-Xepr_link.py
+xepr_link.py
 ------------
 
-.. currentmodule:: esrpoise.Xepr_link
+.. currentmodule:: esrpoise.xepr_link
 
 .. autofunction:: load_xepr
 
