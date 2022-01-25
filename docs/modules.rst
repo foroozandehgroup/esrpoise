@@ -90,7 +90,7 @@ Spectrum
 
 |
 
-.. autofunction:: minmagint
+.. autofunction:: minimagint
 
 |
 
