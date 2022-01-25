@@ -879,7 +879,7 @@ def brute_force(cf: callable,
     # Generate points to sample. In the i-th dimension we want to choose the
     # integer nvals[i] such that np.linspace(lb[i], ub[i], nvals[i]) gives
     # uniformly spaced values which differ by as close to xtol[i] as possible.
-    N = np.around((scaled_ub - scaled_lb) / xtol).astype(int)
+    N = np.around((scaled_ub - scaled_lb) / xtol).astype(int) + 1
     linspaces = [np.linspace(lb_i, ub_i, N_i)
                  for (lb_i, ub_i, N_i) in zip(scaled_lb, scaled_ub, N)]
 
