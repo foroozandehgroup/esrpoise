@@ -66,9 +66,9 @@ def maxrealint(data):
     return -minrealint(data)
 
 
-def minmagint(data):
+def minimagint(data):
     """
-    Minimises the intensity of the imagignary part of the spectrum. If the
+    Minimises the intensity of the imaginary part of the spectrum. If the
     spectrum has negative peaks this cost function will try to maximise those.
     """
     return np.sum(np.imag(spectrum(data)))
