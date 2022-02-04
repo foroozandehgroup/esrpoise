@@ -78,7 +78,7 @@ def maximagint(data):
     """
     Maximises the intensity of the real part of the spectrum.
     """
-    return -minmagint(data)
+    return -minimagint(data)
 
 
 def zerorealint(data):
@@ -210,7 +210,7 @@ def maximagmax_echo(data):
 # DEER trace modulation depth
 def max_n2p(data):
     """
-    Maximizes n2p parameter for DEER trace.
+    Maximises n2p parameter for DEER trace.
     Data should contain the 2 points of interest in position 0 and 1.
     """
     return -np.abs(data.O.real[0]-data.O.real[1])

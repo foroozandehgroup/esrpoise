@@ -33,7 +33,7 @@ Increase the compilation time of the .exp, .def and .shp files (1s by default) w
     # run experiment with optimal parameters
     xepr_link.run2getdata_exp(xepr, "Signal", exp_f)
 
-If decreased, this can also be used to accelerate an optimisation routine if the files are compiling fast enough.
+When decreased, ``COMPILATION_TIME`` can be used to accelerate an optimisation routine if the files are compiling fast enough.
 
 Shape loading
 -------------
