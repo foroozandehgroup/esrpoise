@@ -3,7 +3,7 @@ Installation
 
 The requirements are:
 
- - **Xepr**. We have tested Xepr versions ?
+ - **Xepr**. We have tested Xepr versions 2.8b.5
    
  - **Python 3**. This refers to a separate, system installation of Python 3; in particular, ESRPOISE requires a minimum version of **Python 3.7.** (We have tested up to Python 3.8.)
 

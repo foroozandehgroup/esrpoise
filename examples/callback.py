@@ -54,7 +54,7 @@ def shape_bw(callback_pars_dict, shp_nb):
 
     # create hyperbolic sechant shape with k value
     p = pulse.Parametrized(bw=bw, tp=80e-9, Q=5, tres=0.625e-9,
-                           delta_f=-65e6, AM="tanh", FM="sech")
+                           delta_f=-65e6, AM="sech", FM="sech")
 
     # create shape file
     p.xepr_file(shp_nb)

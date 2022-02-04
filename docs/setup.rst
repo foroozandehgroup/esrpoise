@@ -18,12 +18,12 @@ Only a handful of Xepr parameters can be accessed through a simple optimisation 
 
 Example of standard parameter optimisation script::
 
-    from esrpoise import Xepr_link
+    from esrpoise import xepr_link
     from esrpoise import optimise
     from esrpoise.costfunctions import maxabsint_echo
     
     # load Xepr instance
-    xepr = Xepr_link.load_xepr()
+    xepr = xepr_link.load_xepr()
     
     # fine adjustment of centre field for bisnitroxide sample at X-band
     xbest, fbest, message = optimise(xepr,
@@ -93,7 +93,7 @@ You can pass arguments (as a tuple) to ``callback`` by using ``callback_pars``.
 In the following example, we modify a shape parameter with the module ``mrpypulse`` (bandwidth ``bw`` of an HS1 pulse) ::
 
     import os
-    from esrpoise import Xepr_link
+    from esrpoise import xepr_link
     from esrpoise import optimise
     from esrpoise.costfunctions import maxabsint_echo
     from mrpypulse import pulse
@@ -113,12 +113,12 @@ In the following example, we modify a shape parameter with the module ``mrpypuls
         # shape path
         path = os.path.join(os.getcwd(), str(shp_nb) + '.shp')
     
-        Xepr_link.load_shp(xepr, path)  # send shape to Xepr
+        xepr_link.load_shp(xepr, path)  # send shape to Xepr
     
         return None
     
     
-    xepr = Xepr_link.load_xepr()
+    xepr = xepr_link.load_xepr()
     
     #  HS pulse bandwidth optimisation
     xbest, fbest, message = optimise(xepr,
@@ -144,7 +144,7 @@ You can define your own cost function and pass it to the function optimise. Your
 We can for example conduct an optmisation on the spectrum with a zero-filling operation (data is here a simple time-domain FID)::
 
     import numpy
-    from esrpoise import Xepr_link
+    from esrpoise import xepr_link
     from esrpoise import optimise
     
     def maxabsint(data):
@@ -158,7 +158,7 @@ We can for example conduct an optmisation on the spectrum with a zero-filling op
     
     
     # load Xepr instance
-    xepr = Xepr_link.load_xepr()
+    xepr = xepr_link.load_xepr()
     
     # fine adjustment of center field for bisnitroxide sample at X-band
     xbest, fbest, message = optimise(xepr,
@@ -177,4 +177,6 @@ Setup Tips (advanced)
  - Reuse the best parameter from the optimiser ``xbest``.
  - Use ``callbak`` to add user-specific operation at each iteration. You do not need to indicate user-defined parameters, ``callback_pars_dict`` is sent back empty if no user-defined parameters are found.
  - Use ``acquire_esr.calls`` in your callback function to access the current number of your iteration.
- - Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with ``Xepr_link.COMPILATION_TIME`` (cf. :ref:``Compilation``)
+ - Use the parameter ``nfactor`` of ``optimise()`` to expand the distance between the first steps of the optimisers, in particular if you have a low tolerance.
+ - Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with ``xepr_link.COMPILATION_TIME`` (cf. :ref:``Compilation``)
+ - When using a single script with functions, be aware of your variables scope.

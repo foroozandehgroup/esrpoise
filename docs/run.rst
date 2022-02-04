@@ -7,7 +7,7 @@ Procedure
 In Xepr:
  - Set up your experiment as you would normally do.
  - Enable XeprAPI (Processing -> XeprAPI -> enable XeprAPI).
- - Run your experiment once by clicking on play to load it into XeprAPI.
+ - Run your experiment once by clicking on play to load it into XeprAPI (can also be done before enabling XeprAPI).
 
 add screenshot of where to click for XerpAPI
 
@@ -27,4 +27,4 @@ Once ``optimise()`` is done, you get a set of optimised parameters. These are se
 Running tips
 ------------
  - When running your experiment once to load it in XeprAPI, you can interupt it by clicking on play again. This is enough to set it up, sparing the time of a full run.
- - When using .exp and .def file, save them to avoid getting a warning. This warning pauses the optimisation and you need to manually get out of it at each iteration.
+ - When using .exp and .def file, save them beforehand to avoid getting a warning. Otherwise this warning pauses the optimisation and you need to manually get rid of it at each iteration.

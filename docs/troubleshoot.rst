@@ -4,13 +4,13 @@ Troubleshoot
 Compilation
 -----------
 
-Bugs can be created if ``Xepr_link`` does not allow enough time for compilation.
+Bugs can be created if ``xepr_link`` does not allow enough time for compilation.
 
 Increase the compilation time of the .exp, .def and .shp files (1s by default) with the global variable ``COMPILATION_TIME`` from ``Xepr_link``:: 
 
-    Xepr_link.COMPILATION_TIME = 2  # (s)
+    xepr_link.COMPILATION_TIME = 2  # (s)
     
-    xepr = Xepr_link.load_xepr()
+    xepr = xepr_link.load_xepr()
     
     # .exp and .def files location
     location = '/home/xuser/xeprFiles/Data/'
@@ -31,7 +31,7 @@ Increase the compilation time of the .exp, .def and .shp files (1s by default) w
                                      maxfev=20)
     
     # run experiment with optimal parameters
-    Xepr_link.run2getdata_exp(xepr, "Signal", exp_f)
+    xepr_link.run2getdata_exp(xepr, "Signal", exp_f)
 
 If decreased, this can also be used to accelerate an optimisation routine if the files are compiling fast enough.
 
@@ -43,4 +43,4 @@ Use the following lines in your callback function (requires to import ``acquire_
 
     if acquire_esr.calls % 114 == 0 and acquire_esr.calls != 0:
         print('reset required')
-        Xepr_link.reset_exp(Xepr)
+        xepr_link.reset_exp(Xepr)
