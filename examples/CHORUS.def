@@ -1,0 +1,91 @@
+;
+; CHORUS pulse sequence variables
+; Increasing the quantitative bandwidth of NMR measurements
+; J. E. Power, M. Foroozandeh, R. W. Adams, M. Nilsson, S. R. Coombes, A. R. Phillips and G. A. Morris 
+; Chem. Commun., 2016, 52, 2916-2919, DOI: 10.1039/C5CC10206E
+;
+;       FT-EPR package definitions, AWG
+;
+;     PulseSPEL general variables, definitions & conventions
+begin defs
+
+; Variables    ; Comments:
+
+p0   = 80      ; 90 pulse length
+p1   = 280     ; 180 pulse, 1st
+p2   = 240     ; 180 pulse, 2nd
+p3   = 4000    ;
+
+pg   = 24      ; Integrator Gate Width (RESERVED)
+d0   = 390     ; Detection Trigger offset time, 422ns opt for MS2 at 9.45 GHz
+
+d1   = 12      ; calculated in program (p0)
+d2   = 372     ; minimum value = p1 + deadtime (74ns?,+d4 in program)
+d3   = 260     ; calculated in program (d2-d4)
+d4   = 40      ; calculated in program (p0/2)
+d5   = 14000   ;
+d6   = 0       ; additional delay (negative evolution time)
+d7   = 0       ; additional delay (positive evolution time)
+
+d9   = 0       ; DAF (Delay After Flash) delay pulse sequence until
+               ; after external event (eg. laser pulse)
+d30  = 16      ; 1st time scale increment
+d31  = 4       ; 2nd time scale increment
+
+a    = 64     ; (RESERVED) number of transient averages (TRANS)
+               ; if greater than 1024, a must be a multiple of 1024
+h    = 8       ; (CONVENTION) number of shots per point (INTG and SPT)
+n    = 1       ; (CONVENTION) number of sweeps to accumulate
+
+srt  = 1300 * srtu ; (RESERVED) SRT - Shot Repetition Time (srtu=1.02 us)
+
+b    = 300     ; off resonance center field step in Gauss
+c    = 5       ; sleep delay in s for field stabilization
+r    = 1       ;
+
+w    = 800     ; (CONVENTION) Split point of sweeps (points)
+               ; i.e. pulse separation where TWT gate pulse can be split.
+dx   = 0       ; (RESERVED) 1st time scale starting value
+dy   = 0       ; (RESERVED) 2nd time scale starting value
+
+; AWG pulse variables
+af0  = 0       ; start frequency / MHz
+af1  = 0       ; final frequency / MHz
+af2  = 0       ; start frequency / MHz
+af3  = 0       ; final frequency / MHz
+aa0  = 28 ; 1st pulse amplitude / %
+aa1  = 87 ; 2nd pulse amplitude / %
+aa2  = 98 ; 3rd pulse amplitude / %
+aa3  = 0       ; amplitude / % (for amplitude optimisation storage)
+aa4  = 0       ; amplitude / % (for amplitude optimisation storage)
+
+; shapes with phases 90 and 270 shapes must be inverted      
+as0  = 400     ; 1st pulse phase 0
+as1  = 404     ; 2nd pulse phase 0
+as2  = 407     ; 2nd pulse phase 270
+as3  = 406     ; 2nd pulse phase 180
+as4  = 405     ; 2nd pulse phase 90
+as5  = 408     ; 3rd pulse phase 0
+as6  = 411     ; 3rd pulse phase 270
+as7  = 410     ; 3rd pulse phase 180
+as8  = 409     ; 3rd pulse phase 90
+as9  = 1       ; unused
+as10 = 400     ; 1st pulse phase 0
+as11 = 403     ; 1st pulse phase 270
+as12 = 402     ; 1st pulse phase 180
+as13 = 401     ; 1st pulse phase 90
+
+da0  = 1       ; increments for pulse amplitude search
+da1  = 1       ; 
+da2  = 1       ;
+da3  = 5000    ;
+
+end defs
+
+; Note:
+;   Variables Marked 'RESERVED' = variable may be used for other times,
+;                                 however only this variable can change
+;                                 the indicated parameter.
+;                                eg. only 'a' will change the number of
+;                                 transients averaged in SpecJet
+

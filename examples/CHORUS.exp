@@ -1,0 +1,202 @@
+;
+; CHORUS pulse sequence
+; Increasing the quantitative bandwidth of NMR measurements
+; J. E. Power, M. Foroozandeh, R. W. Adams, M. Nilsson, S. R. Coombes, A. R. Phillips and G. A. Morris 
+; Chem. Commun., 2016, 52, 2916-2919, DOI: 10.1039/C5CC10206E
+;
+begin defs             ; dimension of data array [sx,sy]
+ dim s[128]             ;  for transient echo detection
+ dim1 s[256,50]        ;  90 deg pulse Amplitude optimization
+ dim2 s[50,50]         ;  for pulse amplitude optimization
+end defs
+
+; Reference Phase Cycle
+; ph1 = 90*[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] ;
+; ph2 = 90*[0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3] ;
+; ph3 = 90*[0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3] ;
+; ph31= 90*[0 2 0 2 2 0 2 0 0 2 0 2 2 0 2 0] ;
+
+; first pulse
+begin awg0
+  af0  af0  af0  af0   ; start frequency [MHz]
+  af1  af1  af1  af1   ; end frequency [MHz]
+  0    0    0    0     ; phase [degrees]
+  aa0  aa0  aa0  aa0   ; amplitude [%]
+  as10 as11 as12 as13  ; shape
+end awg0
+
+; second pulse
+begin awg1
+  af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   ; start frequency [MHz]
+  af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   ; end frequency [MHz]
+  0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     ; phase [degrees]
+  aa1  aa1  aa1  aa1   aa1  aa1  aa1  aa1   aa1  aa1  aa1  aa1   aa1  aa1  aa1  aa1   ; amplitude [%]
+  as1  as2  as3  as4   as2  as3  as4  as1   as3  as4  as1  as2   as4  as1  as2  as3   ; shape 
+end awg1
+
+; third pulse
+begin awg2
+  af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   af0  af0  af0  af0   ; start frequency [MHz]
+  af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   af1  af1  af1  af1   ; end frequency [MHz]
+  0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     0    0    0    0     ; phase [degrees]
+  aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   aa2  aa2  aa2  aa2   ; amplitude [%]
+  as5  as5  as5  as5   as5  as5  as5  as5   as5  as5  as5  as5   as5  as5  as5  as5   as6  as6  as6  as6   as6  as6  as6  as6   as6  as6  as6  as6   as6  as6  as6  as6   as7  as7  as7  as7   as7  as7  as7  as7   as7  as7  as7  as7   as7  as7  as7  as7   as8  as8  as8  as8   as8  as8  as8  as8   as8  as8  as8  as8   as8  as8  as8  as8   ; shape 
+end awg2
+
+; phase cycles
+begin lists "none"
+ asg1 +a
+ bsg1 +b
+ asg2 -a
+ bsg2 -b
+end lists
+
+begin lists1 "16-step"
+ asg1 +a +b -a -b  -a -b +a +b  +a +b -a -b  -a -b +a +b
+ bsg1 +b -a -b +a  -b +a +b -a  +b -a -b +a  -b +a +b -a
+ asg2 -a -b +a +b  +a +b -a -b  -a -b +a +b  +a +b -a -b
+ bsg2 -b +a +b -a  +b -a -b +a  -b +a +b -a  +b -a -b +a
+end lists1
+
+begin lists2 "64-step"
+ asg1 +a +b -a -b  -a -b +a +b  +a +b -a -b  -a -b +a +b  -a -b +a +b  +a +b -a -b  -a -b +a +b  +a +b -a -b  +a +b -a -b  -a -b +a +b  +a +b -a -b  -a -b +a +b  -a -b +a +b  +a +b -a -b  -a -b +a +b  +a +b -a -b  
+ bsg1 +b -a -b +a  -b +a +b -a  +b -a -b +a  -b +a +b -a  -b +a +b -a  +b -a -b +a  -b +a +b -a  +b -a -b +a  +b -a -b +a  -b +a +b -a  +b -a -b +a  -b +a +b -a  -b +a +b -a  +b -a -b +a  -b +a +b -a  +b -a -b +a  
+ asg2 -a -b +a +b  +a +b -a -b  -a -b +a +b  +a +b -a -b  +a +b -a -b  -a -b +a +b  +a +b -a -b  -a -b +a +b  -a -b +a +b  +a +b -a -b  -a -b +a +b  +a +b -a -b  +a +b -a -b  -a -b +a +b  +a +b -a -b  -a -b +a +b  
+ bsg2 -b +a +b -a  +b -a -b +a  -b +a +b -a  +b -a -b +a  +b -a -b +a  -b +a +b -a  +b -a -b +a  -b +a +b -a  -b +a +b -a  +b -a -b +a  -b +a +b -a  +b -a -b +a  +b -a -b +a  -b +a +b -a  +b -a -b +a  -b +a +b -a
+end lists2
+
+; phase cycles
+begin lists3 "16-fake"
+ asg1 +a +a +a +a  +a +a +a +a  +a +a +a +a  +a +a +a +a
+ bsg1 +b -b +b +b  +b -b +b +b  +b -b +b +b  +b -b +b +b
+ asg2 -a -a -a -a  -a -a -a -a  -a -a -a -a  -a -a -a -a
+ bsg2 -b -b -b -b  -b -b -b -b  -b -b -b -b  -b -b -b -b
+end lists3
+
+;
+; broadband echo
+;
+begin exp "echo" [QUAD TRANS]
+        ; QUAD detection of Transient - 4-step phase cycle default
+
+d1 = p0                         ;
+d4 = p0/2                       ;
+d3 = d2-d4                      ;
+
+   for k=1 to n                 ; averaging loop
+    totscans (n)                ; output total number of scans
+
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse and phase program
+      d1                        ; delay during pulse
+      d6                        ; additional delay  
+      p1 [awg1]                 ; 1st pulse and phase program
+      d2                        ; delay during pulse 
+      d4                        ; dead time compensation
+      d7                        ; additional delay
+      p2 [awg2]                 ; 1st pulse and phase program
+      d3                        ; delay during pulse 
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+
+   scansdone (k)                ; output number of scans done
+  next k                        ; end of averaging loop
+
+end exp
+
+
+;
+; amplitude optimization with integrated on-resonant FID detection
+;
+begin exp1 "90degAmpOpt" [TRANS QUAD]
+        ; QUAD detection with Integration
+
+d1 = p0                         ;
+d4 = p0/2                       ;
+d3 = d2-d4                      ;
+
+aa5 = 0                       ;
+
+ for k=1 to n                   ; averaging loop
+ totscans (n)                   ; output total number of scans
+
+
+   aa0 = aa5                    ;
+   dy = aa0                     ; set x-axis to af0 frequency
+
+    for y=1 to sy
+      shot i=1 to a             ; accumulation loop
+       d9                       ; DAF (Delay After Flash)
+       p0 [awg0]                ; 1st pulse and phase program
+       d1                       ; delay during pulse  
+       p1 [awg1]                ; 1st pulse and phase program
+       d2                       ; delay during pulse 
+       d4                       ;
+       p2 [awg2]                ; 1st pulse and phase program
+       d3                       ; delay during pulse 
+       d0                       ; constant acquisition delay
+       dig [sg1]                ; acquisition
+      next i                    ; end of accumulation loop
+
+     aa0=aa0+da0                ; change amplitude of second pulse
+     dy=dy+da0                  ; change axis value
+    next y
+
+ scansdone (k)          ; output number of scans
+ next k                 ; end of averaging loop
+
+end exp1
+
+
+;
+; amplitude optimization with integrated on-resonant FID detection
+;
+begin exp2 "2D_AmpOpt" [INTG QUAD]
+        ; QUAD detection with Integration
+
+d1 = p0                         ;
+d4 = p0/2                       ;
+d3 = d2-d4                      ;
+
+aa3 = aa1                       ;
+aa4 = aa2                       ;
+
+ for k=1 to n                   ; averaging loop
+ totscans (n)                   ; output total number of scans
+
+  aa2 = aa4                     ;
+  dy = aa2                      ;
+
+  for y = 1 to sy
+
+   aa1 = aa3                    ;
+   dx = aa1                     ; set x-axis to af0 frequency
+
+    sweep x=1 to sx
+      shot i=1 to h             ; accumulation loop
+       d9                       ; DAF (Delay After Flash)
+       p0 [awg0]                ; 1st pulse and phase program
+       d1                       ; delay during pulse  
+       p1 [awg1]                ; 1st pulse and phase program
+       d2                       ; delay during pulse 
+       d4                       ;
+       p2 [awg2]                ; 1st pulse and phase program
+       d3                       ; delay during pulse 
+       d0                       ; constant acquisition delay
+       acq [sg1]                ; acquisition
+      next i                    ; end of accumulation loop
+
+     aa1=aa1+da1                ; change amplitude of second pulse
+     dx=dx+da1                  ; change axis value
+    next x
+
+    aa2=aa2+da2         ; change amplitude of third pulse
+    dy=dy+da2           ; change axis value
+    next y              ; end of field sweep loop
+
+ scansdone (k)          ; output number of scans
+ next k                 ; end of averaging loop
+
+end exp2

@@ -1,6 +1,6 @@
 """
 basic.py
-----------
+--------
 
 A minimal example of how to use the esrpoise module.
 
@@ -30,12 +30,12 @@ from esrpoise.costfunctions import maxabsint_echo
 # load Xepr instance
 xepr = xepr_link.load_xepr()
 
-# fine adjustment of centre field for bisnitroxide sample at X-band
+# adjustment of centre field for bisnitroxide sample at X-band
 xbest, fbest, message = optimise(xepr,
                                  pars=['CenterField'],
-                                 init=[3450],
-                                 lb=[3445],
-                                 ub=[3455],
-                                 tol=[0.1],
+                                 init=[3415],
+                                 lb=[3390],
+                                 ub=[3425],
+                                 tol=[0.25],
                                  cost_function=maxabsint_echo,
                                  maxfev=20)
