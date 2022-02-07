@@ -8,7 +8,7 @@ Depending on your level of interaction with the software, you may not need to re
 For example, if somebody else has already installed and set up some esrpoise scripts for you, you can probably skip to :ref:`Run an optimisation`.
 You should also skip advanced subsections for your first steps with esrpoise.
 
-You can also have a look at the examples scritps present in the package directory (``esrpoise/examples/``).
+You can also have a look at the examples scripts present in the package directory (``esrpoise/examples/``).
 
 For more in-depth insight, consult the source code.
 
