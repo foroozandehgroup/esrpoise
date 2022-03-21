@@ -58,6 +58,8 @@ Once python is installed, you can install POISE using ``pip``::
 
     python -m pip install esrpoise
 
+(replace ``python`` with ``python3`` if necessary)
+
 The following Python packages are required, they should get automatically installed with esrpoise if you do not already have them:
 
  - **numpy**
@@ -86,6 +88,7 @@ or equivalently::
 
    python setup.py install
 
+(or ``python3`` if necessary)
 
 Installing without Internet
 ---------------------------

@@ -178,5 +178,5 @@ Setup Tips (advanced)
  - Use ``callbak`` to add user-specific operation at each iteration. You do not need to indicate user-defined parameters, ``callback_pars_dict`` is sent back empty if no user-defined parameters are found.
  - Use ``acquire_esr.calls`` in your callback function to access the current number of your iteration.
  - Use the parameter ``nfactor`` of ``optimise()`` to expand the distance between the first steps of the optimisers, in particular if you have a low tolerance.
- - Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with ``xepr_link.COMPILATION_TIME`` (cf. :ref:``Compilation``)
+ - Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with ``xepr_link.COMPILATION_TIME`` (cf. :ref:`Compilation`)
  - When using a single script with functions, be aware of your variables scope.

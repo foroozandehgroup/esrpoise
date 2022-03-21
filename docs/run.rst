@@ -13,7 +13,7 @@ add screenshot of where to click for XerpAPI
 
 Run your optimisation script in a terminal with ::
 
-    ``python yourscript.py``
+    python yourscript.py
 
 (replace ``python`` with ``python3`` if necessary)
 
@@ -26,5 +26,6 @@ Once ``optimise()`` is done, you get a set of optimised parameters. These are se
 
 Running tips
 ------------
- - When running your experiment once to load it in XeprAPI, you can interupt it by clicking on play again. This is enough to set it up, sparing the time of a full run.
+ - You can interupt the optimisation with ``ctrl+C``. It is recommend to do so while a measurement is running.
  - When using .exp and .def file, save them beforehand to avoid getting a warning. Otherwise this warning pauses the optimisation and you need to manually get rid of it at each iteration.
+ - When running your experiment once to load it in XeprAPI, you can interupt it by clicking on play again. This is enough to set it up, sparing the time of a full run.
