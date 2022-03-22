@@ -6,10 +6,11 @@ Procedure
 
 In Xepr:
  - Set up your experiment as you would normally do.
- - Enable XeprAPI (Processing -> XeprAPI -> enable XeprAPI).
+ - Enable XeprAPI (Processing → XeprAPI → enable XeprAPI).
+     .. image:: enable_XeprAPI_screenshot.png
+      :align: center
+      :width: 500
  - Run your experiment once by clicking on play to load it into XeprAPI (can also be done before enabling XeprAPI).
-
-add screenshot of where to click for XerpAPI
 
 Run your optimisation script in a terminal with ::
 
