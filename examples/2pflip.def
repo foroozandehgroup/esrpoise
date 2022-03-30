@@ -19,13 +19,13 @@ af1  = 0       ; end frequency / MHz
 
 as0  = 0       ; shape
 
-aa0  = 100     ; amplitude / %
+aa0  = 100     ; amplitude / (perc.)
 ap0  = 0       ; phases / degrees
 ap1  = 180     ;
 ap2  = 90      ;
 ap3  = 270     ;
 
-aa1  = 100     ; amp / %
+aa1  = 100     ; amp / (perc.)
 ap4  = 0       ; phases / degrees
 ap5  = 180     ;
 ap6  = 90      ;

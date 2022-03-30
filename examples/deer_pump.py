@@ -73,6 +73,17 @@ def merge_xepr_shps(shp_paths, shps_path):
     return None
 
 
+# NB: the compilation time of the .exp/.def files is 1s by default (0.25s for
+# .shp file) but can be modified with the global variable COMPILATION_TIME from
+# xepr_link.
+# This can be used to:
+#     - avoid bugs caused by a slow compilation time when Xepr does not finish
+#       compiling before receiving its next instruction),
+#     - accelerate an optimisation routine if the Xepr files are compiling
+#       faster.
+# To test a modification of the compilation time, uncomment the next line
+# xepr_link.COMPILATION_TIME = 2  # (s)
+
 xepr = xepr_link.load_xepr()
 
 f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/deer_pump_pulse/'
@@ -82,19 +93,18 @@ def_f = f_loc + '4pDEER.def'
 # 1. HS pulse selectivity optimisation
 # select n2p measurement experiment
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-n2p")
-xepr_link.modif_def(xepr, def_f, ['n', 'h'], ['1', '1024'])
+xepr_link.modif_def(xepr, ['n', 'h'], ['1', '1024'])
 xepr_link.load_exp(xepr, exp_f)
 xbest0, fbest, message = optimise(xepr, pars=['&B'],
                                   init=[10], lb=[1], ub=[12], tol=[1],
                                   cost_function=max_n2p, optimiser='bobyqa',
-                                  exp_file=exp_f, def_file=def_f,
                                   maxfev=30, nfactor=5, callback=shape_HS,
                                   callback_args=tuple([800]))
 
 # 2. DEER measurement
 # select DEER measurement
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "Deer-2DtauAvg")
-xepr_link.modif_def(xepr, def_f, ['h'], ['256'])
+xepr_link.modif_def(xepr, ['h'], ['256'])
 xepr_link.load_exp(xepr, exp_f)
 # run DEER
 data = xepr_link.run2getdata_exp(xepr)

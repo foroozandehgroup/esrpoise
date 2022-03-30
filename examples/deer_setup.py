@@ -21,7 +21,7 @@ def_f = f_loc + '4pDEER.def'
 
 # 1. observer pi pulse length
 # set up a p0-2p0 Hahn echo without phase cycling
-xepr_link.modif_def(xepr, def_f,
+xepr_link.modif_def(xepr,
                     ['p0', 'p1', 'aa0', 'aa1'],
                     ['32', '2*p0', '100', 'aa0'])
 
@@ -31,7 +31,6 @@ xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "none")
 xbest0, fbest, message = optimise(xepr, pars=['ap1'],
                                   init=[0], lb=[-200], ub=[200], tol=[1],
                                   cost_function=maxrealint_echo,
-                                  exp_file=exp_f, def_file=def_f,
                                   optimiser="bobyqa", maxfev=60, nfactor=90)
 # add phase cycle
 # NB: no space should be present in the phase
@@ -43,7 +42,6 @@ xbest0, fbest0, mesg0 = optimise(xepr, pars=['p0', 'aa0'],
                                  ub=[70, 100],
                                  tol=[2, 1],
                                  cost_function=maxrealint_echo,
-                                 exp_file=exp_f, def_file=def_f,
                                  optimiser="bobyqa", maxfev=40, nfactor=10)
 
 p0 = round2tol_str([2*xbest0[0]], [2])[0]
@@ -51,11 +49,10 @@ aa1 = round2tol_str([xbest0[1]], [1])[0]
 
 # 2. observer pulses amplitudes optimisation
 # set up a p0-p0 Hahn echo
-xepr_link.modif_def(xepr, def_f, ['p0', 'p1', 'aa1'], [p0, 'p0', aa1])
+xepr_link.modif_def(xepr, ['p0', 'p1', 'aa1'], [p0, 'p0', aa1])
 xbest1, fbest1, msg1 = optimise(xepr, pars=['aa0'],
                                 init=[25], lb=[10], ub=[80], tol=[1],
                                 cost_function=maxrealint_echo,
-                                exp_file=exp_f, def_file=def_f,
                                 optimiser="bobyqa", maxfev=40, nfactor=20)
 
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "8-steps-2p")
@@ -67,5 +64,4 @@ init = xbest0[0]
 xbest0, fbest, message = optimise(xepr, pars=['ap1'], init=[init],
                                   lb=[init-50], ub=[init+50], tol=[1],
                                   cost_function=maxrealint_echo,
-                                  exp_file=exp_f, def_file=def_f,
                                   optimiser="bobyqa", maxfev=60, nfactor=90)

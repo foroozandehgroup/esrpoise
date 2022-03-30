@@ -53,12 +53,12 @@ af0  = 0       ; start frequency / MHz
 af1  = 0       ; final frequency / MHz
 af2  = 0       ; start frequency / MHz
 af3  = 0       ; final frequency / MHz
-aa0  = 28 ; 1st pulse amplitude / %
-aa1  = 87 ; 2nd pulse amplitude / %
-aa2  = 98 ; 3rd pulse amplitude / %
-aa3  = 0       ; amplitude / % (for amplitude optimisation storage)
-aa4  = 0       ; amplitude / % (for amplitude optimisation storage)
-
+aa0  = 28 ; 1st pulse amplitude / (perc.)
+aa1  = 87 ; 2nd pulse amplitude / (perc.)
+aa2  = 98 ; 3rd pulse amplitude / (perc.)
+aa3  = 0       ; amplitude / (perc., for amplitude optimisation storage)
+aa4  = 0       ; amplitude / (perc., for amplitude optimisation storage)
+, 
 ; shapes with phases 90 and 270 shapes must be inverted      
 as0  = 400     ; 1st pulse phase 0
 as1  = 404     ; 2nd pulse phase 0

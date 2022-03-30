@@ -3,11 +3,11 @@ mpfu_phases.py
 
 Set up individual channel phases for RIDME.
 
-
 It includes modificationo of the RIDME .def file and 4 consecutive
 optimisation to set up the 4 pulse channels.
 
 SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 
 from esrpoise import xepr_link
@@ -22,7 +22,7 @@ exp_f = location + '5pRIDME.exp'
 def_f = location + '5pRIDME.def'
 
 # adjusting echo delay time to get nicer primary echo
-xepr_link.modif_def(xepr, def_f, ['d1'], ['200'])
+xepr_link.modif_def(xepr, ['d1'], ['200'])
 xepr_link.load_exp(xepr, exp_f)
 
 # optimisation parameters
@@ -61,5 +61,5 @@ xbest3, fbest3, msg3 = optimise(xepr, pars=pars, init=init, lb=lb, ub=ub,
                                 optimiser="bobyqa", maxfev=100, nfactor=20)
 
 # readjusting echo time to shorter duration for RIDME
-xepr_link.modif_def(xepr, def_f, ['d1'], ['140'])
+xepr_link.modif_def(xepr, ['d1'], ['140'])
 xepr_link.load_exp(xepr, exp_f)

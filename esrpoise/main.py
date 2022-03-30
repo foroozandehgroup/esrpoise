@@ -25,8 +25,6 @@ def optimise(xepr,
              ub: Union[list, np.ndarray],
              tol: Union[list, np.ndarray],
              cost_function: callable,
-             exp_file: str = None,
-             def_file: str = None,
              optimiser: str = "bobyqa",
              maxfev: int = 0,
              nfactor: int = 10,
@@ -53,12 +51,6 @@ def optimise(xepr,
         Optimisation tolerances for each parameter.
     cost_function : function
         A function which takes the data object and returns a float.
-    exp_file : str, default None
-        Experiment file (.exp) path to be used for the experiment in Xepr.
-        Required to modify parameters in .def file.
-    def_file : str, default None
-        Definition file (.exp) path to be used for the experiment in Xepr.
-        Required to modify parameters in .def file.
     optimiser : str from {"nm", "mds", "bobyqa", "brute"}, default "nm"
         Optimisation algorithm to use. The options correspond to Nelder-Mead,
         multidimensional search, BOBYQA, and brute-force search respectively.
@@ -142,8 +134,7 @@ def optimise(xepr,
     # Set up optimisation arguments. Basically, this needs to be everything
     # that acquire_esr() uses apart from x itself.
     optimargs = (cost_function, pars, lb, ub, tol, optimiser,
-                 xepr, exp_file, def_file,
-                 callback, callback_args)
+                 xepr, callback, callback_args)
 
     # Carry out the optimisation
     acquire_esr.calls = 0  # ensures that each optim starts from 0
@@ -153,8 +144,7 @@ def optimise(xepr,
     best_values = unscale(opt_result.xbest, lb, ub, tol, scaleby="tols")
 
     # set up optimal parameters values
-    param_set(xepr, pars, best_values, tol,
-              exp_file, def_file, callback, callback_args)
+    param_set(xepr, pars, best_values, tol, callback, callback_args)
 
     # final logging
     toc = datetime.now()
@@ -184,8 +174,6 @@ def acquire_esr(x: np.ndarray,
                 tol: Union[list, np.ndarray],
                 optimiser: str,
                 xepr,
-                exp_file: str = None,
-                def_file: str = None,
                 callback: callable = None,
                 callback_args: tuple = None) -> float:
     """
@@ -225,12 +213,6 @@ def acquire_esr(x: np.ndarray,
         The instantiated Xepr object.
     cost_function : function
         A function which takes the data object and returns a float.
-    exp_file : str, default None
-        Experiment file (.exp) path to be used for the experiment in Xepr.
-        Required to modify parameters in .def file.
-    def_file : str, default None
-        Definition file (.exp) path to be used for the experiment in Xepr.
-        Required to modify parameters in .def file.
     callback : function, default None
         User defined function called when setting up parameters.
     callback_args: tuple, default None
@@ -261,8 +243,7 @@ def acquire_esr(x: np.ndarray,
         return cf_val
 
     # set parameters values
-    param_set(xepr, pars, unscaled_val, tol,
-              exp_file, def_file, callback, callback_args)
+    param_set(xepr, pars, unscaled_val, tol, callback, callback_args)
 
     # record data
     data = xepr_link.run2getdata_exp(xepr)
@@ -284,8 +265,6 @@ def param_set(xepr,
               pars: List[str],
               val: Union[list, np.ndarray],
               tol: Union[list, np.ndarray],
-              exp_file: str = None,
-              def_file: str = None,
               callback: callable = None,
               callback_args: tuple = None) -> None:
     """
@@ -303,12 +282,6 @@ def param_set(xepr,
         values of the parameters
     tol : list of float
         Optimisation tolerances for each parameter.
-    exp_file : str, default None
-        Experiment file (.exp) path to be used for the experiment in Xepr.
-        Required to modify parameters in .def file.
-    def_file : str, default None
-        Definition file (.exp) path to be used for the experiment in Xepr.
-        Required to modify parameters in .def file.
     callback : function, default None
         User defined function called when setting up parameters.
     callback_args : tuple, default None
@@ -396,18 +369,7 @@ def param_set(xepr,
 
     # set parameters in definition file
     if def_modif:
-
-        if def_file is None:
-            raise ValueError('Some parameters are considered .def file '
-                             'parameters. The file path def_file is '
-                             'required to modify them.')
-        xepr_link.modif_def(xepr, def_file, pars_def, val_str_def)
-
-        if exp_file is None:
-            raise ValueError('Some parameters are considered .def file '
-                             'parameters. The experiment file path '
-                             'exp_file is required to modify them.')
-        xepr_link.load_exp(xepr, exp_file)
+        xepr_link.modif_def(xepr, pars_def, val_str_def)
 
 
 def round2tol_str(values: Union[list, np.ndarray],
