@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>ESR-POISE User Guide &#8212; esrpoise  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="#" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex/" />
+    <link rel="search" title="Search" href="search/" />
+    <link rel="next" title="Installation" href="install/" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="esr-poise-user-guide">
+<h1>ESR-POISE User Guide<a class="headerlink" href="#esr-poise-user-guide" title="Permalink to this headline">¶</a></h1>
+<p>ESR-POISE (<em>Electron Spin Resonance Parameter Optimisation by Iterative Spectral Evaluation</em>) is a Python package for on-the-fly optimisation of ESR parameters in Bruker’s Xepr software.</p>
+<p>In here you will find guides on setting ESR-POISE up and using it to optimise ESR applications.
+Depending on your level of interaction with the software, you may not need to read all of it.
+For example, if somebody else has already installed and set up some esrpoise scripts for you, you can probably skip to <a class="reference internal" href="run/#run-an-optimisation"><span class="std std-ref">Run an optimisation</span></a>.
+You should also skip advanced subsections for your first steps with esrpoise.</p>
+<p>You can also have a look at the examples scripts present in the package directory (<code class="docutils literal notranslate"><span class="pre">esrpoise/examples/</span></code>).</p>
+<p>For more in-depth insight, consult the source code.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The documentation you are currently reading is for version 0.0.1 of POISE.
+To check your current version of POISE, type <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">esrpoise</span></code> in terminal.</p>
+</div>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install/">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install/#installing-python-3">Installing Python 3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/#installing-esrpoise">Installing esrpoise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/#updating-poise">Updating POISE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/#installing-from-source">Installing from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/#installing-without-internet">Installing without Internet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="setup/">Set up an optimisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setup/#with-standard-parameters">with standard parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup/#with-def-file-parameters">with .def file parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup/#with-user-defined-parameters-advanced">with user-defined parameters (advanced)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup/#with-user-defined-cost-function-advanced">with user-defined cost function (advanced)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup/#setup-tips-advanced">Setup Tips (advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run/">Run an optimisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run/#procedure">Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run/#running-tips">Running tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="builtinpar/">Built-in parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="builtinpar/#bridge-receiver-unit">Bridge - Receiver Unit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="builtinpar/#bridge-mpfu-control">Bridge - MPFU control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="builtinpar/#ft-epr-parameters">FT EPR Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/#main-py">main.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/#xepr-link-py">xepr_link.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/#costfunctions-py">costfunctions.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/#spectrum">Spectrum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/#echo">Echo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/#other">Other</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshoot/">Troubleshoot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshoot/#compilation">Compilation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshoot/#shape-loading">Shape loading</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">esrpoise</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install/">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup/">Set up an optimisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run/">Run an optimisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="builtinpar/">Built-in parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshoot/">Troubleshoot</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="install/" title="next chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search/" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
