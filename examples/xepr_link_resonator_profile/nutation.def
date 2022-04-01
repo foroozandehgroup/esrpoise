@@ -1,0 +1,82 @@
+;
+;       Nutation package
+;
+;       PulseSPEL general variables, definitions & conventions
+
+begin defs
+
+; Variables
+; Comments:
+
+p0   = 8      ; 90 pulse length
+p1   = 16      ; 180 pulse length
+p2   = 12      ; amplitude set pulse
+p3   = 12       ; nutation pulse width
+
+pg   = 50      ; Integrator Gate Width
+d0   = 388     ; Detection Trigger offset time
+
+d1   = 300     ; tau1
+d2   = 2400    ; tau2
+d3   = 60      ; T
+d4   = 60      ; deadtime for 3-pulse, time before 1st det. pulse
+d5   = 10000   ; delay from start of nutation pulse to detection echo
+
+d9   = 0       ; DAF (Delay After Flash) delay pulse sequence until
+               ; after external event (eg. laser pulse)
+d30  = 2       ; pi-pulse time step scale increment
+m    = 8       ; number of tau1's to average
+d31  = 4       ; pi/2 pulse time step
+
+da0  = 1       ; AWG amplitude steps
+da1  = 1       ; AWG amplitude steps
+da2  = 2       ; AWG amplitude steps
+
+a    = 16     ; (RESERVED) number of transient averages (TRANS)
+               ; if greater than 1024, a must be a multiple of 1024
+h    = 16      ; (CONVENTION) number of shots per point (INTG and SPT)
+n    = 1       ; (CONVENTION) number of sweeps to accumulate
+
+srt  = 1000 * srtu ; (RESERVED) SRT - Shot Repetition Time (srtu=1.02 us)
+
+; VARIABLES for AWG
+; pump pulse variables
+af2  = 100000  ; start frequency / MHz
+af3  = 100000  ; end frequency / MHz
+aa2  = 100     ; amplitude / %
+as1  = 0       ; shape
+
+; observe pulse variables
+; pi/2 pulses
+af0  = 0       ; start frequency / MHz
+af1  = 0       ; end frequency / MHz
+aa0  = 100      ; amplitude / %
+as0  = 0       ; shape
+; pi pulses
+aa1  = 100      ; amplitude / %
+
+;amplitude varying pulse
+aa3  = 0       ; initial value / %
+
+; end of AWG variables
+
+b    = 1       ;
+c    = 1       ;
+r    = 1       ;
+s    = 1       ;
+t    = 1       ;
+
+w    = 800     ; (RESERVED) Split point of sweeps (ns)
+
+dx   = 0       ; (RESERVED) 1st time scale starting value
+dy   = 0       ; (RESERVED) 2nd time scale starting value
+
+end defs
+
+; Note:
+;        Variables Marked 'RESERVED' = variable may be used for other times,
+;               however only this variable can change
+;               the indicated parameter.
+;               eg. only 'a' will change the number of
+;               transients averaged in SpecJet
+

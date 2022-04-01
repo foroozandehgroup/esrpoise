@@ -1,0 +1,300 @@
+;
+;
+; 4-Pulse ELDOR
+;
+;       M. Pannier, S. Veit, A. Godt, G. Jeschke, and H. W. Spiess
+;               J. Magn Res. 2000, v. 142, p. 331
+;
+; no safe guards are present to prevent ELDOR pulse from overlapping Probe Pulse
+; sx = ( d1 + d2 - 2 * d3 ) / d30 (this leaves a time d3 between ELDOR pulse and 3rd pulse)
+; choose d30 and dim1 accordingly
+; adjust d3 to start at tau1 or before tau1
+; the axis is calculated as t-tau1
+;
+
+begin defs             ; dimension of data array [sx,sy]
+ dim s[256]           ;  for echo set-up
+ dim1 s[160]            ;  for 12ns nutation pi pulse
+ dim2 s[20]            ;  for 12ns nutation pi/2 pulse
+ dim3 s[2048,40]       ;  for 12ns nutation pi/2 pulse, frequency domain
+ dim4 s[51]            ;  for amplitude-varying
+ dim5 s[2048,51]       ;  for 12ns nutation pi/2 pulse, frequency domain
+end defs
+
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;  Reference: PulseSPEL/SharedPulseSPEL/StandardSPEL2003/Relaxation/EchoDecay.exp
+;
+;   begin lists2 "16-step"
+;    ph1 +x -x +y -y  +x -x +y -y
+;    ph2 +x -x +y -y  -x +x -y +y  +y -y -x +x  -y +y +x -x
+;    asg1 +a -a +b -b  +a -a +b -b  -a +a -b +b  -a +a -b +b
+;    bsg1 +b -b -a +a  +b -b -a +a  -b +b +a -a  -b +b +a -a
+;   end lists2
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;
+; first detection pulse
+;   ph1 +x -x +y -y
+;
+begin awg0
+        af0 af0 af0 af0   ; start frequency [MHz]
+        af1 af1 af1 af1   ; end frequency [MHz]
+        0   180 94  274   ; phase [degrees]
+        aa2 aa2 aa2 aa2   ; amplitude [%]
+        as0 as0 as0 as0   ; shape
+end awg0
+
+;
+; second detection pulse
+;   ph2 +x -x +y -y  -x +x -y +y  +y -y -x +x  -y +y +x -x
+;
+begin awg1
+        af0 af0 af0 af0   af0 af0 af0 af0   af0 af0 af0 af0   af0 af0 af0 af0   ; start frequency [MHz]
+        af1 af1 af1 af1   af1 af1 af1 af1   af1 af1 af1 af1   af1 af1 af1 af1   ; end frequency [MHz]
+        0   180 94  274   180 0   274 94    94  274 180   0   274  94   0 180   ; phase [degrees]
+        aa2 aa2 aa2 aa2   aa2 aa2 aa2 aa2   aa2 aa2 aa2 aa2   aa2 aa2 aa2 aa2   ; amplitude [%]
+        as0 as0 as0 as0   as0 as0 as0 as0   as0 as0 as0 as0   as0 as0 as0 as0   ; shape
+end awg1
+
+;
+; third pulse "nut PULSE pi"
+;
+begin awg2
+        af0     ; start frequency [MHz]
+        af1     ; end frequency [MHz]
+        0       ; phase [degrees]
+        aa1     ; amplitude [%]
+        as1     ; shape
+end awg2
+
+;
+; third pulse "nut PULSE pi/2"
+;
+begin awg3
+        af0     ; start frequency [MHz]
+        af1     ; end frequency [MHz]
+        0       ; phase [degrees]
+        aa0     ; amplitude [%]
+        as1     ; shape
+end awg3
+
+;
+; third pulse "ampl pulse"
+;
+begin awg4
+        af0     ; start frequency [MHz]
+        af1     ; end frequency [MHz]
+        0       ; phase [degrees]
+        aa4     ; amplitude [%]
+        as1     ; shape
+end awg4
+
+;
+; phase cycles
+;
+begin lists "none"
+ asg1 +a
+ bsg1 +b
+end lists
+
+begin lists1 "2-step"
+ asg1 +a -a                    ; sign program for RE part
+ bsg1 +b -b                    ; sign program for IM part
+end lists1
+
+begin lists2 "16-step"
+ asg1 +a -a +b -b  +a -a +b -b  -a +a -b +b  -a +a -b +b
+ bsg1 +b -b -a +a  +b -b -a +a  -b +b +a -a  -b +b +a -a
+end lists2
+
+;
+; echo Set-Up
+;
+begin exp "echo setup" [TRANS QUAD]
+        ; QUAD detection of Transient
+
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+
+end exp
+
+
+;
+; pi nutation
+;
+begin exp1 "pi Setup" [INTG QUAD]
+        ; QUAD detection of Transient
+
+ p4 = p3;                       ; save initial p3 (=0)
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+  dx = p4;
+  p3 = p4;
+
+  sweep x = 1 to sx
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p3 [awg2]                 ; nutation pulse
+      d5                        ; tau1
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      acq [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+  dx = dx + d30;
+  p3 = p3 + d30;
+next x
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp1
+
+;
+; pi by 2 nutation
+;
+begin exp2 "Piby2 Setup" [INTG QUAD]
+        ; QUAD detection of Transient
+
+ p4 = p3                        ; save initial p3 (=0)
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+  dx = p4;
+  p3 = p4;
+
+  for x = 1 to sx
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p3 [awg3]                 ; nutation pulse
+      d5                        ; tau1
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      acq [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+  dx = dx + d31;
+  p3 = p3 + d31;
+ next x
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp2
+
+;
+; pi by 2 nutation
+;
+begin exp3 "Piby2 FrqTrans" [TRANS QUAD]
+        ; QUAD detection of Transient
+
+ p4 = p3                        ; save initial p3 (=0)
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+
+  dx = p4;
+  p3 = p4;
+
+  for y = 1 to sy
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p3 [awg3]                 ; nutation pulse
+      d5                        ; tau1
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+  dy = dy + d31;
+  p3 = p3 + d31;
+ next y
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp3
+
+;
+; pulse amplitude variation
+;
+begin exp4 "ampl Setup" [INTG QUAD]
+        ; QUAD detection of Transient
+
+ aa5 = aa3;                       ; save initial p3 (=0)
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+  aa3 = aa5;
+  dx = aa3;
+
+  for x = 1 to sx
+    shot i=1 to h               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p2 [awg4]                 ; nutation pulse
+      d5                        ; tau1
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      acq [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+  dx = dx + da2;
+  aa3 = aa3 + da2;
+  next x
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp4;
+
+; pulse amplitude variation
+;
+begin exp5 "ampl FrqSet" [TRANS QUAD]
+        ; QUAD detection of Transient
+
+ aa5 = aa3;                       ; save initial p3 (=0)
+
+ for k=1 to n                   ; averaging loop
+   totscans (n)                 ; output of total number of scans
+  aa3 = aa5;
+  dy = aa3;
+
+  for y = 1 to sy
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p2 [awg4]                 ; nutation pulse
+      d5                        ; tau1
+      p0 [awg0]                 ; 1st pulse
+      d1                        ; tau1
+      p1 [awg1]                 ; 2nd pulse
+      d1                        ; tau1
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+  dy = dy + da2;
+  aa3 = aa3 + da2;
+  next y
+
+  scansdone(k)                  ; output number of scans done
+ next k
+
+end exp5
