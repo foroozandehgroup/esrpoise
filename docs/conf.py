@@ -20,7 +20,7 @@ exec(open('../esrpoise/_version.py').read())
 
 # -- Project information -----------------------------------------------------
 
-project = 'ESR-POISE'
+project = 'esrpoise'
 copyright = '2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh'
 author = 'Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh'
 
