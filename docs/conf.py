@@ -57,6 +57,7 @@ rst_prolog = """
    \\vspace{{5mm}}
 """.format(__version__)
 
+default_role = "any"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -74,10 +75,17 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'alabaster'
 
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ['_templates']
+
 html_theme_options = {
     "page_width": "1000px",
     "sidebar_width": "250px",
 }
+
+html_scaled_image_link = False
 
 # -- Options for LaTeX output ------------------------------------------------
 
