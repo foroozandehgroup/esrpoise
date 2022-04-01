@@ -6,6 +6,9 @@ Adjust the signal phase with a first coarse optimisation maximizing the real
 part of the echo and a second finer, more targeted optimisation minimising the
 signal imaginary part.
 
+Use 2pflip.def and 2pflip.exp with the 'Hahn-echo' experiment and the 16-step
+phase cycle.
+
 SPDX-License-Identifier: GPL-3.0-or-later
 
 """

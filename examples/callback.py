@@ -2,9 +2,8 @@
 callback.py
 -----------
 
-A minimal example of how to use the esrpoise interface with user defined
-function callback and user defined parameters '&_'.
-
+A minimal example (not meant to be actually run) on how to use the esrpoise
+interface with user defined function callback and user defined parameters '&_'.
 
 User parameters to be optimised should be indicated by a preceding '&'
     optimise(Xepr, pars=[... , '&_', ...], ...,
@@ -28,6 +27,7 @@ add user-specific operation (callback_pars_dict is sent back empty if no user
                              parameters are found)
 
 SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 
 import os

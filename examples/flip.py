@@ -2,12 +2,14 @@
 flip.py
 ----------
 
-Optimisation of pulse flip angle.
+Optimisation of pulse flip angle. Use 2pflip.def and 2pflip.exp with the
+'Hahn-echo' experiment and the 16-step phase cycle.
 
 2 parameters optimisation with a parameter from the .def file. It therefore
 requires .def and . exp files paths.
 
 SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 
 from esrpoise import xepr_link

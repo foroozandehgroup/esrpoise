@@ -41,7 +41,7 @@ ap2  = 90+ap1  ; observer pulse phase 90
 ap3  = 180+ap1 ; observer pulse phase 180
 ap4  = 270+ap1 ; obsever pulse phase 270
 ap5  = 0       ; pump phase 0
-ap6  = 180     ; pump phase 18066
+ap6  = 180     ; pump phase 180
 
 a    = 1024    ; (RESERVED) number of transient averages (TRANS)
                ; if greater than 1024, a must be a multiple of 1024

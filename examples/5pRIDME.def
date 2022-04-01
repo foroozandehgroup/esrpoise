@@ -36,7 +36,7 @@ d31  = 8       ; time step for T increments
 
 
 
-a    = 1024    ; (RESERVED) number of transient averages (TRANS)
+a    = 64      ; (RESERVED) number of transient averages (TRANS)
                ; if greater than 1024, a must be a multiple of 1024
 h    = 200     ; (CONVENTION) number of shots per point (INTG and SPT)
 n    = 64      ; (CONVENTION) number of sweeps to accumulate

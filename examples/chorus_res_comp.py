@@ -2,7 +2,8 @@
 chorus_res_comp.py
 ------------------
 
-Optimisation of resonator compensation for CHORUS
+Optimisation of resonator compensation for CHORUS. Use chorus.exp, chorus.def,
+(experiment and phase cycle automatically selected).
 
 SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -182,7 +183,10 @@ def_f = f_loc + 'CHORUS.def'
 
 Xepr = Xepr_link.load_xepr()
 Xepr_link.COMPILATION_TIME = 1.5  # (s)
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "FID-Setup")
+# change experiment name ("Experiment") if necessary
+# NB: no space should be present in the experiment name ("echo") and in the
+# phase cycle name ("64-step")
+Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "echo")
 Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "64-step")
 
 # get rid of potential alteration from previous optimisation
@@ -219,7 +223,7 @@ xbest0, fbest, message = optimize(Xepr, pars=pars,
 data = Xepr_link.run2getdata_exp(Xepr, "Signal", exp_f)
 
 # result
-FS_path = os.path.join(os.getcwd(), '009_FS_inverted.txt')
+FS_path = os.path.join(os.getcwd(), 'FS_inverted.txt')
 
 # read FS
 FS = np.loadtxt(FS_path, delimiter=' ')

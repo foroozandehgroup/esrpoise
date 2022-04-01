@@ -2,8 +2,8 @@
 chorus_amp.py
 -------------
 
-Optimisation of CHORUS amplitudes. It is recommended use echo experiment and
-64-steps phase cycle).
+Optimisation of CHORUS amplitudes. Use chorus.exp, chorus.def, with the 'echo'
+experiment and the 64-step phase cycle.
 
 SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -13,7 +13,7 @@ from esrpoise.costfunctions import maxabsint
 from esrpoise import optimise, xepr_link
 
 
-f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/220128/293K/'
+f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/220128/CHORUS/'
 exp_f = f_loc + 'CHORUS.exp'
 def_f = f_loc + 'CHORUS.def'
 

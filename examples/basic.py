@@ -5,7 +5,9 @@ basic.py
 A minimal example of how to use the esrpoise module.
 
 Run parameter optimisation of any ESR experiment:
-  1. [in Xepr] Run the experiment to be optimised once.
+  1. [in Xepr] Run the experiment to be optimised once
+     (here, use 2pflip.def and 2pflip.exp with 'Hahn-echo' experiment and
+      16-step phase cycle).
   2. [Terminal] Run the Python script. It should at least:
           - Initialise Xepr.
           - Call esrpoise.optimise() with the parameters to optimised, their

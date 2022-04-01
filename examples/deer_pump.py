@@ -2,7 +2,8 @@
 deer_pump.py
 ------------
 
-Set up of DEER experiment and optimisation of DEER pump pulse.
+Set up of DEER experiment and optimisation of DEER pump pulse. Use 4pdeer.exp
+, 4pdeer.def  and 8-step phase cycle (experiment automatically loaded).
 
 SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -75,12 +76,14 @@ def merge_xepr_shps(shp_paths, shps_path):
 
 xepr = xepr_link.load_xepr()
 
-f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/deer_pump_pulse/'
+f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/deer_pump/'
 exp_f = f_loc + '4pDEER.exp'
 def_f = f_loc + '4pDEER.def'
 
 # 1. HS pulse selectivity optimisation
 # select n2p measurement experiment
+# change experiment name ("Experiment") if necessary
+# NB: no space should be present in the experiment name ("4P-ELDOR-Setup")
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-n2p")
 xepr_link.modif_def(xepr, def_f, ['n', 'h'], ['1', '1024'])
 xepr_link.load_exp(xepr, exp_f)

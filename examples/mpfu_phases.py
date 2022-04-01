@@ -1,13 +1,15 @@
 """
 mpfu_phases.py
+--------------
 
-Set up individual channel phases for RIDME.
-
+Set up individual channel phases for RIDME. Use 5pRIDME.def and 5pRIDME.exp
+with the 'PE transient' experiment and the 16-step phase cycle.
 
 It includes modificationo of the RIDME .def file and 4 consecutive
 optimisation to set up the 4 pulse channels.
 
 SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 
 from esrpoise import xepr_link
@@ -17,7 +19,7 @@ from esrpoise.costfunctions import maxrealint_echo
 
 xepr = xepr_link.load_xepr()
 
-location = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/mpfu_phases/'
+location = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/220401/mpfu_phases/'
 exp_f = location + '5pRIDME.exp'
 def_f = location + '5pRIDME.def'
 
@@ -32,7 +34,8 @@ ub = [100]
 tol = [1]
 
 # +<x> channel phase adjustment
-# NB: no space should be present in the experiment name
+# change experiment name ("Experiment") if necessary
+# NB: no space should be present in the phase cycle name ("mpfu+x")
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "mpfu+x")
 pars = ["BrXPhase"]
 xbest0, fbest0, msg0 = optimise(xepr, pars=pars, init=init, lb=lb, ub=ub,
