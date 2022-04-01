@@ -8,7 +8,7 @@ p1   = 30      ; pi pulse length
 pg   = 40      ; Integrator Gate Width
 d0   = 350     ; Detection Trigger offset time
 d1   = 200     ; tau
-a    = 1024    ; (RESERVED) number of transient averages (TRANS) if > 1024, must be a multiple of 1024
+a    = 64      ; (RESERVED) number of transient averages (TRANS) if > 1024, must be a multiple of 1024
 h    = 1       ; (CONVENTION) nb of shots per pt (INTG and SPT)
 n    = 1       ; (CONVENTION) nbof sweeps to accumulate
 srt  = 200 * srtu ; (RESERVED) SRT - Shot Repetition Time (srtu=1.02 us)
@@ -19,13 +19,13 @@ af1  = 0       ; end frequency / MHz
 
 as0  = 0       ; shape
 
-aa0  = 100     ; amplitude / %
+aa0  = 100     ; amplitude / perc.
 ap0  = 0       ; phases / degrees
 ap1  = 180     ;
 ap2  = 90      ;
 ap3  = 270     ;
 
-aa1  = 100     ; amp / %
+aa1  = 100     ; amp / perc.
 ap4  = 0       ; phases / degrees
 ap5  = 180     ;
 ap6  = 90      ;

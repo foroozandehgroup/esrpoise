@@ -105,8 +105,14 @@ def modif_def_PlsSPELGlbTxt(xepr, def_file: str,
                             var_name: List[str], var_value: List[str]) -> None:
     """
     Directly modify definitions in the current experiment.
-    !Limited by the number of lines contained in PlsSPELGlbTxt
-    !only works for the first parameters of the .def file
+
+    !will not modify parameters which rely on dependency in the .def (e.g.
+                                                                   'p0 = 2*p1')
+    !the .def file modification can lead to a 'save changes' prompt from Xepr
+    which can then interupt the script running
+    !can lead to bugs if forbiden charachters are used in the .def file (e.g.
+                                                                         '%')
+    but faster than modif_def() as no compilation required
 
     Parameters
     ----------
