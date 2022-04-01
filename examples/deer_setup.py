@@ -26,6 +26,7 @@ xepr_link.modif_def(xepr, ['p0', 'aa0'], ['32', '100'])
 xepr_link.modif_exp(xepr, exp_f, 98, 'p1=2*p0')
 xepr_link.modif_exp(xepr, exp_f, 99, 'aa1=aa0')
 
+
 # change experiment name ("Experiment") if necessary
 # NB: no space should be present in the phase cycle name ("none")
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "none")

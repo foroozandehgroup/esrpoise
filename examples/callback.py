@@ -27,7 +27,6 @@ add user-specific operation (callback_pars_dict is sent back empty if no user
                              parameters are found)
 
 SPDX-License-Identifier: GPL-3.0-or-later
-
 """
 
 import os

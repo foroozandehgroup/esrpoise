@@ -9,7 +9,6 @@ Optimisation of pulse flip angle. Use 2pflip.def and 2pflip.exp with the
 requires .def and . exp files paths.
 
 SPDX-License-Identifier: GPL-3.0-or-later
-
 """
 
 from esrpoise import xepr_link
