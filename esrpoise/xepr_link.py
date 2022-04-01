@@ -2,7 +2,7 @@
 xepr_link.py
 ------------
 
-Xepr interface functions, communicate with Xepr using XeprAPI.
+Xepr interface functions, communicate with Xepr usingXeprAPI.
 
 Pause times necesary to let Xepr process command are accessed through the
 global variable ``COMPILATION_TIME`` (s, ``1`` by default).
@@ -15,9 +15,6 @@ It applies pauses of lengths:
  - ``COMPILATION_TIME/4`` after compilation of .shp file
 
  - ``2*COMPILATION_TIME`` before and after Xepr reset
-
-Note that the non-default function modif_def uses compilation of .exp and .def
-files.
 
 SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -104,16 +101,19 @@ def load_def(xepr, def_file: str) -> None:
         raise RuntimeError("Error loading and compiling definition file")
 
 
-def modif_def(xepr, var_name: List[str], var_value: List[str]) -> None:
+def modif_def_PlsSPELGlbTxt(xepr, def_file: str,
+                            var_name: List[str], var_value: List[str]) -> None:
     """
     Directly modify definitions in the current experiment.
-    !Can lead to bugs if forbidden characters are present in the .def file
-    (e.g. %)
+    !Limited by the number of lines contained in PlsSPELGlbTxt
+    !only works for the first parameters of the .def file
 
     Parameters
     ----------
     xepr : XeprAPI.Xepr object
         The instantiated Xepr object.
+    def_file : str
+        Name of the Xepr definition file (full path with .def extension).
     var_name : list of strings
         Variable names as named in the .def file.
     var_value : list of strings
@@ -150,11 +150,10 @@ def modif_def(xepr, var_name: List[str], var_value: List[str]) -> None:
                 currentExp["ftEPR.PlsSPELSetVar"].value = cmdStr
 
 
-def modif_def_hard(xepr, def_file: str,
-                   var_name: List[str], var_value: List[str]) -> None:
+def modif_def(xepr, def_file: str,
+              var_name: List[str], var_value: List[str]) -> None:
     """
     Modify definitions by modifying the .def file and reloading it.
-    (in opposition to going through PlsSPELGlbTxt as in modif_def())
 
     Parameters
     ----------

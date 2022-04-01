@@ -12,7 +12,7 @@ Run parameter optimisation of any ESR experiment:
           initial values, bounds , tolerances and a cost function (data
           treatment applied to the data at each step).
 
-For multiple parameters, cf. flip.py.
+For .def file parameters, cf. flip.py.
 
 For user defined parameters, cf. callback.py and deer_pump.py.
 

@@ -8,13 +8,27 @@ Bugs can be created if ``xepr_link`` does not allow enough time for compilation.
 
 Increase the compilation time of the .exp, .def and .shp files (1s by default) with the global variable ``COMPILATION_TIME`` from ``Xepr_link``:: 
 
-    xepr_link.COMPILATION_TIME = 4  # (s)
+    xepr_link.COMPILATION_TIME = 2  # (s)
     
     xepr = xepr_link.load_xepr()
     
-    # .exp file location
+    # .exp and .def files location
     location = '/home/xuser/xeprFiles/Data/'
     exp_f = location + '2pflip.exp'
+    def_f = location + '2pflip.def'
+    
+    # optimisation of pulse length and amplitude
+    xbest, fbest, message = optimise(xepr,
+                                     pars=["p0", "Attenuation"],
+                                     init=[8, 5],
+                                     lb=[2, 0],
+                                     ub=[36, 10],
+                                     tol=[2, 0.5],
+                                     cost_function=maxabsint_echo,
+                                     exp_file=exp_f,
+                                     def_file=def_f,
+                                     optimiser="bobyqa",
+                                     maxfev=20)
     
     # run experiment with optimal parameters
     xepr_link.run2getdata_exp(xepr, "Signal", exp_f)

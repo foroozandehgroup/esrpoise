@@ -14,7 +14,7 @@ When calling ``optimise()``, you should to at least pass:
  - a cost function, which can be imported from the pre-existing ones (cf. :ref:`costfunctions.py`),
  - the maximum number of function evaluations (not technically mandatory but set to ``0`` by default).
 
-Only .def file parameters and a handful of Xepr parameters can be accessed through a simple optimisation (cf. :ref:`Built-in parameters`).
+Only a handful of Xepr parameters can be accessed through a simple optimisation (cf. :ref:`Built-in parameters`).
 
 Example of standard parameter optimisation script::
 
@@ -46,7 +46,12 @@ Optimise parameters from your .def file by indicating their names. In addition t
  - the path of your .exp file,
  - the path of your .def file.
 
-Example of standard parameter optimisation script with multiple parameters (also note the optimiser explicit choice)::
+Example (also note the use of several parameters in lists and the optimiser explicit choice)::
+
+    # .exp and .def files location
+    location = '/home/xuser/xeprFiles/Data/'
+    exp_f = location + '2pflip.exp'
+    def_f = location + '2pflip.def'
     
     # optimisation of pulse length and amplitude
     xbest, fbest, message = optimise(xepr,
@@ -56,6 +61,8 @@ Example of standard parameter optimisation script with multiple parameters (also
                                      ub=[36, 10],
                                      tol=[2, 0.5],
                                      cost_function=maxabsint_echo,
+                                     exp_file=exp_f,
+                                     def_file=def_f,
                                      optimiser="bobyqa",
                                      maxfev=20)
 
@@ -171,5 +178,5 @@ Setup Tips (advanced)
  - Use ``callbak`` to add user-specific operation at each iteration. You do not need to indicate user-defined parameters, ``callback_pars_dict`` is sent back empty if no user-defined parameters are found.
  - Use ``acquire_esr.calls`` in your callback function to access the current number of your iteration.
  - Use the parameter ``nfactor`` of ``optimise()`` to expand the distance between the first steps of the optimisers, in particular if you have a low tolerance.
- - If you use .shp, .def or .exp file compilation, access their compilation time with ``xepr_link.COMPILATION_TIME`` (cf. :ref:`Compilation`)
+ - Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with ``xepr_link.COMPILATION_TIME`` (cf. :ref:`Compilation`)
  - When using a single script with functions, be aware of your variables scope.
