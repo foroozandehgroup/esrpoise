@@ -45,6 +45,8 @@ jobs:
       run: |
         cp -r docs/dirhtml/* gh-pages
         cd gh-pages
+        # for this step, see https://stackoverflow.com/questions/62626125
+        touch .nojekyll
         git config --local user.name "GitHub Actions"
         git config --local user.email "<>"
         git add -A
