@@ -11,7 +11,7 @@ The requirements are:
 Installing Python 3
 -------------------
 
-This is most easily done by downloading an installer from the official CPython website (https://www.python.org/downloads/), or via your package manager (`apt`, `yum` or similar).
+This is most easily done by downloading an installer from the official CPython website (https://www.python.org/downloads/), or via your package manager (``apt``, ``yum`` or similar).
 
 A particular issue we faced when setting up POISE was installing Python on CentOS 7 without administrator rights.
 If you are in this situation, you will have to compile the Python source code, using the following steps:
