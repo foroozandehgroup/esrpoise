@@ -37,7 +37,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
     "numpydoc",
-    "sphinx.ext.autosectionlabel"
+    "sphinx.ext.autosectionlabel",
     # for the following, see: 
     # https://stackoverflow.com/questions/62626125
     # https://www.sphinx-doc.org/en/master/usage/extensions/githubpages.html
