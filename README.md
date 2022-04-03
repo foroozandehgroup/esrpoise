@@ -1,6 +1,6 @@
 # esrpoise
 
-Parameter Optimisation by Iterative Spectral Evaluation: a Xepr-compatible ESR package
+Parameter Optimisation by Iterative Spectral Evaluation: an Xepr-compatible ESR package
 
 ### installation
 
