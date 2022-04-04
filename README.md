@@ -2,17 +2,15 @@
 
 Parameter Optimisation by Iterative Spectral Evaluation: an Xepr-compatible ESR package
 
-### installation
+### Installation
 
-Not on PyPI yet, so you have to do this manually
+ESR-POISE requires Python 3.6 or later and can be installed using ``pip``:
 
 ```
-git clone https://github.com/foroozandehgroup/esrpoise
-cd esrpoise
-pip install -e .
+python -m pip install esrpoise
 ```
 
-### tests
+### Tests
 
 Inside the top-level `esrpoise` directory, run:
 
@@ -20,3 +18,7 @@ Inside the top-level `esrpoise` directory, run:
 pip install tox
 tox
 ```
+
+### Documentation
+
+For more details on installation, use and troubleshoot, please see [the documentation](https://foroozandehgroup.github.io/esrpoise/).
