@@ -96,6 +96,8 @@ begin exp "4P-ELDOR-Setup" [TRANS QUAD ]
 d7=d1+d2                        ; calculate seperation
 d7=d7-d3
 
+
+
     shot i=1 to a               ; accumulation loop
       d9                        ; DAF (Delay After Flash)
       p0 [awg0]                 ; 1st pulse

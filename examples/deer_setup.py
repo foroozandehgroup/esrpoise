@@ -22,10 +22,9 @@ def_f = f_loc + '4pDEER.def'
 
 # 1. observer pi pulse length
 # set up a p0-2p0 Hahn echo without phase cycling
-xepr_link.modif_def(xepr, def_f,
-                    ['p0', 'p1', 'aa0', 'aa1'],
-                    ['32', '2*p0', '100', 'aa0'])
-xepr_link.load_exp(xepr, exp_f)
+xepr_link.modif_def(xepr, ['p0', 'aa0'], ['32', '100'])
+xepr_link.modif_exp(xepr, exp_f, 98, 'p1=2*p0')
+xepr_link.modif_exp(xepr, exp_f, 99, 'aa1=aa0')
 
 # change experiment name ("Experiment") if necessary
 # NB: no space should be present in the phase cycle name ("none")
@@ -54,8 +53,10 @@ aa1 = round2tol_str([xbest0[1]], [1])[0]
 
 # 2. observer pulses amplitudes optimisation
 # set up a p0-p0 Hahn echo
-xepr_link.modif_def(xepr, def_f, ['p0', 'p1', 'aa1'], [p0, 'p0', aa1])
-xepr_link.load_exp(xepr, exp_f)
+xepr_link.modif_def(xepr, ['p0', 'aa1', 'p1'], [p0, aa1, p0])
+xepr_link.modif_exp(xepr, exp_f, 98, '')
+xepr_link.modif_exp(xepr, exp_f, 99, '')
+
 xbest1, fbest1, msg1 = optimise(xepr, pars=['aa0'],
                                 init=[25], lb=[10], ub=[80], tol=[1],
                                 cost_function=maxrealint_echo,
