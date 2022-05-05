@@ -82,13 +82,15 @@ Installing from source
 
 If you obtained the source code (e.g. from ``git clone`` or a `GitHub release <https://github.com/foroozandehgroup/esrpoise/releases>`_) and want to install from there, simply ``cd`` into the top-level ``esrpoise`` directory and run::
 
-   pip install .
+   python -m pip install .
 
-or equivalently::
+Add `` -e`` to be able to edit the code. Equivalently you can run::
 
-   python setup.py install
+   python -m setup.py install
 
-(or ``python3`` if necessary)
+Replace ``install`` instead with ``develop`` to edit the code.
+
+(use ``python3`` if necessary)
 
 Installing without Internet
 ---------------------------
