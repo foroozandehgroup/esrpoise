@@ -39,12 +39,20 @@
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>Xepr</strong>. We have tested Xepr versions 2.8b.5</p></li>
-<li><p><strong>Python 3</strong>. ESRPOISE requires a minimum version of <strong>Python 3.7.</strong> (We have tested up to Python 3.8.)</p></li>
+<li><p><strong>Python 3</strong>. ESRPOISE requires a minimum version of <strong>Python 3.6.</strong> (We have tested up to Python 3.8.)</p></li>
 </ul>
 </div></blockquote>
 <section id="installing-python-3">
 <h2>Installing Python 3<a class="headerlink" href="#installing-python-3" title="Permalink to this headline">¶</a></h2>
 <p>This is most easily done by downloading an installer from the official CPython website (<a class="reference external" href="https://www.python.org/downloads/">https://www.python.org/downloads/</a>), or via your package manager (<code class="docutils literal notranslate"><span class="pre">apt</span></code>, <code class="docutils literal notranslate"><span class="pre">yum</span></code> or similar).</p>
+<p>On CentOS 7, you would typically need (creates a python3 command, independant from the already installed Python 2 called with python):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">python3</span>
+</pre></div>
+</div>
+<p>We had to also install tkinter with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">tkinter</span>
+</pre></div>
+</div>
 <p>A particular issue we faced when setting up POISE was installing Python on CentOS 7 without administrator rights.
 If you are in this situation, you will have to compile the Python source code, using the following steps:</p>
 <ol class="arabic simple">
@@ -79,8 +87,9 @@ make install
 </div>
 <p>You should then have a working installation of Python 3.7 in <code class="docutils literal notranslate"><span class="pre">~/.local/python3/bin/python</span></code>.
 Note that you should always use this version of Python whenever installing packages: so, it’s safer to always use <code class="docutils literal notranslate"><span class="pre">/path/to/python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">X</span></code> rather than just <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>.
-Naturally you can place this Python executable first in your <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> in order to avoid having to type out the full path every time.
-If there are any issues, please get in touch via GitHub or email.</p>
+Naturally you can place this Python executable first in your <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> in order to avoid having to type out the full path every time.</p>
+<p>One of the tested spectrometer computer also required the installation of <code class="docutils literal notranslate"><span class="pre">libffi</span></code> and <code class="docutils literal notranslate"><span class="pre">libffi-devel</span></code> before being able to <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>.</p>
+<p>If there are any issues, please get in touch via GitHub or email.</p>
 </section>
 <section id="installing-esrpoise">
 <h2>Installing esrpoise<a class="headerlink" href="#installing-esrpoise" title="Permalink to this headline">¶</a></h2>
