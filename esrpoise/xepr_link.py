@@ -75,6 +75,40 @@ def load_exp(xepr, exp_file: str) -> None:
         raise RuntimeError("Error loading and compiling experiment file")
 
 
+def modif_exp(xepr, exp_file: str, line_nb: int, new_line: str) -> None:
+    """
+    Modify the Xepr .exp file by overwriting a line.
+
+    Parameters
+    ----------
+    xepr : XeprAPI.Xepr object
+        The instantiated Xepr object.
+    exp_file : str
+        Name of the Xepr definition file (full path with .def extension).
+    line_nb : int
+        Number of the lines to overwrite
+    new_line : str
+        DESCRIPTION.
+
+    Returns
+    -------
+    None
+    """
+    with open(exp_file, 'r') as exp_f:
+        fullExp = exp_f.read()
+
+    # write new line
+    fullExp = fullExp.split("\n")
+    fullExp[line_nb-1] = new_line
+
+    # replace .exp file with modifications
+    with open(exp_file, 'w') as exp_f:
+        exp_f.write('\n'.join(fullExp))
+
+    if xepr is not None:  # to allow test without Xepr
+        load_exp(xepr, exp_file)
+
+
 def load_def(xepr, def_file: str) -> None:
     """
     Load and compile an Xepr definition file.

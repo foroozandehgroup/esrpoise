@@ -1,0 +1,34 @@
+; experiment file for modifications tests
+
+begin defs             ; dimension of data array [sx,sy]
+ dim s[512]            ; for pulse
+end defs
+
+; first detection pulse
+;   ph1 +x -x +y -y
+begin awg0
+        af0 af0 af0 af0   ; start frequency [MHz]
+        af1 af1 af1 af1   ; end frequency [MHz]
+        ap0 ap1 ap2 ap3   ; phase [degrees] 0 180 90 270
+        aa0 aa0 aa0 aa0   ; amplitude [%]
+        as0 as0 as0 as0   ; shape
+end awg0
+
+; phase cycle
+begin lists "none"
+ asg1 +a
+ bsg1 +b
+end lists
+
+; pulse
+begin exp "pulse" [TRANS QUAD]
+        ; QUAD detection of Transient
+
+    shot i=1 to a               ; accumulation loop
+      d9                        ; DAF (Delay After Flash)
+      p0 [awg0]                 ; 1st pulse
+      d0                        ; constant acquisition delay
+      dig [sg1]                 ; acquisition
+    next i                      ; end of accumulation loop
+
+end exp
