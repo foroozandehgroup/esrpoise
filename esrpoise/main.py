@@ -376,8 +376,10 @@ def param_set(xepr,
         elif par == "CenterField":
             # Field Position (G), variation around expected value, min
             # tolerance of 0.05
+            curr_exp = xepr.XeprExperiment()
+            expt_name = curr_exp.aqGetExpName()
             xepr.XeprCmds.aqParSet(
-                "Experiment", "fieldCtrl.CenterField", v_str)
+                expt_name, "fieldCtrl.CenterField", v_str)
 
         # Xepr parameters: .def file
         else:
