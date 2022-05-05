@@ -30,4 +30,4 @@ xbest1, fbest1, msg1 = optimise(xepr, pars=['aa0', 'aa1', 'aa2'],
                                 optimiser="bobyqa", maxfev=100, nfactor=40)
 
 # run experiment with optimal parameters
-data = xepr_link.run2getdata_exp(xepr, "Signal", exp_f)
+data = xepr_link.run2getdata_exp(xepr)

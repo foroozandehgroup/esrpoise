@@ -220,7 +220,7 @@ xbest0, fbest, message = optimize(Xepr, pars=pars,
                                   callback_args=(chorus,))
 
 # run experiment with optimal parameters
-data = Xepr_link.run2getdata_exp(Xepr, "Signal", exp_f)
+data = Xepr_link.run2getdata_exp(Xepr)
 
 # result
 FS_path = os.path.join(os.getcwd(), 'FS_inverted.txt')

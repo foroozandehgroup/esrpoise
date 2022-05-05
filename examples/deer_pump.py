@@ -86,7 +86,6 @@ def_f = f_loc + '4pDEER.def'
 # NB: no space should be present in the experiment name ("4P-ELDOR-Setup")
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-n2p")
 xepr_link.modif_def(xepr, def_f, ['n', 'h'], ['1', '1024'])
-xepr_link.load_exp(xepr, exp_f)
 xbest0, fbest, message = optimise(xepr, pars=['&B'],
                                   init=[10], lb=[1], ub=[12], tol=[1],
                                   cost_function=max_n2p, optimiser='bobyqa',
@@ -98,6 +97,5 @@ xbest0, fbest, message = optimise(xepr, pars=['&B'],
 # select DEER measurement
 xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "Deer-2DtauAvg")
 xepr_link.modif_def(xepr, def_f, ['h'], ['256'])
-xepr_link.load_exp(xepr, exp_f)
 # run DEER
 data = xepr_link.run2getdata_exp(xepr)

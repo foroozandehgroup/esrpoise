@@ -25,7 +25,6 @@ def_f = location + '5pRIDME.def'
 
 # adjusting echo delay time to get nicer primary echo
 xepr_link.modif_def(xepr, def_f, ['d1'], ['200'])
-xepr_link.load_exp(xepr, exp_f)
 
 # optimisation parameters
 init = [50]
@@ -65,4 +64,3 @@ xbest3, fbest3, msg3 = optimise(xepr, pars=pars, init=init, lb=lb, ub=ub,
 
 # readjusting echo time to shorter duration for RIDME
 xepr_link.modif_def(xepr, def_f, ['d1'], ['140'])
-xepr_link.load_exp(xepr, exp_f)
