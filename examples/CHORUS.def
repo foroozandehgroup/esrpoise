@@ -53,6 +53,7 @@ af0  = 0       ; start frequency / MHz
 af1  = 0       ; final frequency / MHz
 af2  = 0       ; start frequency / MHz
 af3  = 0       ; final frequency / MHz
+
 aa0  = 28 ; 1st pulse amplitude / perc.
 aa1  = 87 ; 2nd pulse amplitude / perc.
 aa2  = 98 ; 3rd pulse amplitude / perc.

@@ -49,6 +49,10 @@ xepr_link.py
 
 |
 
+.. autofunction:: modif_def_hard
+
+|
+
 .. autofunction:: load_shp
 
 |

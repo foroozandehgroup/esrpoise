@@ -179,7 +179,6 @@ def min_diff_FS(data):
 
 f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/211209/CHORUS/'
 exp_f = f_loc + 'CHORUS.exp'
-def_f = f_loc + 'CHORUS.def'
 
 Xepr = Xepr_link.load_xepr()
 Xepr_link.COMPILATION_TIME = 1.5  # (s)
@@ -200,7 +199,6 @@ xbest1, fbest1, msg1 = optimize(Xepr, pars=['aa0', 'aa1', 'aa2'],
                                 ub=[60, 100, 100],
                                 tol=[0.5, 0.5, 0.5],
                                 cost_function=maxabsint,
-                                exp_file=exp_f, def_file=def_f,
                                 optimiser="bobyqa", maxfev=100, nfactor=75)
 
 init = [51.5, np.finfo(float).eps, np.finfo(float).eps,
@@ -213,7 +211,6 @@ xbest0, fbest, message = optimize(Xepr, pars=pars,
                                   ub=[60, 1.2, 1.2, 1.2, 1.2],
                                   tol=tol,
                                   cost_function=min_diff_FS,
-                                  exp_file=exp_f, def_file=def_f,
                                   optimiser='bobyqa',
                                   maxfev=400, nfactor=80,
                                   callback=shape_impulse,
