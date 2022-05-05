@@ -21,13 +21,14 @@ setup(
     url="https://github.com/foroozandehgroup/esrpoise",
     packages=find_packages(exclude=["tests"]),
     classifiers=[
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     install_requires=[
         "numpy>=1.17.0",
         "XeprAPI",

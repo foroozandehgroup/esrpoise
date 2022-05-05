@@ -5,13 +5,21 @@ The requirements are:
 
  - **Xepr**. We have tested Xepr versions 2.8b.5
    
- - **Python 3**. ESRPOISE requires a minimum version of **Python 3.7.** (We have tested up to Python 3.8.)
+ - **Python 3**. ESRPOISE requires a minimum version of **Python 3.6.** (We have tested up to Python 3.8.)
 
 
 Installing Python 3
 -------------------
 
 This is most easily done by downloading an installer from the official CPython website (https://www.python.org/downloads/), or via your package manager (``apt``, ``yum`` or similar).
+
+On CentOS 7, you would typically need (creates a python3 command, independant from the already installed Python 2 called with python)::
+
+    yum -y install python3
+
+We had to also install tkinter with::
+
+    yum -y install python3-tkinter
 
 A particular issue we faced when setting up POISE was installing Python on CentOS 7 without administrator rights.
 If you are in this situation, you will have to compile the Python source code, using the following steps:
@@ -48,6 +56,9 @@ The following series of shell commands (give or take) worked for us, so you coul
 You should then have a working installation of Python 3.7 in ``~/.local/python3/bin/python``.
 Note that you should always use this version of Python whenever installing packages: so, it's safer to always use ``/path/to/python -m pip install X`` rather than just ``pip install``.
 Naturally you can place this Python executable first in your ``$PATH`` in order to avoid having to type out the full path every time.
+
+One of the tested spectrometer computer also required the installation of ``libffi`` and ``libffi-devel`` before being able to ``make install``.
+
 If there are any issues, please get in touch via GitHub or email.
 
 
