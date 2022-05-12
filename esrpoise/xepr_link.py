@@ -39,7 +39,7 @@ def load_xepr():
 
     Returns
     -------
-    Xepr : instance of XeprAPI.Xepr
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object, used for communication with
         Xepr-the-programme.
     """
@@ -143,7 +143,9 @@ def modif_def_PlsSPELGlbTxt(xepr, def_file: str,
     !will not modify parameters which rely on dependency in the .def (e.g.
                                                                    'p0 = 2*p1')
     !can lead to bugs if forbiden charachters are used in the .def file (e.g.
-                                                                         '%')
+                                                                           '%')
+    !can create a bug where the Xepr stays stuck at the .def file modification
+                                           (cf. documentation for more details)
     but faster than modif_def() as no compilation required
 
     Parameters

@@ -12,6 +12,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 """
 
+import os
 from esrpoise import xepr_link
 from esrpoise import optimise
 from esrpoise.costfunctions import maxrealint_echo
@@ -19,9 +20,13 @@ from esrpoise.costfunctions import maxrealint_echo
 
 xepr = xepr_link.load_xepr()
 
-location = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/220401/mpfu_phases/'
-exp_f = location + '5pRIDME.exp'
-def_f = location + '5pRIDME.def'
+# script assumed to be located in the same directory as the .def files
+f_loc = os.getcwd()
+def_f = os.path.join(f_loc, '5pRIDME.def')
+
+# get experiment name for Xepr commands
+curr_exp = xepr.XeprExperiment()
+expt_name = curr_exp.aqGetExpName()
 
 # adjusting echo delay time to get nicer primary echo
 xepr_link.modif_def(xepr, def_f, ['d1'], ['200'])
@@ -33,30 +38,29 @@ ub = [100]
 tol = [1]
 
 # +<x> channel phase adjustment
-# change experiment name ("Experiment") if necessary
 # NB: no space should be present in the phase cycle name ("mpfu+x")
-xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "mpfu+x")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELLISTSlct", "mpfu+x")
 pars = ["BrXPhase"]
 xbest0, fbest0, msg0 = optimise(xepr, pars=pars, init=init, lb=lb, ub=ub,
                                 tol=tol, cost_function=maxrealint_echo,
                                 optimiser="bobyqa", maxfev=100, nfactor=20)
 
 # -<x> channel phase adjustment
-xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "mpfu-x")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELLISTSlct", "mpfu-x")
 pars = ["BrMinXPhase"]
 xbest1, fbest1, msg1 = optimise(xepr, pars=pars, init=init, lb=lb, ub=ub,
                                 tol=tol, cost_function=maxrealint_echo,
                                 optimiser="bobyqa", maxfev=100, nfactor=20)
 
 # +<y> channel phase adjustment
-xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "mpfu+y")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELLISTSlct", "mpfu+y")
 pars = ["BrYPhase"]
 xbest2, fbest2, msg2 = optimise(xepr, pars=pars, init=init, lb=lb, ub=ub,
                                 tol=tol, cost_function=maxrealint_echo,
                                 optimiser="bobyqa", maxfev=100, nfactor=20)
 
 # -<y> channel phase adjustment
-xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "mpfu-y")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELLISTSlct", "mpfu-y")
 pars = ["BrMinYPhase"]
 xbest3, fbest3, msg3 = optimise(xepr, pars=pars, init=init, lb=lb, ub=ub,
                                 tol=tol, cost_function=maxrealint_echo,

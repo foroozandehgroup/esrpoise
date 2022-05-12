@@ -76,15 +76,19 @@ def merge_xepr_shps(shp_paths, shps_path):
 
 xepr = xepr_link.load_xepr()
 
-f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/210906/deer_pump/'
-exp_f = f_loc + '4pDEER.exp'
-def_f = f_loc + '4pDEER.def'
+# script assumed to be located in the same directory as the .exp/.def files
+f_loc = os.getcwd()
+exp_f = os.path.join(f_loc, '4pDEER.exp')
+def_f = os.path.join(f_loc, '4pDEER.def')
+
+# get experiment name for Xepr commands
+curr_exp = xepr.XeprExperiment()
+expt_name = curr_exp.aqGetExpName()
 
 # 1. HS pulse selectivity optimisation
 # select n2p measurement experiment
-# change experiment name ("Experiment") if necessary
 # NB: no space should be present in the experiment name ("4P-ELDOR-Setup")
-xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-n2p")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELEXPSlct", "4P-ELDOR-n2p")
 xepr_link.modif_def(xepr, def_f, ['n', 'h'], ['1', '1024'])
 xbest0, fbest, message = optimise(xepr, pars=['&B'],
                                   init=[10], lb=[1], ub=[12], tol=[1],
@@ -95,7 +99,7 @@ xbest0, fbest, message = optimise(xepr, pars=['&B'],
 
 # 2. DEER measurement
 # select DEER measurement
-xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "Deer-2DtauAvg")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELEXPSlct", "Deer-2DtauAvg")
 xepr_link.modif_def(xepr, def_f, ['h'], ['256'])
 # run DEER
 data = xepr_link.run2getdata_exp(xepr)

@@ -96,8 +96,6 @@ begin exp "4P-ELDOR-Setup" [TRANS QUAD ]
 d7=d1+d2                        ; calculate seperation
 d7=d7-d3
 
-
-
     shot i=1 to a               ; accumulation loop
       d9                        ; DAF (Delay After Flash)
       p0 [awg0]                 ; 1st pulse
@@ -384,6 +382,8 @@ end exp6
 
 begin exp7 "2P-Hahn-echo-Setup" [TRANS QUAD ]
         ; QUAD detection of Transient
+
+
 
     shot i=1 to a               ; accumulation loop
       d9                        ; DAF (Delay After Flash)

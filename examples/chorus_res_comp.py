@@ -14,7 +14,7 @@ import copy
 import numpy as np
 import matplotlib.pyplot as plt
 from esrpoise.costfunctions import maxabsint
-from esrpoise import optimize, Xepr_link
+from esrpoise import optimise, xepr_link
 from mrpypulse import sequence
 
 
@@ -41,8 +41,8 @@ def load_seq(pulses, shp_nb=400, shp_paths=[]):
 
     Parameters
     ----------
-    Xepr : instance of XeprAPI.Xepr
-        The instantiated Xepr object.
+    xepr : instance of XeprAPI.Xepr
+        The instantiated xepr object.
     seq : mrpypulse sequence
         sequence to load
     shp_nb: int
@@ -71,7 +71,7 @@ def load_seq(pulses, shp_nb=400, shp_paths=[]):
     shps_path = os.path.join(os.getcwd(),
                              str(shp_nb+len(pulses)*4) + '.shp')
     shapes2xepr(shp_paths, shps_path)
-    Xepr_link.load_shp(Xepr, shps_path)
+    xepr_link.load_shp(xepr, shps_path)
 
 
 def shapes2xepr(shp_paths, shps_path):
@@ -93,7 +93,7 @@ def shape_impulse(callback_pars_dict, seq):
     Parameters
     ----------
     callback_pars_dict: dictionary
-        dictionary with the name of the parameters to optimize as key and their
+        dictionary with the name of the parameters to optimise as key and their
         value as value
     seq: mrpypulse sequence object
         sequence whose pulses are to be compensated
@@ -130,10 +130,10 @@ def min_diff_FS(data):
     """
     Cost function for chorus on the fly resonator compensation
 
-    Minimizes the difference between the spectrum and the field sweep data.
+    Minimises the difference between the spectrum and the field sweep data.
 
     """
-    FS_path = os.path.join(os.getcwd(), '009_FS_inverted.txt')
+    FS_path = os.path.join(os.getcwd(), 'FS_inverted.txt')
 
     # read FS
     FS = np.loadtxt(FS_path, delimiter=' ')
@@ -177,24 +177,29 @@ def min_diff_FS(data):
     return np.linalg.norm(FS[:, 1] - spec)
 
 
-f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/211209/CHORUS/'
-exp_f = f_loc + 'CHORUS.exp'
-def_f = f_loc + 'CHORUS.def'
+xepr = xepr_link.load_xepr()
 
-Xepr = Xepr_link.load_xepr()
-Xepr_link.COMPILATION_TIME = 1.5  # (s)
-# change experiment name ("Experiment") if necessary
+# script assumed to be located in the same directory as the .exp/.def files
+f_loc = os.getcwd()
+exp_f = os.path.join(f_loc, 'CHORUS.exp')
+def_f = os.path.join(f_loc, 'CHORUS.def')
+
+# get experiment name for Xepr commands
+curr_exp = xepr.XeprExperiment()
+expt_name = curr_exp.aqGetExpName()
+
+xepr_link.COMPILATION_TIME = 1.5  # (s)
 # NB: no space should be present in the experiment name ("echo") and in the
 # phase cycle name ("64-step")
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELEXPSlct", "echo")
-Xepr.XeprCmds.aqParSet("Experiment", "*ftEpr.PlsSPELLISTSlct", "64-step")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELEXPSlct", "echo")
+xepr.XeprCmds.aqParSet(expt_name, "*ftEpr.PlsSPELLISTSlct", "64-step")
 
 # get rid of potential alteration from previous optimisation
 chorus = chorus_pulses()
 load_seq(chorus.pulses)
 
 # amplitudes optimization
-xbest1, fbest1, msg1 = optimize(Xepr, pars=['aa0', 'aa1', 'aa2'],
+xbest1, fbest1, msg1 = optimise(xepr, pars=['aa0', 'aa1', 'aa2'],
                                 init=[51.5, 92.5, 99.9],
                                 lb=[10, 50, 50],
                                 ub=[60, 100, 100],
@@ -207,7 +212,7 @@ init = [51.5, np.finfo(float).eps, np.finfo(float).eps,
         np.finfo(float).eps, np.finfo(float).eps]
 pars = ['aa0', '&c1', '&c2', '&c3', '&c4']
 tol = [0.5, 0.005, 0.005, 0.005, 0.005]
-xbest0, fbest, message = optimize(Xepr, pars=pars,
+xbest0, fbest, message = optimise(xepr, pars=pars,
                                   init=init,
                                   lb=[10, -1.2, -1.2, -1.2, -1.2],
                                   ub=[60, 1.2, 1.2, 1.2, 1.2],
@@ -220,7 +225,7 @@ xbest0, fbest, message = optimize(Xepr, pars=pars,
                                   callback_args=(chorus,))
 
 # run experiment with optimal parameters
-data = Xepr_link.run2getdata_exp(Xepr)
+data = xepr_link.run2getdata_exp(xepr)
 
 # result
 FS_path = os.path.join(os.getcwd(), 'FS_inverted.txt')

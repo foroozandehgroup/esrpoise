@@ -9,15 +9,17 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 """
 
+import os
 from esrpoise.costfunctions import maxabsint
 from esrpoise import optimise, xepr_link
 
 
-f_loc = '/home/xuser/xeprFiles/Data/ORGANIC/MFgrp/JB/220128/CHORUS/'
-exp_f = f_loc + 'CHORUS.exp'
-def_f = f_loc + 'CHORUS.def'
-
 xepr = xepr_link.load_xepr()
+
+# script assumed to be located in the same directory as the .exp/.def files
+f_loc = os.getcwd()
+exp_f = os.path.join(f_loc, 'CHORUS.exp')
+def_f = os.path.join(f_loc, 'CHORUS.def')
 
 # amplitudes optimization
 xbest1, fbest1, msg1 = optimise(xepr, pars=['aa0', 'aa1', 'aa2'],
