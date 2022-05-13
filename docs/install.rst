@@ -84,7 +84,8 @@ The following Python packages are required, they should get automatically instal
  - **XeprAPI**
  - **pybobyqa**
 
-
+Updating POISE
+--------------
 
 Simply use::
 

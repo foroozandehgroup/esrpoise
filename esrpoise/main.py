@@ -175,6 +175,10 @@ def optimise(xepr,
     return best_values, opt_result.fbest, opt_result.message
 
 
+def optimize(*args, **kwargs):
+    return optimise(*args, **kwargs)
+
+
 @deco_count
 def acquire_esr(x: np.ndarray,
                 cost_function: callable,
