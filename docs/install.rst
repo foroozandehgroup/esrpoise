@@ -13,13 +13,15 @@ Installing Python 3
 
 This is most easily done by downloading an installer from the official CPython website (https://www.python.org/downloads/), or via your package manager (``apt``, ``yum`` or similar).
 
-On CentOS 7, you would typically need (creates a ``python3`` command, independant from the already installed Python 2 called with ``python``)::
+On CentOS 7, you would typically need::
 
     yum -y install python3
 
 You might also need to tkinter with::
 
     yum -y install python3-tkinter
+
+Note that this creates a ``python3`` executable, which is independent from the previously installed Python 2 (which can still be invoked with ``python``).
 
 A particular issue we faced when setting up POISE was installing Python on CentOS 7 without administrator rights.
 If you are in this situation, you will have to compile the Python source code, using the following steps:
@@ -58,7 +60,11 @@ One of the tested spectrometer computer also required the installation of ``libf
 You should then have a working installation of Python 3.7 in ``~/.local/python3/bin/python``.
 Note that you should always use this version of Python whenever installing packages: so, it's safer to always use ``/path/to/python -m pip install X`` rather than just ``pip install``.
 
-Naturally you can place this Python executable first in your ``$PATH`` in order to avoid having to type out the full path every time. For example, use ``cd ~``, ``gedit .bashrc`` and add ``export PATH=~/.local/python3/bin:$PATH`` at the end of the file.
+Naturally, you can place this Python executable first in your ``$PATH`` in order to avoid having to type out the full path every time, for example by placing the following line::
+
+    export PATH=~/.local/python3/bin:$PATH
+
+inside your ``~/.bashrc`` or ``~/.bash_profile``.
 
 If there are any issues, please get in touch via GitHub or email.
 
@@ -79,8 +85,6 @@ The following Python packages are required, they should get automatically instal
  - **pybobyqa**
 
 
-Updating POISE
---------------
 
 Simply use::
 
@@ -112,4 +116,3 @@ If the computer you are using does not have an Internet connection, then you wil
 1. Download the POISE source code from GitHub: ``git clone https://github.com/foroozandehgroup/esrpoise`` and copy it over to the target computer.
 2. Install Python by downloading the installer from a different computer and copying it over.
 3. On the target computer, install the POISE package locally by navigating to the ``esrpoise`` directory you copied over and doing ``python -m pip install .`` (note the full stop at the end).
-
