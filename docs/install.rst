@@ -13,11 +13,11 @@ Installing Python 3
 
 This is most easily done by downloading an installer from the official CPython website (https://www.python.org/downloads/), or via your package manager (``apt``, ``yum`` or similar).
 
-On CentOS 7, you would typically need (creates a python3 command, independant from the already installed Python 2 called with python)::
+On CentOS 7, you would typically need (creates a ``python3`` command, independant from the already installed Python 2 called with ``python``)::
 
     yum -y install python3
 
-We had to also install tkinter with::
+You might also need to tkinter with::
 
     yum -y install python3-tkinter
 
@@ -53,11 +53,12 @@ The following series of shell commands (give or take) worked for us, so you coul
     make
     make install
 
+One of the tested spectrometer computer also required the installation of ``libffi`` and ``libffi-devel`` before being able to ``make install``.
+
 You should then have a working installation of Python 3.7 in ``~/.local/python3/bin/python``.
 Note that you should always use this version of Python whenever installing packages: so, it's safer to always use ``/path/to/python -m pip install X`` rather than just ``pip install``.
-Naturally you can place this Python executable first in your ``$PATH`` in order to avoid having to type out the full path every time.
 
-One of the tested spectrometer computer also required the installation of ``libffi`` and ``libffi-devel`` before being able to ``make install``.
+Naturally you can place this Python executable first in your ``$PATH`` in order to avoid having to type out the full path every time. For example, use ``cd ~``, ``gedit .bashrc`` and add ``export PATH=~/.local/python3/bin:$PATH`` at the end of the file.
 
 If there are any issues, please get in touch via GitHub or email.
 
@@ -65,7 +66,7 @@ If there are any issues, please get in touch via GitHub or email.
 Installing esrpoise
 -------------------
 
-Once python is installed, you can install POISE using ``pip``::
+Once Python 3 is installed, you can install POISE using ``pip``::
 
     python -m pip install esrpoise
 
@@ -95,11 +96,11 @@ If you obtained the source code (e.g. from ``git clone`` or a `GitHub release <h
 
    python -m pip install .
 
-Add `` -e`` to be able to edit the code. Equivalently you can run::
+Add ``-e`` to be able to edit the code. Equivalently you can run::
 
    python -m setup.py install
 
-Replace ``install`` instead with ``develop`` to edit the code.
+Replace ``install`` with ``develop`` to edit the code.
 
 (use ``python3`` if necessary)
 
