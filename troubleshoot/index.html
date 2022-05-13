@@ -37,7 +37,7 @@
 <section id="compilation">
 <h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h2>
 <p>Bugs can be created if <code class="docutils literal notranslate"><span class="pre">xepr_link</span></code> does not allow enough time for compilation.</p>
-<p>Increase the compilation time of the .exp, .def and .shp files (1s by default) with the global variable <code class="docutils literal notranslate"><span class="pre">COMPILATION_TIME</span></code> from <code class="docutils literal notranslate"><span class="pre">Xepr_link</span></code>:</p>
+<p>Increase the compilation time of the .exp, .def and .shp files (1s by default) with the global variable <code class="docutils literal notranslate"><span class="pre">COMPILATION_TIME</span></code> from <a class="reference internal" href="../modules/#xepr-link-py"><span class="std std-ref">xepr_link.py</span></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xepr_link</span><span class="o">.</span><span class="n">COMPILATION_TIME</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># (s)</span>
 
 <span class="n">xepr</span> <span class="o">=</span> <span class="n">xepr_link</span><span class="o">.</span><span class="n">load_xepr</span><span class="p">()</span>
@@ -64,7 +64,32 @@
 <span class="n">xepr_link</span><span class="o">.</span><span class="n">run2getdata_exp</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span> <span class="s2">&quot;Signal&quot;</span><span class="p">,</span> <span class="n">exp_f</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>When decreased, <code class="docutils literal notranslate"><span class="pre">COMPILATION_TIME</span></code> can be used to accelerate an optimisation routine if the files are compiling fast enough.</p>
+<p>If the files are compiling fast enough, decrease <code class="docutils literal notranslate"><span class="pre">COMPILATION_TIME</span></code> to accelerate the optimisation routine.</p>
+</section>
+<section id="fast-def-file-modification">
+<h2>fast .def file modification<a class="headerlink" href="#fast-def-file-modification" title="Permalink to this headline">¶</a></h2>
+<p>ESR-POISE does not use the function <code class="docutils literal notranslate"><span class="pre">modif_def_PlsSPELGlbTxt()</span></code> from <a class="reference internal" href="../modules/#xepr-link-py"><span class="std std-ref">xepr_link.py</span></a> despite its ability to modify the .def file variables without refering to the .def file location.</p>
+<p>While this function would save a couple of seconds per iteration, it can cause a freeze of the .def file modification, forcing the user to manually interupt its script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;crash_def.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">6</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="n">xepr_link</span><span class="o">.</span><span class="n">modif_def</span><span class="p">(</span><span class="n">xepr</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;8&#39;</span><span class="p">])</span>
+  <span class="n">File</span> <span class="s2">&quot;/home/xuser/xeprFiles/Data/Organic/JB/220511/esrpoise-dev/esrpoise/xepr_link.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">190</span><span class="p">,</span> <span class="ow">in</span> <span class="n">modif_def</span>
+    <span class="n">currentExp</span><span class="p">[</span><span class="s2">&quot;ftEPR.PlsSPELSetVar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">cmdStr</span>
+  <span class="n">File</span> <span class="s2">&quot;/home/xuser/.local/lib/python3.6/site-packages/XeprAPI/main.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1195</span><span class="p">,</span> <span class="ow">in</span> <span class="fm">__getitem__</span>
+    <span class="k">return</span> <span class="n">Parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;/home/xuser/.local/lib/python3.6/site-packages/XeprAPI/main.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1243</span><span class="p">,</span> <span class="ow">in</span> <span class="fm">__init__</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">findParam</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">findall</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;/home/xuser/.local/lib/python3.6/site-packages/XeprAPI/main.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1139</span><span class="p">,</span> <span class="ow">in</span> <span class="n">findParam</span>
+    <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFuParList</span><span class="p">(</span><span class="n">fu</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;/home/xuser/.local/lib/python3.6/site-packages/XeprAPI/main.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1096</span><span class="p">,</span> <span class="ow">in</span> <span class="n">getFuParList</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">aqGetExpFuParList</span><span class="p">(</span><span class="n">fu</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="k">lambda</span><span class="o">&gt;</span>
+  <span class="n">File</span> <span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="k">lambda</span><span class="o">&gt;</span>
+  <span class="n">File</span> <span class="s2">&quot;/home/xuser/.local/lib/python3.6/site-packages/XeprAPI/main.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">510</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_callXeprfunc</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_API</span><span class="o">.</span><span class="n">XeprCallFunction</span><span class="p">(</span><span class="n">funcidx</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>This bug was observed and reproduced after a few hundreds to a few thousand call to <code class="docutils literal notranslate"><span class="pre">modif_def_PlsSPELGlbTxt()</span></code>.</p>
 </section>
 <section id="shape-loading">
 <h2>Shape loading<a class="headerlink" href="#shape-loading" title="Permalink to this headline">¶</a></h2>
@@ -103,6 +128,7 @@ Use the following lines in your callback function (requires to import <code clas
 <li class="toctree-l1"><a class="reference internal" href="../modules/">Modules</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshoot</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#compilation">Compilation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fast-def-file-modification">fast .def file modification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shape-loading">Shape loading</a></li>
 </ul>
 </li>

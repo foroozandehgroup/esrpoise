@@ -90,7 +90,7 @@ Indicate that your parameter is user-defined by including '&' at the start of it
 
 You can pass arguments (as a tuple) to ``callback`` by using ``callback_pars``.
 
-In the following example, we modify a shape parameter with the module ``mrpypulse`` (bandwidth ``bw`` of an HS1 pulse) ::
+In the following example, we modify a shape parameter with the module `mrpypulse <https://pypi.org/project/mrpypulse/>`_. (bandwidth ``bw`` of an HS1 pulse) ::
 
     import os
     from esrpoise import xepr_link
@@ -132,9 +132,10 @@ In the following example, we modify a shape parameter with the module ``mrpypuls
                                      nfactor=5,
                                      callback=shape_bw,
                                      callback_args=(7770,))
+
     # NB: '(7770,)' is equivalent to 'tuple([7770])'
 
-Note that we first have to import the modules, then defining the function before writing the actual optimisation script.
+Note that we first have to import the modules and then define the callback function before finally writing the actual optimisation script.
 
 with user-defined cost function (advanced)
 ------------------------------------------
@@ -173,7 +174,7 @@ We can for example conduct an optmisation on the spectrum with a zero-filling op
 Setup Tips (advanced)
 ---------------------
  - Put several optimisations in one script.
- - Automate your actions by using XeprAPI commands, the functions from :ref:`Xepr_link.py` and ``param_set`` from :ref:`main.py`
+ - Automate your actions by using XeprAPI commands, the functions from :ref:`xepr_link.py` and ``param_set`` from :ref:`main.py`
  - Reuse the best parameter from the optimiser ``xbest``.
  - Use ``callbak`` to add user-specific operation at each iteration. You do not need to indicate user-defined parameters, ``callback_pars_dict`` is sent back empty if no user-defined parameters are found.
  - Use ``acquire_esr.calls`` in your callback function to access the current number of your iteration.

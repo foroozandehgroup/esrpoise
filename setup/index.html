@@ -131,7 +131,7 @@
 </pre></div>
 </div>
 <p>You can pass arguments (as a tuple) to <code class="docutils literal notranslate"><span class="pre">callback</span></code> by using <code class="docutils literal notranslate"><span class="pre">callback_pars</span></code>.</p>
-<p>In the following example, we modify a shape parameter with the module <code class="docutils literal notranslate"><span class="pre">mrpypulse</span></code> (bandwidth <code class="docutils literal notranslate"><span class="pre">bw</span></code> of an HS1 pulse)</p>
+<p>In the following example, we modify a shape parameter with the module <a class="reference external" href="https://pypi.org/project/mrpypulse/">mrpypulse</a>. (bandwidth <code class="docutils literal notranslate"><span class="pre">bw</span></code> of an HS1 pulse)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">xepr_link</span>
 <span class="kn">from</span> <span class="nn">esrpoise</span> <span class="kn">import</span> <span class="n">optimise</span>
@@ -172,10 +172,11 @@
                                  <span class="n">nfactor</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                                  <span class="n">callback</span><span class="o">=</span><span class="n">shape_bw</span><span class="p">,</span>
                                  <span class="n">callback_args</span><span class="o">=</span><span class="p">(</span><span class="mi">7770</span><span class="p">,))</span>
+
 <span class="c1"># NB: &#39;(7770,)&#39; is equivalent to &#39;tuple([7770])&#39;</span>
 </pre></div>
 </div>
-<p>Note that we first have to import the modules, then defining the function before writing the actual optimisation script.</p>
+<p>Note that we first have to import the modules and then define the callback function before finally writing the actual optimisation script.</p>
 </section>
 <section id="with-user-defined-cost-function-advanced">
 <h2>with user-defined cost function (advanced)<a class="headerlink" href="#with-user-defined-cost-function-advanced" title="Permalink to this headline">¶</a></h2>
