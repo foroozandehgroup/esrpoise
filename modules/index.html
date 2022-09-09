@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Modules &#8212; esrpoise  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex/" />
     <link rel="search" title="Search" href="../search/" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="modules">
-<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this heading">¶</a></h1>
 <dl class="simple">
 <dt>The esrpoise code is organized into 4 modules:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">main.py</span></code> for the optimisation to take place (set parameters, run the experiment, report results…),</p></li>
@@ -44,8 +45,9 @@
 </ul>
 </dd>
 </dl>
+<img alt="../_images/esrpoise_flowchart.png" class="align-center" src="../_images/esrpoise_flowchart.png" style="width: 90%;" />
 <span class="target" id="module-esrpoise.main"></span><section id="main-py">
-<h2>main.py<a class="headerlink" href="#main-py" title="Permalink to this headline">¶</a></h2>
+<h2>main.py<a class="headerlink" href="#main-py" title="Permalink to this heading">¶</a></h2>
 <p>Contains the main code required for executing an optimisation.</p>
 <p>SPDX-License-Identifier: GPL-3.0-or-later</p>
 </section>
@@ -54,7 +56,7 @@
 <span class="sig-prename descclassname"><span class="pre">esrpoise.main.</span></span><span class="sig-name descname"><span class="pre">optimise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimiser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bobyqa'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.main.optimise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run an optimisation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">instance of XeprAPI.Xepr</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
@@ -92,7 +94,7 @@ default of ‘0’ sets this to 500 times the number of parameters.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>xbest</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Numpy array of best values found. First element corresponds to the
 first parameter optimised, etc.</p>
@@ -134,7 +136,7 @@ the spectrum has been acquired and processed.</p></li>
 </ul>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">ndarray</span></dt><dd><p>Scaled values to be used for spectrum acquisition and cost function
 evaluation.</p>
@@ -168,7 +170,7 @@ Required to modify parameters in .def file.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>cf_val</strong><span class="classifier">float</span></dt><dd><p>Value of the cost function.</p>
 </dd>
@@ -185,7 +187,7 @@ Required to modify parameters in .def file.</p>
 <span class="sig-prename descclassname"><span class="pre">esrpoise.main.</span></span><span class="sig-name descname"><span class="pre">param_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.main.param_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a variety of parameters in Xepr.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
@@ -209,7 +211,7 @@ Required to modify parameters in .def file.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
 </dl>
@@ -225,7 +227,7 @@ Required to modify parameters in .def file.</p>
 <span class="sig-prename descclassname"><span class="pre">esrpoise.main.</span></span><span class="sig-name descname"><span class="pre">round2tol_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.main.round2tol_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Round values to closest multiple of tolerance.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>values</strong><span class="classifier">list or ndarray</span></dt><dd><p>values to round</p>
 </dd>
@@ -233,7 +235,7 @@ Required to modify parameters in .def file.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>values_str</strong><span class="classifier"></span></dt><dd><p>rounded values as a list of strings</p>
 </dd>
@@ -246,18 +248,18 @@ Required to modify parameters in .def file.</p>
 <div class="line"><br /></div>
 </div>
 <section id="xepr-link-py">
-<h2>xepr_link.py<a class="headerlink" href="#xepr-link-py" title="Permalink to this headline">¶</a></h2>
+<h2>xepr_link.py<a class="headerlink" href="#xepr-link-py" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="esrpoise.xepr_link.load_xepr">
 <span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_xepr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_xepr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise the Xepr module and return the Xepr object thus created.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>None</strong></dt><dd></dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">instance of XeprAPI.Xepr</span></dt><dd><p>The instantiated Xepr object, used for communication with
 Xepr-the-programme.</p>
@@ -275,7 +277,7 @@ Xepr-the-programme.</p>
 <span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_exp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load and compile an Xepr experiment file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
@@ -283,7 +285,7 @@ Xepr-the-programme.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
 </dl>
@@ -299,7 +301,7 @@ Xepr-the-programme.</p>
 <span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_def</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_def" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load and compile an Xepr definition file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
@@ -307,7 +309,7 @@ Xepr-the-programme.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
 </dl>
@@ -323,7 +325,7 @@ Xepr-the-programme.</p>
 <span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">modif_def</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.modif_def" title="Permalink to this definition">¶</a></dt>
 <dd><p>Modify definitions by modifying the .def file and reloading it.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
@@ -335,7 +337,7 @@ Xepr-the-programme.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
 </dl>
@@ -351,7 +353,7 @@ Xepr-the-programme.</p>
 <span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_shp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shp_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_shp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load and compile an Xepr shape file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
@@ -359,7 +361,7 @@ Xepr-the-programme.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
 </dl>
@@ -375,7 +377,7 @@ Xepr-the-programme.</p>
 <span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">run2getdata_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SignalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.run2getdata_exp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run an experiment and get the data from it.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
@@ -386,7 +388,7 @@ Signal or “AWG_1pulseSHP” for the TM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>data</strong><span class="classifier">XeprAPI.Dataset</span></dt><dd><dl class="simple">
 <dt>The data retrieved from Xepr. Attributes of interest are:</dt><dd><ul class="simple">
@@ -412,13 +414,13 @@ Signal or “AWG_1pulseSHP” for the TM.</p>
 <dd><p>Copy the current experiment and use it to replace the current experiment.</p>
 <p>Needed to reset the AWG after 114 sequential shape load and run.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
 </dl>
@@ -431,21 +433,21 @@ Signal or “AWG_1pulseSHP” for the TM.</p>
 </div>
 </section>
 <section id="costfunctions-py">
-<h2>costfunctions.py<a class="headerlink" href="#costfunctions-py" title="Permalink to this headline">¶</a></h2>
+<h2>costfunctions.py<a class="headerlink" href="#costfunctions-py" title="Permalink to this heading">¶</a></h2>
 <section id="spectrum">
-<h3>Spectrum<a class="headerlink" href="#spectrum" title="Permalink to this headline">¶</a></h3>
+<h3>Spectrum<a class="headerlink" href="#spectrum" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="esrpoise.costfunctions.spectrum">
 <span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes a spectrum from Xepr standard time domain data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>data</strong><span class="classifier">XeprAPI.Dataset</span></dt><dd><p>data retrieved from Xepr</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>spectrum</strong><span class="classifier">ndarray</span></dt><dd><p>spectrum computed from time domain data</p>
 </dd>
@@ -536,7 +538,7 @@ as possible.</p>
 </div>
 </section>
 <section id="echo">
-<h3>Echo<a class="headerlink" href="#echo" title="Permalink to this headline">¶</a></h3>
+<h3>Echo<a class="headerlink" href="#echo" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="esrpoise.costfunctions.minabsint_echo">
 <span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minabsint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minabsint_echo" title="Permalink to this definition">¶</a></dt>
@@ -677,7 +679,7 @@ to zero as possible.</p>
 </div>
 </section>
 <section id="other">
-<h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
+<h3>Other<a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="esrpoise.costfunctions.max_n2p">
 <span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">max_n2p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.max_n2p" title="Permalink to this definition">¶</a></dt>
@@ -705,7 +707,14 @@ Data should contain the 2 points of interest in position 0 and 1.</p>
 
 
 
-<h3>Navigation</h3>
+<p></p>
+<h3>Useful links</h3>
+<ul>
+    <li><a href="https://doi.org/10.1039/D2CC02742A">Article (<i>Chem. Commun.</i> 2022)</a></li>
+    <li><a href="https://github.com/foroozandehgroup/esrpoise">GitHub repository</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise">HTML documentation</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise/esrpoise.pdf">PDF documentation</a></li>
+</ul><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../setup/">Set up an optimisation</a></li>
@@ -743,7 +752,7 @@ Data should contain the 2 points of interest in position 0 and 1.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -760,7 +769,7 @@ Data should contain the 2 points of interest in position 0 and 1.</p>
       &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

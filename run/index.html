@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Run an optimisation &#8212; esrpoise  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex/" />
     <link rel="search" title="Search" href="../search/" />
@@ -34,14 +35,14 @@
           <div class="body" role="main">
             
   <section id="run-an-optimisation">
-<h1>Run an optimisation<a class="headerlink" href="#run-an-optimisation" title="Permalink to this headline">¶</a></h1>
+<h1>Run an optimisation<a class="headerlink" href="#run-an-optimisation" title="Permalink to this heading">¶</a></h1>
 <section id="procedure">
-<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this headline">¶</a></h2>
+<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this heading">¶</a></h2>
 <dl>
 <dt>In Xepr:</dt><dd><ul>
 <li><p>Set up your experiment as you would normally do.</p></li>
 <li><dl>
-<dt>Enable XeprAPI (Processing → XeprAPI → enable XeprAPI).</dt><dd><img alt="../_images/enable_XeprAPI_screenshot.png" class="align-center" src="../_images/enable_XeprAPI_screenshot.png" style="width: 500px;" />
+<dt>Enable XeprAPI (Processing → XeprAPI → enable XeprAPI).</dt><dd><img alt="../_images/enable_XeprAPI_screenshot.png" class="align-center" src="../_images/enable_XeprAPI_screenshot.png" style="width: 70%;" />
 </dd>
 </dl>
 </li>
@@ -65,7 +66,7 @@
 <p>Once <code class="docutils literal notranslate"><span class="pre">optimise()</span></code> is done, you get a set of optimised parameters. These are set up in Xepr but your experiment is not run. You need to run it if you want to have the optimised result loaded in Xepr.</p>
 </section>
 <section id="running-tips">
-<h2>Running tips<a class="headerlink" href="#running-tips" title="Permalink to this headline">¶</a></h2>
+<h2>Running tips<a class="headerlink" href="#running-tips" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>You can interupt the optimisation with <code class="docutils literal notranslate"><span class="pre">ctrl+C</span></code>. It is recommend to do so while a measurement is running.</p></li>
@@ -92,7 +93,14 @@
 
 
 
-<h3>Navigation</h3>
+<p></p>
+<h3>Useful links</h3>
+<ul>
+    <li><a href="https://doi.org/10.1039/D2CC02742A">Article (<i>Chem. Commun.</i> 2022)</a></li>
+    <li><a href="https://github.com/foroozandehgroup/esrpoise">GitHub repository</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise">HTML documentation</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise/esrpoise.pdf">PDF documentation</a></li>
+</ul><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../setup/">Set up an optimisation</a></li>
@@ -124,7 +132,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -141,7 +149,7 @@
       &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

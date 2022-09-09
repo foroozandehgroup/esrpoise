@@ -9,7 +9,7 @@ In Xepr:
  - Enable XeprAPI (Processing → XeprAPI → enable XeprAPI).
      .. image:: enable_XeprAPI_screenshot.png
       :align: center
-      :width: 500
+      :width: 70%
  - Run your experiment once by clicking on play to load it into XeprAPI (can also be done before enabling XeprAPI).
 
 Run your optimisation script in a terminal with ::

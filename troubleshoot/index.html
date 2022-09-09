@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Troubleshoot &#8212; esrpoise  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex/" />
     <link rel="search" title="Search" href="../search/" />
@@ -33,9 +34,9 @@
           <div class="body" role="main">
             
   <section id="troubleshoot">
-<h1>Troubleshoot<a class="headerlink" href="#troubleshoot" title="Permalink to this headline">¶</a></h1>
+<h1>Troubleshoot<a class="headerlink" href="#troubleshoot" title="Permalink to this heading">¶</a></h1>
 <section id="compilation">
-<h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h2>
+<h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this heading">¶</a></h2>
 <p>Bugs can be created if <code class="docutils literal notranslate"><span class="pre">xepr_link</span></code> does not allow enough time for compilation.</p>
 <p>Increase the compilation time of the .exp, .def and .shp files (1s by default) with the global variable <code class="docutils literal notranslate"><span class="pre">COMPILATION_TIME</span></code> from <a class="reference internal" href="../modules/#xepr-link-py"><span class="std std-ref">xepr_link.py</span></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xepr_link</span><span class="o">.</span><span class="n">COMPILATION_TIME</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># (s)</span>
@@ -67,7 +68,7 @@
 <p>If the files are compiling fast enough, decrease <code class="docutils literal notranslate"><span class="pre">COMPILATION_TIME</span></code> to accelerate the optimisation routine.</p>
 </section>
 <section id="fast-def-file-modification">
-<h2>fast .def file modification<a class="headerlink" href="#fast-def-file-modification" title="Permalink to this headline">¶</a></h2>
+<h2>fast .def file modification<a class="headerlink" href="#fast-def-file-modification" title="Permalink to this heading">¶</a></h2>
 <p>ESR-POISE does not use the function <code class="docutils literal notranslate"><span class="pre">modif_def_PlsSPELGlbTxt()</span></code> from <a class="reference internal" href="../modules/#xepr-link-py"><span class="std std-ref">xepr_link.py</span></a> despite its ability to modify the .def file variables without refering to the .def file location.</p>
 <p>While this function would save a couple of seconds per iteration, it can cause a freeze of the .def file modification, forcing the user to manually interupt its script:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
@@ -92,7 +93,7 @@
 <p>This bug was observed and reproduced after a few hundreds to a few thousand call to <code class="docutils literal notranslate"><span class="pre">modif_def_PlsSPELGlbTxt()</span></code>.</p>
 </section>
 <section id="shape-loading">
-<h2>Shape loading<a class="headerlink" href="#shape-loading" title="Permalink to this headline">¶</a></h2>
+<h2>Shape loading<a class="headerlink" href="#shape-loading" title="Permalink to this heading">¶</a></h2>
 <p>If a bug with shape loading is encountered after a certain number of iterations (typically 114 on older versions of Xepr), it should be solved by reseting Xepr to avoid AWG overloading.
 Use the following lines in your callback function (requires to import <code class="docutils literal notranslate"><span class="pre">acquire_esr</span></code> from <code class="docutils literal notranslate"><span class="pre">esrpoise</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">acquire_esr</span><span class="o">.</span><span class="n">calls</span> <span class="o">%</span> <span class="mi">114</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">acquire_esr</span><span class="o">.</span><span class="n">calls</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -119,7 +120,14 @@ Use the following lines in your callback function (requires to import <code clas
 
 
 
-<h3>Navigation</h3>
+<p></p>
+<h3>Useful links</h3>
+<ul>
+    <li><a href="https://doi.org/10.1039/D2CC02742A">Article (<i>Chem. Commun.</i> 2022)</a></li>
+    <li><a href="https://github.com/foroozandehgroup/esrpoise">GitHub repository</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise">HTML documentation</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise/esrpoise.pdf">PDF documentation</a></li>
+</ul><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../setup/">Set up an optimisation</a></li>
@@ -151,7 +159,7 @@ Use the following lines in your callback function (requires to import <code clas
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -168,7 +176,7 @@ Use the following lines in your callback function (requires to import <code clas
       &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

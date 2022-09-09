@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Built-in parameters &#8212; esrpoise  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex/" />
     <link rel="search" title="Search" href="../search/" />
@@ -34,10 +35,10 @@
           <div class="body" role="main">
             
   <section id="built-in-parameters">
-<h1>Built-in parameters<a class="headerlink" href="#built-in-parameters" title="Permalink to this headline">¶</a></h1>
+<h1>Built-in parameters<a class="headerlink" href="#built-in-parameters" title="Permalink to this heading">¶</a></h1>
 <p>Built-in parameters can have different constraints depending on your spectrometer. Values documented here are just indications. All parameters currently supported are indicated below.</p>
 <section id="bridge-receiver-unit">
-<h2>Bridge - Receiver Unit<a class="headerlink" href="#bridge-receiver-unit" title="Permalink to this headline">¶</a></h2>
+<h2>Bridge - Receiver Unit<a class="headerlink" href="#bridge-receiver-unit" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;VideoGain&quot;</span></code> (dB), video gain, indicative minimum tolerances: 3dB, 6dB</p></li>
@@ -48,7 +49,7 @@
 </div></blockquote>
 </section>
 <section id="bridge-mpfu-control">
-<h2>Bridge - MPFU control<a class="headerlink" href="#bridge-mpfu-control" title="Permalink to this headline">¶</a></h2>
+<h2>Bridge - MPFU control<a class="headerlink" href="#bridge-mpfu-control" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;BrXPhase&quot;</span></code>, +&lt;x&gt; Phase</p></li>
@@ -64,7 +65,7 @@
 <p>These are rounded in Xepr to closest 0.049% (approximately, not linear).</p>
 </section>
 <section id="ft-epr-parameters">
-<h2>FT EPR Parameters<a class="headerlink" href="#ft-epr-parameters" title="Permalink to this headline">¶</a></h2>
+<h2>FT EPR Parameters<a class="headerlink" href="#ft-epr-parameters" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;CenterField&quot;</span></code>, field position (G), indicative minimum tolerance: 0.05G</p></li>
@@ -89,7 +90,14 @@
 
 
 
-<h3>Navigation</h3>
+<p></p>
+<h3>Useful links</h3>
+<ul>
+    <li><a href="https://doi.org/10.1039/D2CC02742A">Article (<i>Chem. Commun.</i> 2022)</a></li>
+    <li><a href="https://github.com/foroozandehgroup/esrpoise">GitHub repository</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise">HTML documentation</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise/esrpoise.pdf">PDF documentation</a></li>
+</ul><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../setup/">Set up an optimisation</a></li>
@@ -122,7 +130,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -139,7 +147,7 @@
       &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

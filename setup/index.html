@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Set up an optimisation &#8212; esrpoise  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex/" />
     <link rel="search" title="Search" href="../search/" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="set-up-an-optimisation">
-<h1>Set up an optimisation<a class="headerlink" href="#set-up-an-optimisation" title="Permalink to this headline">¶</a></h1>
+<h1>Set up an optimisation<a class="headerlink" href="#set-up-an-optimisation" title="Permalink to this heading">¶</a></h1>
 <dl class="simple">
 <dt>To set up an optimisation, you can to create a small python script which:</dt><dd><ul class="simple">
 <li><p>loads an instance Xepr of the XeprAPI,</p></li>
@@ -43,7 +44,7 @@
 </dd>
 </dl>
 <section id="with-standard-parameters">
-<h2>with standard parameters<a class="headerlink" href="#with-standard-parameters" title="Permalink to this headline">¶</a></h2>
+<h2>with standard parameters<a class="headerlink" href="#with-standard-parameters" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt>When calling <code class="docutils literal notranslate"><span class="pre">optimise()</span></code>, you should to at least pass:</dt><dd><ul class="simple">
 <li><p>the Xepr instance,</p></li>
@@ -80,7 +81,7 @@
 </div>
 </section>
 <section id="with-def-file-parameters">
-<h2>with .def file parameters<a class="headerlink" href="#with-def-file-parameters" title="Permalink to this headline">¶</a></h2>
+<h2>with .def file parameters<a class="headerlink" href="#with-def-file-parameters" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt>Optimise parameters from your .def file by indicating their names. In addition to the standard parameter requirements, you should precise:</dt><dd><ul class="simple">
 <li><p>the path of your .exp file,</p></li>
@@ -110,7 +111,7 @@
 </div>
 </section>
 <section id="with-user-defined-parameters-advanced">
-<h2>with user-defined parameters (advanced)<a class="headerlink" href="#with-user-defined-parameters-advanced" title="Permalink to this headline">¶</a></h2>
+<h2>with user-defined parameters (advanced)<a class="headerlink" href="#with-user-defined-parameters-advanced" title="Permalink to this heading">¶</a></h2>
 <p>To optimise your own parameters, you should define a callback function, used to set up your parameters. The simplest is to define it in your optimisation script (after the imports and before your script code):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_callback</span><span class="p">(</span><span class="n">my_callback_pars_dict</span><span class="p">,</span> <span class="o">*</span><span class="n">mycallback_args</span><span class="p">):</span>
     <span class="s2">&quot;&quot;</span>
@@ -179,7 +180,7 @@
 <p>Note that we first have to import the modules and then define the callback function before finally writing the actual optimisation script.</p>
 </section>
 <section id="with-user-defined-cost-function-advanced">
-<h2>with user-defined cost function (advanced)<a class="headerlink" href="#with-user-defined-cost-function-advanced" title="Permalink to this headline">¶</a></h2>
+<h2>with user-defined cost function (advanced)<a class="headerlink" href="#with-user-defined-cost-function-advanced" title="Permalink to this heading">¶</a></h2>
 <p>You can define your own cost function and pass it to the function optimise. Your cost function should treat the data from one of your experiment run to return a single number which will be minimised by the optimiser.</p>
 <p>We can for example conduct an optmisation on the spectrum with a zero-filling operation (data is here a simple time-domain FID):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
@@ -212,7 +213,7 @@
 </div>
 </section>
 <section id="setup-tips-advanced">
-<h2>Setup Tips (advanced)<a class="headerlink" href="#setup-tips-advanced" title="Permalink to this headline">¶</a></h2>
+<h2>Setup Tips (advanced)<a class="headerlink" href="#setup-tips-advanced" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>Put several optimisations in one script.</p></li>
@@ -244,7 +245,14 @@
 
 
 
-<h3>Navigation</h3>
+<p></p>
+<h3>Useful links</h3>
+<ul>
+    <li><a href="https://doi.org/10.1039/D2CC02742A">Article (<i>Chem. Commun.</i> 2022)</a></li>
+    <li><a href="https://github.com/foroozandehgroup/esrpoise">GitHub repository</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise">HTML documentation</a></li>
+    <li><a href="https://foroozandehgroup.github.io/esrpoise/esrpoise.pdf">PDF documentation</a></li>
+</ul><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Set up an optimisation</a><ul>
@@ -279,7 +287,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -296,7 +304,7 @@
       &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
