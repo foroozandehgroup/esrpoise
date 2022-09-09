@@ -7,6 +7,9 @@ The esrpoise code is organized into 4 modules:
  - ``costfunctions.py`` which contains standard cost functions,
  - ``optpoise.py`` which contains the necessary for the optimisers (cf. source code for more details).
 
+.. image:: esrpoise_flowchart.png
+   :align: center
+   :width: 90%
 
 .. currentmodule:: esrpoise.main
 
