@@ -4,7 +4,7 @@ Troubleshoot
 Compilation
 -----------
 
-Bugs can be created if ``xepr_link`` does not allow enough time for compilation.
+Bugs can be created if ``xepr_link`` does not allow for enough time to let Xepr compile.
 
 Increase the compilation time of the .exp, .def and .shp files (1s by default) with the global variable ``COMPILATION_TIME`` from :ref:`xepr_link.py`:: 
 
@@ -39,9 +39,9 @@ If the files are compiling fast enough, decrease ``COMPILATION_TIME`` to acceler
 fast .def file modification
 ---------------------------
 
-ESR-POISE does not use the function ``modif_def_PlsSPELGlbTxt()`` from :ref:`xepr_link.py` despite its ability to modify the .def file variables without refering to the .def file location.
+ESR-POISE does not use the function ``modif_def_PlsSPELGlbTxt()`` from :ref:`xepr_link.py` despite its ability to modify the .def file variables without referring to the .def file location.
 
-While this function would save a couple of seconds per iteration, it can cause a freeze of the .def file modification, forcing the user to manually interupt its script::
+While this function would save a couple of seconds per iteration, it can cause a freeze of the .def file modification, forcing the user to manually interrupt its script::
 
     Traceback (most recent call last):
       File "crash_def.py", line 6, in <module>
@@ -61,7 +61,7 @@ While this function would save a couple of seconds per iteration, it can cause a
       File "/home/xuser/.local/lib/python3.6/site-packages/XeprAPI/main.py", line 510, in _callXeprfunc
         if self._API.XeprCallFunction(funcidx) != 0:
 
-This bug was observed and reproduced after a few hundreds to a few thousand call to ``modif_def_PlsSPELGlbTxt()``.
+This bug was observed and reproduced after a few hundred to a few thousand calls to ``modif_def_PlsSPELGlbTxt()``.
 
 Shape loading
 -------------

@@ -1,7 +1,7 @@
 Built-in parameters
 ===================
 
-Built-in parameters can have different constraints depending on your spectrometer. Values documented here are just indications. All parameters currently supported are indicated below.
+Built-in parameters can have different constraints depending on your spectrometer. Values documented here are just indications. All parameters currently supported are indicated below (in addition to any variable placed in the .def file as seen in :ref:`Set up an optimisation`).
 
 Bridge - Receiver Unit
 ----------------------

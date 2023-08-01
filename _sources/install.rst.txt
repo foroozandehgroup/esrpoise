@@ -3,9 +3,9 @@ Installation
 
 The requirements are:
 
- - **Xepr**. We have tested Xepr versions 2.8b.5
+ - **Xepr**. We have tested Xepr versions 2.8b.5.
    
- - **Python 3**. ESRPOISE requires a minimum version of **Python 3.6.** (We have tested up to Python 3.8.)
+ - **Python 3**. ESRPOISE requires a minimum version of **Python 3.6.** (We have tested up to Python 3.8, Python 3.9 installation is supported).
 
 
 Installing Python 3
@@ -84,8 +84,8 @@ The following Python packages are required, they should get automatically instal
  - **XeprAPI**
  - **pybobyqa**
 
-Updating POISE
---------------
+Updating esrpoise
+-----------------
 
 Simply use::
 

@@ -1,19 +1,16 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Modules &#8212; esrpoise  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b3523f8e" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=5ea89083" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=df4b10f6"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex/" />
     <link rel="search" title="Search" href="../search/" />
     <link rel="next" title="Troubleshoot" href="../troubleshoot/" />
@@ -46,388 +43,38 @@
 </dd>
 </dl>
 <img alt="../_images/esrpoise_flowchart.png" class="align-center" src="../_images/esrpoise_flowchart.png" style="width: 90%;" />
-<span class="target" id="module-esrpoise.main"></span><section id="main-py">
-<h2>main.py<a class="headerlink" href="#main-py" title="Permalink to this heading">¶</a></h2>
-<p>Contains the main code required for executing an optimisation.</p>
-<p>SPDX-License-Identifier: GPL-3.0-or-later</p>
-</section>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.main.optimise">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.main.</span></span><span class="sig-name descname"><span class="pre">optimise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimiser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bobyqa'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.main.optimise" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run an optimisation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">instance of XeprAPI.Xepr</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>pars</strong><span class="classifier">list of str</span></dt><dd><p>Parameter names. Parameters starting with the character &amp; are
-considered user parameters which needs to be modified with the callback
-function.</p>
-</dd>
-<dt><strong>init: list of float</strong></dt><dd><p>Initial value for each parameter.</p>
-</dd>
-<dt><strong>lb</strong><span class="classifier">list of float</span></dt><dd><p>Lower bounds for each parameter.</p>
-</dd>
-<dt><strong>ub</strong><span class="classifier">list of float</span></dt><dd><p>Upper bounds for each parameter.</p>
-</dd>
-<dt><strong>tol</strong><span class="classifier">list of float</span></dt><dd><p>Optimisation tolerances for each parameter.</p>
-</dd>
-<dt><strong>cost_function</strong><span class="classifier">function</span></dt><dd><p>A function which takes the data object and returns a float.</p>
-</dd>
-<dt><strong>exp_file</strong><span class="classifier">str, default None</span></dt><dd><p>Experiment file (.exp) path to be used for the experiment in Xepr.
-Required to modify parameters in .def file.</p>
-</dd>
-<dt><strong>def_file</strong><span class="classifier">str, default None</span></dt><dd><p>Definition file (.exp) path to be used for the experiment in Xepr.
-Required to modify parameters in .def file.</p>
-</dd>
-<dt><strong>optimiser</strong><span class="classifier">str from {“nm”, “mds”, “bobyqa”, “brute”}, default “nm”</span></dt><dd><p>Optimisation algorithm to use. The options correspond to Nelder-Mead,
-multidimensional search, BOBYQA, and brute-force search respectively.</p>
-</dd>
-<dt><strong>maxfev</strong><span class="classifier">int, default 0</span></dt><dd><p>Maximum number of spectra to acquire during the optimisation. The
-default of ‘0’ sets this to 500 times the number of parameters.</p>
-</dd>
-<dt><strong>nfactor</strong><span class="classifier">int, default 10</span></dt><dd><p>Initial search region relative to tols</p>
-</dd>
-<dt><strong>callback</strong><span class="classifier">function, default None</span></dt><dd><p>User defined function called when setting up parameters.</p>
-</dd>
-<dt><strong>callback_args</strong><span class="classifier">tuple, default None</span></dt><dd><p>Arguments for callback function</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>xbest</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Numpy array of best values found. First element corresponds to the
-first parameter optimised, etc.</p>
-</dd>
-<dt><strong>fbest</strong><span class="classifier">float</span></dt><dd><p>Value of the cost function at x = xbest.</p>
-</dd>
-<dt><strong>message</strong><span class="classifier">str</span></dt><dd><p>A message indicating why the optimisation terminated.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>To quit the optimisation, simply type ‘ctlr+C’ in the terminal.
-It is recommended to do so during an acquisition phase of Xepr to avoid
-Xepr crashes.</p>
-<p>Note once the optimisation is done, the best parameters found are set up in
-Xepr but the experiment is not run.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.main.acquire_esr">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.main.</span></span><span class="sig-name descname"><span class="pre">acquire_esr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimiser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.main.acquire_esr" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the function which is actually passed to the optimisation function
-as the “cost function”, and is responsible for triggering acquisition in
-Xepr.</p>
-<p>Briefly, this function does the following:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Returns np.inf immediately if the values are outside the given bounds.</p></li>
-<li><p>Otherwise, prints the values to stdout, which triggers acquisition by
-the frontend.</p></li>
-<li><p>Waits for the frontend to pass the message “done” back, indicating that
-the spectrum has been acquired and processed.</p></li>
-<li><p>Calculates the cost function using the user-defined cost_function().</p></li>
-<li><p>Performs logging throughout.</p></li>
-</ul>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>x</strong><span class="classifier">ndarray</span></dt><dd><p>Scaled values to be used for spectrum acquisition and cost function
-evaluation.</p>
-</dd>
-<dt><strong>pars</strong><span class="classifier">list of str</span></dt><dd><p>Parameter names. Parameters starting with the character &amp; are
-considered user parameters which needs to be modified with the callback
-function.</p>
-</dd>
-<dt><strong>lb</strong><span class="classifier">list of float</span></dt><dd><p>Lower bounds for each parameter.</p>
-</dd>
-<dt><strong>ub</strong><span class="classifier">list of float</span></dt><dd><p>Upper bounds for each parameter.</p>
-</dd>
-<dt><strong>tol</strong><span class="classifier">list of float</span></dt><dd><p>Optimisation tolerances for each parameter.</p>
-</dd>
-<dt><strong>optimiser</strong><span class="classifier">str from {“nm”, “mds”, “bobyqa”, “brute”}, default “nm”</span></dt><dd><p>Optimisation algorithm to use. The options correspond to Nelder-Mead,
-multidimensional search, BOBYQA, and brute-force search respectively.</p>
-</dd>
-<dt><strong>xepr</strong><span class="classifier">instance of XeprAPI.Xepr TODO doc</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>cost_function</strong><span class="classifier">function</span></dt><dd><p>A function which takes the data object and returns a float.</p>
-</dd>
-<dt><strong>exp_file</strong><span class="classifier">str, default None</span></dt><dd><p>Experiment file (.exp) path to be used for the experiment in Xepr.
-Required to modify parameters in .def file.</p>
-</dd>
-<dt><strong>def_file</strong><span class="classifier">str, default None</span></dt><dd><p>Definition file (.exp) path to be used for the experiment in Xepr.
-Required to modify parameters in .def file.</p>
-</dd>
-<dt><strong>callback</strong><span class="classifier">function, default None</span></dt><dd><p>User defined function called when setting up parameters.</p>
-</dd>
-<dt><strong>callback_args: tuple, default None</strong></dt><dd><p>Arguments for callback function</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>cf_val</strong><span class="classifier">float</span></dt><dd><p>Value of the cost function.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.main.param_set">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.main.</span></span><span class="sig-name descname"><span class="pre">param_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.main.param_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set a variety of parameters in Xepr.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>pars</strong><span class="classifier">list of str</span></dt><dd><p>Parameter names. Parameters starting with the character &amp; are
-considered user parameters which needs to be modified with the callback
-function.</p>
-</dd>
-<dt><strong>val</strong><span class="classifier">list of floats or ndarray</span></dt><dd><p>values of the parameters</p>
-</dd>
-<dt><strong>tol</strong><span class="classifier">list of float</span></dt><dd><p>Optimisation tolerances for each parameter.</p>
-</dd>
-<dt><strong>exp_file</strong><span class="classifier">str, default None</span></dt><dd><p>Experiment file (.exp) path to be used for the experiment in Xepr.
-Required to modify parameters in .def file.</p>
-</dd>
-<dt><strong>def_file</strong><span class="classifier">str, default None</span></dt><dd><p>Definition file (.exp) path to be used for the experiment in Xepr.
-Required to modify parameters in .def file.</p>
-</dd>
-<dt><strong>callback</strong><span class="classifier">function, default None</span></dt><dd><p>User defined function called when setting up parameters.</p>
-</dd>
-<dt><strong>callback_args</strong><span class="classifier">tuple, default None</span></dt><dd><p>Arguments for callback function</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>None</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.main.round2tol_str">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.main.</span></span><span class="sig-name descname"><span class="pre">round2tol_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.main.round2tol_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Round values to closest multiple of tolerance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>values</strong><span class="classifier">list or ndarray</span></dt><dd><p>values to round</p>
-</dd>
-<dt><strong>tol</strong><span class="classifier">list or ndarray</span></dt><dd><p>values tolerances</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>values_str</strong><span class="classifier"></span></dt><dd><p>rounded values as a list of strings</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <section id="xepr-link-py">
 <h2>xepr_link.py<a class="headerlink" href="#xepr-link-py" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.xepr_link.load_xepr">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_xepr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_xepr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialise the Xepr module and return the Xepr object thus created.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>None</strong></dt><dd></dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">instance of XeprAPI.Xepr</span></dt><dd><p>The instantiated Xepr object, used for communication with
-Xepr-the-programme.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.xepr_link.load_exp">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_exp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load and compile an Xepr experiment file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>exp_file</strong><span class="classifier">str</span></dt><dd><p>The Xepr experiment file (the full path with .exp extension).</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>None</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.xepr_link.load_def">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_def</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load and compile an Xepr definition file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>def_file</strong><span class="classifier">str</span></dt><dd><p>Name of the Xepr definition file (full path with .def extension).</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>None</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.xepr_link.modif_def">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">modif_def</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.modif_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>Modify definitions by modifying the .def file and reloading it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>def_file</strong><span class="classifier">str</span></dt><dd><p>Name of the Xepr definition file (full path with .def extension).</p>
-</dd>
-<dt><strong>var_name</strong><span class="classifier">list of strings</span></dt><dd><p>Variable names as named in the .def file.</p>
-</dd>
-<dt><strong>var_value</strong><span class="classifier">list of strings</span></dt><dd><p>List of variable values to be input.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>None</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.xepr_link.load_shp">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">load_shp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shp_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.load_shp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load and compile an Xepr shape file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>shp_file</strong><span class="classifier">str</span></dt><dd><p>Shape file name (full path, including .shp extension).</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>None</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.xepr_link.run2getdata_exp">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">run2getdata_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SignalType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.run2getdata_exp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run an experiment and get the data from it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-<dt><strong>SignalType</strong><span class="classifier">str, by default None</span></dt><dd><p>To change the signal type (pick from {“TM”, “Signal”, “RM”})</p>
-</dd>
-<dt><strong>exp_name</strong><span class="classifier">str, by default None</span></dt><dd><p>The name of the experiment to run, usually “AWGTransient” for the
-Signal or “AWG_1pulseSHP” for the TM.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>data</strong><span class="classifier">XeprAPI.Dataset</span></dt><dd><dl class="simple">
-<dt>The data retrieved from Xepr. Attributes of interest are:</dt><dd><ul class="simple">
-<li><p>data.X      : the X-abscissa values of the dataset</p></li>
-<li><p>data.O      : complex-valued numpy.ndarray of the signal</p></li>
-<li><p>data.O.real : real part of the signal</p></li>
-<li><p>data.O.imag : imaginary part of the signal</p></li>
-</ul>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.xepr_link.reset_exp">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.xepr_link.</span></span><span class="sig-name descname"><span class="pre">reset_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xepr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.xepr_link.reset_exp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copy the current experiment and use it to replace the current experiment.</p>
-<p>Needed to reset the AWG after 114 sequential shape load and run.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xepr</strong><span class="classifier">XeprAPI.Xepr object</span></dt><dd><p>The instantiated Xepr object.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>None</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -436,257 +83,84 @@ Signal or “AWG_1pulseSHP” for the TM.</p>
 <h2>costfunctions.py<a class="headerlink" href="#costfunctions-py" title="Permalink to this heading">¶</a></h2>
 <section id="spectrum">
 <h3>Spectrum<a class="headerlink" href="#spectrum" title="Permalink to this heading">¶</a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.spectrum">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a spectrum from Xepr standard time domain data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data</strong><span class="classifier">XeprAPI.Dataset</span></dt><dd><p>data retrieved from Xepr</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>spectrum</strong><span class="classifier">ndarray</span></dt><dd><p>spectrum computed from time domain data</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minabsint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minabsint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minabsint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the absolute (magnitude-mode) intensity of the spectrum.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maxabsint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maxabsint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maxabsint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the absolute (magnitude-mode) intensity of the spectrum.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minrealint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minrealint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minrealint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the intensity of the real part of the spectrum. If the spectrum
-has negative peaks this cost function will try to maximise those.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maxrealint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maxrealint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maxrealint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the intensity of the real part of the spectrum.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minimagint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minimagint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minimagint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the intensity of the imaginary part of the spectrum. If the
-spectrum has negative peaks this cost function will try to maximise those.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maximagint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maximagint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maximagint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the intensity of the real part of the spectrum.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.zerorealint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">zerorealint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.zerorealint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to get the intensity of the real spectrum to be as close to zero as
-possible. This works by summation, so dispersion-mode peaks will not
-contribute to this cost function (as they add to zero).</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.zeroimagint">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">zeroimagint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.zeroimagint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to get the intensity of the imaginary spectrum to be as close to zero
-as possible.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 </section>
 <section id="echo">
 <h3>Echo<a class="headerlink" href="#echo" title="Permalink to this heading">¶</a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minabsint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minabsint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minabsint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the absolute (magnitude-mode) intensity of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maxabsint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maxabsint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maxabsint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the absolute (magnitude-mode) intensity of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minrealint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minrealint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minrealint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the maximum intensity of the real part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maxrealint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maxrealint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maxrealint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the maximum intensity of the real part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minimagint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minimagint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minimagint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the maximum intensity of the imaginary part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maximagint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maximagint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maximagint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the maximum intensity of the real part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.zerorealint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">zerorealint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.zerorealint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to get the intensity of the real part of the echo to be as close to
-zero as possible.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.zeroimagint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">zeroimagint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.zeroimagint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to get the intensity of the imaginary part of the echo to be as close
-to zero as possible.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maxrealint_plus_zeroimagint_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maxrealint_plus_zeroimagint_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maxrealint_plus_zeroimagint_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to get the intensity of the imaginary part of the echo to be as close
-to zero as possible.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minabsmax_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minabsmax_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minabsmax_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the absolute (magnitude-mode) maximum of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maxabsmax_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maxabsmax_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maxabsmax_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the absolute (magnitude-mode) maximum of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minrealmax_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minrealmax_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minrealmax_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the maximum of the real part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maxrealmax_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maxrealmax_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maxrealmax_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the maximum of the real part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.minimagmax_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">minimagmax_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.minimagmax_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimises the maximum of the imaginary part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.maximagmax_echo">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">maximagmax_echo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.maximagmax_echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises the maximum of the imaginary part of the echo.</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 </section>
 <section id="other">
 <h3>Other<a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="esrpoise.costfunctions.max_n2p">
-<span class="sig-prename descclassname"><span class="pre">esrpoise.costfunctions.</span></span><span class="sig-name descname"><span class="pre">max_n2p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#esrpoise.costfunctions.max_n2p" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximises n2p parameter for DEER trace.
-Data should contain the 2 points of interest in position 0 and 1.</p>
-</dd></dl>
-
 </section>
 </section>
 </section>
@@ -721,7 +195,6 @@ Data should contain the 2 points of interest in position 0 and 1.</p>
 <li class="toctree-l1"><a class="reference internal" href="../run/">Run an optimisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../builtinpar/">Built-in parameters</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#main-py">main.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#xepr-link-py">xepr_link.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#costfunctions-py">costfunctions.py</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spectrum">Spectrum</a></li>
@@ -769,8 +242,8 @@ Data should contain the 2 points of interest in position 0 and 1.</p>
       &copy;2022, Jean-Baptiste Verstraete, Jonathan Yong, Mohammadali Foroozandeh.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../_sources/modules.rst.txt"
