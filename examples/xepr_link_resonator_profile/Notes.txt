@@ -1,3 +1,4 @@
 This folder present an example of use of xepr_link to record a resonator profile:
 	- resonator_profile.py runs the experiment with nutation.exp and nutation.def and saves the data in nutation_freq.txt and nutation_ydata.txt.
 	- res_data_treatment.py runs the data treatment and saves the data in resonator_profile_f_211210.txt and resonator_profile_H_f_211210.txt.
+	- for shaped pulse resonator compensation, a faster and more useful profile could be recorded by keeping the bridge frequency fixed and moving the carrier frequency in the .def file
