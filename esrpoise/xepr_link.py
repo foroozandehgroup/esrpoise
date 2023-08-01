@@ -54,7 +54,7 @@ def load_exp(xepr, exp_file: str) -> None:
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     exp_file : str
         The Xepr experiment file (the full path with .exp extension).
@@ -81,7 +81,7 @@ def modif_exp(xepr, exp_file: str, line_nb: int, new_line: str) -> None:
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     exp_file : str
         Name of the Xepr definition file (full path with .def extension).
@@ -115,7 +115,7 @@ def load_def(xepr, def_file: str) -> None:
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     def_file : str
         Name of the Xepr definition file (full path with .def extension).
@@ -150,7 +150,7 @@ def modif_def_PlsSPELGlbTxt(xepr, def_file: str,
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     def_file : str
         Name of the Xepr definition file (full path with .def extension).
@@ -197,7 +197,7 @@ def modif_def(xepr, def_file: str,
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     def_file : str
         Name of the Xepr definition file (full path with .def extension).
@@ -242,7 +242,7 @@ def load_shp(xepr, shp_file: str) -> None:
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     shp_file : str
         Shape file name (full path, including .shp extension).
@@ -268,7 +268,7 @@ def run2getdata_exp(xepr, SignalType: str = None, exp_name: str = None):
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     SignalType : str, by default None
         To change the signal type (pick from {"TM", "Signal", "RM"})
@@ -335,7 +335,7 @@ def reset_exp(xepr) -> None:
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
 
     Returns

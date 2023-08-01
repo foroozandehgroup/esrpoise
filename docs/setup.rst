@@ -174,10 +174,10 @@ We can for example conduct an optmisation on the spectrum with a zero-filling op
 Setup Tips (advanced)
 ---------------------
  - Put several optimisations in one script.
- - Automate your actions by using XeprAPI commands, the functions from :ref:`xepr_link.py` and ``param_set`` from :ref:`main.py`
- - Reuse the best parameter from the optimiser ``xbest``.
+ - Automate your actions by using XeprAPI commands, the functions from :ref:`xepr_link.py` and ``param_set`` from :ref:`main.py`.
+ - Reuse the best parameter value(s) from the optimiser ``xbest``.
  - Use ``callbak`` to add user-specific operation at each iteration. You do not need to indicate user-defined parameters, ``callback_pars_dict`` is sent back empty if no user-defined parameters are found.
- - Use ``acquire_esr.calls`` in your callback function to access the current number of your iteration.
+ - Use ``acquire_esr.calls`` in your callback function to access the current number of iteration(s).
  - Use the parameter ``nfactor`` of ``optimise()`` to expand the distance between the first steps of the optimisers, in particular if you have a low tolerance.
- - Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with ``xepr_link.COMPILATION_TIME`` (cf. :ref:`Compilation`)
+ - Accelerate you optimisation routine if your .shp, .def and .exp file compile fast enough with ``xepr_link.COMPILATION_TIME`` (cf. :ref:`Compilation`).
  - When using a single script with functions, be aware of your variables scope.

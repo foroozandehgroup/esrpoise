@@ -20,7 +20,7 @@ import numpy as np
 
 # spectrum
 def spectrum(data):
-    """Computes a spectrum from Xepr standard time domain data.
+    """Compute a spectrum from Xepr standard time domain data.
 
     Parameters
     ----------
@@ -39,21 +39,21 @@ def spectrum(data):
 
 def minabsint(data):
     """
-    Minimises the absolute (magnitude-mode) intensity of the spectrum.
+    Minimise the absolute (magnitude-mode) intensity of the spectrum.
     """
     return np.sum(np.abs(spectrum(data)))
 
 
 def maxabsint(data):
     """
-    Maximises the absolute (magnitude-mode) intensity of the spectrum.
+    Maximise the absolute (magnitude-mode) intensity of the spectrum.
     """
     return -minabsint(data)
 
 
 def minrealint(data):
     """
-    Minimises the intensity of the real part of the spectrum. If the spectrum
+    Minimise the intensity of the real part of the spectrum. If the spectrum
     has negative peaks this cost function will try to maximise those.
     """
     return np.sum(np.real(spectrum(data)))
@@ -61,14 +61,14 @@ def minrealint(data):
 
 def maxrealint(data):
     """
-    Maximises the intensity of the real part of the spectrum.
+    Maximise the intensity of the real part of the spectrum.
     """
     return -minrealint(data)
 
 
 def minimagint(data):
     """
-    Minimises the intensity of the imaginary part of the spectrum. If the
+    Minimise the intensity of the imaginary part of the spectrum. If the
     spectrum has negative peaks this cost function will try to maximise those.
     """
     return np.sum(np.imag(spectrum(data)))
@@ -76,14 +76,14 @@ def minimagint(data):
 
 def maximagint(data):
     """
-    Maximises the intensity of the real part of the spectrum.
+    Maximise the intensity of the real part of the spectrum.
     """
     return -minimagint(data)
 
 
 def zerorealint(data):
     """
-    Tries to get the intensity of the real spectrum to be as close to zero as
+    Try to get the intensity of the real spectrum to be as close to zero as
     possible. This works by summation, so dispersion-mode peaks will not
     contribute to this cost function (as they add to zero).
     """
@@ -92,7 +92,7 @@ def zerorealint(data):
 
 def zeroimagint(data):
     """
-    Tries to get the intensity of the imaginary spectrum to be as close to zero
+    Try to get the intensity of the imaginary spectrum to be as close to zero
     as possible.
     """
     return np.abs(np.sum(np.fft(data.O.imag)))
@@ -101,49 +101,49 @@ def zeroimagint(data):
 # echo
 def minabsint_echo(data):
     """
-    Minimises the absolute (magnitude-mode) intensity of the echo.
+    Minimise the absolute (magnitude-mode) intensity of the echo.
     """
     return np.sum(np.abs(data.O.real + 1j * data.O.imag))
 
 
 def maxabsint_echo(data):
     """
-    Maximises the absolute (magnitude-mode) intensity of the echo.
+    Maximise the absolute (magnitude-mode) intensity of the echo.
     """
     return -minabsint_echo(data)
 
 
 def minrealint_echo(data):
     """
-    Minimises the maximum intensity of the real part of the echo.
+    Minimise the maximum intensity of the real part of the echo.
     """
     return np.sum(data.O.real)
 
 
 def maxrealint_echo(data):
     """
-    Maximises the maximum intensity of the real part of the echo.
+    Maximise the maximum intensity of the real part of the echo.
     """
     return -minrealint_echo(data)
 
 
 def minimagint_echo(data):
     """
-    Minimises the maximum intensity of the imaginary part of the echo.
+    Minimise the maximum intensity of the imaginary part of the echo.
     """
     return np.sum(data.O.imag)
 
 
 def maximagint_echo(data):
     """
-    Maximises the maximum intensity of the real part of the echo.
+    Maximise the maximum intensity of the real part of the echo.
     """
     return -minimagint_echo(data)
 
 
 def zerorealint_echo(data):
     """
-    Tries to get the intensity of the real part of the echo to be as close to
+    Try to get the intensity of the real part of the echo to be as close to
     zero as possible.
     """
     return np.abs(np.sum(data.O.real))
@@ -151,7 +151,7 @@ def zerorealint_echo(data):
 
 def zeroimagint_echo(data):
     """
-    Tries to get the intensity of the imaginary part of the echo to be as close
+    Try to get the intensity of the imaginary part of the echo to be as close
     to zero as possible.
     """
     return np.abs(np.sum(data.O.imag))
@@ -159,7 +159,7 @@ def zeroimagint_echo(data):
 
 def maxrealint_plus_zeroimagint_echo(data):
     """
-    Tries to get the intensity of the imaginary part of the echo to be as close
+    Try to get the intensity of the imaginary part of the echo to be as close
     to zero as possible.
     """
     return maxrealint_echo(data)+zeroimagint_echo(data)
@@ -167,42 +167,42 @@ def maxrealint_plus_zeroimagint_echo(data):
 
 def minabsmax_echo(data):
     """
-    Minimises the absolute (magnitude-mode) maximum of the echo.
+    Minimise the absolute (magnitude-mode) maximum of the echo.
     """
     return np.max(np.abs(data.O.real + 1j * data.O.imag))
 
 
 def maxabsmax_echo(data):
     """
-    Maximises the absolute (magnitude-mode) maximum of the echo.
+    Maximise the absolute (magnitude-mode) maximum of the echo.
     """
     return -minabsmax_echo(data)
 
 
 def minrealmax_echo(data):
     """
-    Minimises the maximum of the real part of the echo.
+    Minimise the maximum of the real part of the echo.
     """
     return np.max(data.O.real)
 
 
 def maxrealmax_echo(data):
     """
-    Maximises the maximum of the real part of the echo.
+    Maximise the maximum of the real part of the echo.
     """
     return -minrealmax_echo(data)
 
 
 def minimagmax_echo(data):
     """
-    Minimises the maximum of the imaginary part of the echo.
+    Minimise the maximum of the imaginary part of the echo.
     """
     return np.max(data.O.imag)
 
 
 def maximagmax_echo(data):
     """
-    Maximises the maximum of the imaginary part of the echo.
+    Maximise the maximum of the imaginary part of the echo.
     """
     return -minimagmax_echo(data)
 
@@ -210,7 +210,7 @@ def maximagmax_echo(data):
 # DEER trace modulation depth
 def max_n2p(data):
     """
-    Maximises n2p parameter for DEER trace.
+    Maximise n2p parameter for DEER trace.
     Data should contain the 2 points of interest in position 0 and 1.
     """
     return -np.abs(data.O.real[0]-data.O.real[1])

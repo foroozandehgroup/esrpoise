@@ -6,7 +6,7 @@ ESR-POISE User Guide
    :align: center
    :target: https://doi.org/10.1039/D2CC02742A
 
-ESR-POISE (*Electron Spin Resonance Parameter Optimisation by Iterative Spectral Evaluation*) is a Python package for on-the-fly optimisation of ESR parameters in Bruker's Xepr software.
+ESR-POISE (*Electron Spin Resonance Parameter Optimisation by Iterative Spectral Evaluation*) is a Python package for on-the-fly optimisation of ESR parameters in Bruker BioSpin Xepr software.
 
 In here you will find guides on setting ESR-POISE up and using it to optimise ESR applications.
 Depending on your level of interaction with the software, you may not need to read all of it.

@@ -225,7 +225,7 @@ def acquire_esr(x: np.ndarray,
     optimiser : str from {"nm", "mds", "bobyqa", "brute"}, default "nm"
         Optimisation algorithm to use. The options correspond to Nelder-Mead,
         multidimensional search, BOBYQA, and brute-force search respectively.
-    xepr : instance of XeprAPI.Xepr TODO doc
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     cost_function : function
         A function which takes the data object and returns a float.
@@ -297,7 +297,7 @@ def param_set(xepr,
 
     Parameters
     ----------
-    xepr : XeprAPI.Xepr object
+    xepr : instance of XeprAPI.Xepr
         The instantiated Xepr object.
     pars : list of str
         Parameter names. Parameters starting with the character & are

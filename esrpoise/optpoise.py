@@ -33,7 +33,7 @@ def scale(val: Union[list, np.ndarray],
           tol: Union[list, np.ndarray],
           scaleby: str = "bounds"):
     """
-    Scales a set of values so that the optimisation behaves better.
+    Scale a set of values so that the optimisation behaves better.
 
     For scaleby="bounds", scales a set of values such that the lower and upper
     bounds for all variables are 0 and 1 respectively). We used to use this.
@@ -93,7 +93,7 @@ def unscale(scaled_val: Union[list, np.ndarray],
             orig_tol: Union[list, np.ndarray],
             scaleby: str = "bounds"):
     """
-    Unscales a set of scaled values to their original values.
+    Unscale a set of scaled values to their original values.
 
     Parameters
     ----------
@@ -133,7 +133,7 @@ class Simplex():
     def __init__(self, x0: np.ndarray, method: str = "spendley",
                  length: float = MAGIC_TOL*10, seed=None):
         """
-        Initialises a Simplex object.
+        Initialise a Simplex object.
 
         Parameters
         ----------
@@ -199,7 +199,7 @@ class Simplex():
 
     def sort(self):
         """
-        Sorts the simplex and associated function values in ascending order of
+        Sort the simplex and associated function values in ascending order of
         the cost function, i.e. sim.x[0] contains the current best point,
         sim.x[N] contains the current worst point.
         """
@@ -209,20 +209,20 @@ class Simplex():
 
     def xbar(self):
         """
-        Calculates the centroid. Assumes the function values are already
+        Calculate the centroid. Assumes the function values are already
         sorted.
         """
         return np.average(self.x[0:self.N], axis=0)
 
     def xworst(self):
         """
-        Worst point. Assumes the simplex is already sorted.
+        Worst point. Assume the simplex is already sorted.
         """
         return self.x[self.N]
 
     def replace_worst(self, xnew, fnew):
         """
-        Replaces the worst point with the new point xnew, and the corresponding
+        Replace the worst point with the new point xnew, and the corresponding
         function value fnew.
         """
         self.sort()
@@ -230,7 +230,7 @@ class Simplex():
 
     def shrink(self):
         """
-        Performs shrink step (Step 3(f) in Algorithm 8.1.1, Kelley). Doesn't
+        Perform shrink step (Step 3(f) in Algorithm 8.1.1, Kelley). Doesn't
         evaluate cost functions, only replaces the points!
         """
         for i in range(1, self.N + 1):
@@ -833,7 +833,7 @@ def brute_force(cf: callable,
                 maxfev: int = 0,
                 nfactor: float = None):
     """
-    Brute force solver. Evaluates equally spaced points on an n-dimensional
+    Brute force solver. Evaluate equally spaced points on an n-dimensional
     grid and returns the best of these.
 
     Parameters
